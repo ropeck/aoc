@@ -7,14 +7,19 @@ def score(c):
 
 def main():
   total = 0 
-  for line in open("input","r"):
-    line = line.strip()
-    r1 = set(line[0:len(line)/2])
-    r2 = set(line[len(line)/2:])
-    letter = r1.intersection(r2).pop()
-    sc = score(letter)
-    print(letter, sc)
-    total += sc
+  with open("input", "r") as f:
+    while True:
+      try:
+        r1 = set(f.readline().strip())
+        r2 = set(f.readline().strip())
+        r3 = set(f.readline().strip())
+    
+        badge = r1.intersection(r2).intersection(r3).pop()
+        sc = score(badge)
+        print(badge, sc)
+        total += sc
+      except:
+        break
 
 
   print("total: ", total)
