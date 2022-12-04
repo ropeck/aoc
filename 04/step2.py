@@ -13,7 +13,6 @@ def main():
     sb = range_to_set(b)
     if not sa.isdisjoint(sb):
       total += 1
-      print (a, b)
   print(f'total: {total}')
 if __name__ == '__main__':
   main()
