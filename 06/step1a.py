@@ -8,10 +8,11 @@ def main():
   while True:
     for i in range(0, len(buffer)):
       ch = buffer[i]
+      if ch in marker:
+        marker = ""
       if len(marker) >= MARKER_LEN:
-        if ch not in marker:
-          print(i)
-          exit(0)
-      marker = (marker + ch)[-MARKER_LEN:]
+        print(i)
+        exit(0)
+      marker = marker + ch
 if __name__ == '__main__':
   main()
