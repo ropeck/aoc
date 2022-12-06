@@ -12,7 +12,7 @@ def main():
     else:
       total += int(line.strip())
   elf.sort()
-  print elf[-1]
+  print(elf[-1])
 
 if __name__ == '__main__':
   main()
