@@ -10,8 +10,10 @@ class Entry:
   def size(self):
     return self.byte_size
 
-  def __repr__(self):
-    return f'{self.name} (file, size={self.size})'
+  def __str__(self):
+    return f'{self.name} (file, size={self.size()})'
+  def isDir(self):
+    return False
 
 class Dir:
   def __init__(self, name, parent):
@@ -19,29 +21,43 @@ class Dir:
     self.parent = parent
     self.entries = {}
 
+  def isDir(self):
+    return True
+
   def size(self):
     return sum([x.size() for x in self.entries.values()])
 
   def append(self, entry):
     self.entries[entry.name]=entry
 
-  def __repr__(self):
+  def __str__(self):
     return f'{self.name} (dir)'
 
 def print_size(e, indent=0):
+#  print(f'ps {e.name} {type(e)} {type(Dir("", None))}')
   print(f'{indent*"  "}- {e}')
   root = Dir("/", None)
-  if type(e) != type(root):
-    print ("file")
   if type(e) == type(root):
     for f in e.entries.values():
       print_size(f, indent+1)
+
+
+def find_big_directories(e):
+  global total_size
+  if e.size() < 100000:
+    if e.isDir():
+      print(f'{e.name} {e.size()}')
+      total_size += e.size()
+  root = Dir("/", None)
+  if type(e) == type(root):
+    for f in e.entries.values():
+      find_big_directories(f)
 
 def main():
   cwd = None
   line = ""
   root = cwd
-  with open("otherinput","r") as fh:
+  with open("input","r") as fh:
     line = fh.readline().strip()
     while True:
       if line and line[0] != "$":
@@ -52,6 +68,7 @@ def main():
       if m:
         if m.group(1) == "..":
           cwd = cwd.parent
+          print(f'cd .. {cwd.name}')
         elif m.group(1) == "/":
           root = Dir("/", None)
           cwd = root
@@ -69,6 +86,7 @@ def main():
             e = Dir(b, cwd)
           else:
             e = Entry(b, a, cwd)
+          print(f'{line} {type(e)} {cwd.name}')
           cwd.append(e)
         continue
       line = fh.readline().strip()
@@ -76,6 +94,12 @@ def main():
   print(f'{root.size()}')
 
   print_size(root)
+
+  global total_size
+
+  total_size = 0
+  find_big_directories(root)
+  print(f'total size {total_size}')
 
 if __name__ == '__main__':
   main()
