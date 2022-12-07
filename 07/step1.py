@@ -30,7 +30,10 @@ class Dir:
 
 def print_size(e, indent=0):
   print(f'{indent*"  "}- {e}')
-  if type(e) == Dir:
+  root = Dir("/", None)
+  if type(e) != type(root):
+    print ("file")
+  if type(e) == type(root):
     for f in e.entries.values():
       print_size(f, indent+1)
 
@@ -38,7 +41,7 @@ def main():
   cwd = None
   line = ""
   root = cwd
-  with open("input","r") as fh:
+  with open("otherinput","r") as fh:
     line = fh.readline().strip()
     while True:
       if line and line[0] != "$":
