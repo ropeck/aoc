@@ -21,6 +21,12 @@ class Dir:
     self.parent = parent
     self.entries = {}
 
+  def path(self):
+    if self.parent:
+      return f'{self.parent.path()}/{self.name}'
+    else:
+      return ""
+
   def isDir(self):
     return True
 
@@ -43,11 +49,10 @@ def print_size(e, indent=0):
 
 
 def find_big_directories(e):
-  global total_size
-  if e.size() < 100000:
-    if e.isDir():
-      print(f'{e.name} {e.size()}')
-      total_size += e.size()
+  global collected
+  if e.isDir():
+    print(f'{e.path()} {e.size()}')
+    collected.append(e)
   root = Dir("/", None)
   if type(e) == type(root):
     for f in e.entries.values():
@@ -95,11 +100,22 @@ def main():
 
   print_size(root)
 
-  global total_size
+  global collected
 
-  total_size = 0
+  collected = []
   find_big_directories(root)
-  print(f'total size {total_size}')
+
+  collected = sorted(collected, key=lambda x: x.size())
+  print(f'/ {root.size()}')
+  needed = 30000000 - (70000000 - root.size())
+
+  print(f'needed: {needed}')
+  for d in collected:
+  #  print(f'{d.size()} {d.path()}')
+    if d.size() > needed:
+      print(d)
+      print(d.size())
+      exit(0)
 
 if __name__ == '__main__':
   main()
