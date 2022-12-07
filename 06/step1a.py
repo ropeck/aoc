@@ -8,8 +8,9 @@ def main():
   while True:
     for i in range(0, len(buffer)):
       ch = buffer[i]
-      if ch in marker:
-        marker = ""
+      m = marker.rfind(ch)
+      if m:
+        marker = marker[m:]
       if len(marker) >= MARKER_LEN:
         print(i)
         exit(0)
