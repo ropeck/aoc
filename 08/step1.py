@@ -10,25 +10,28 @@ class Forest:
     self.height = len(self.sq)
 
   def is_tallest(self, row, x, y):
-    if not row:
-      return False
-    return self.sq[x][y] == max(row)
+    r = not row or self.sq[y][x] > max(row)
+    print (f'  {row} {r}')
+    return not row or self.sq[y][x] > max(row)
 
   def vis_from_left(self, x, y):
-    row = [self.sq[i][y] for i in range(x)]
+    row = [self.sq[y][i] for i in range(x)]
+    print("left")
     return self.is_tallest(row, x, y)
 
-
   def vis_from_right(self, x, y):
-    row = [self.sq[i][y] for i in range(x-1, self.width)]
+    row = [self.sq[y][i] for i in range(x+1, self.width)]
+    print("right")
     return self.is_tallest(row, x, y)
 
   def vis_from_top(self, x, y):
-    col = [self.sq[x][i] for i in range(y)]
+    col = [self.sq[i][x] for i in range(y)]
+    print("top")
     return self.is_tallest(col, x, y)
 
   def vis_from_bottom(self, x, y):
-    col = [self.sq[x][i] for i in range(y-1, self.height)]
+    col = [self.sq[i][x] for i in range(y+1, self.height)]
+    print("bot")
     return self.is_tallest(col, x, y)
 
   def vis(self, x, y):
@@ -38,6 +41,7 @@ class Forest:
     total = 0
     for y in range(self.height):
       for x in range(self.width):
+        print(f'[{y},{x}] {self.sq[y][x]}')
         if self.vis(x, y):
           total += 1
     return total
