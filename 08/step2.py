@@ -14,7 +14,7 @@ class Forest:
     n = self.sq[y][x]
     for i in row:
       c += 1
-      if n > i:
+      if n <= i:
         break
     #print (f'  {row} {self.sq[y][x]} {c}')
     return c
@@ -22,25 +22,25 @@ class Forest:
   def vis_to_left(self, x, y):
     row = [self.sq[y][i] for i in range(x)]
     row.reverse()
-    print(f'left {row} {y},{x} {self.num_seen(row, x, y)}')
+    # print(f'left {row} {y},{x} {self.num_seen(row, x, y)}')
 
     # print("left")
     return self.num_seen(row, x, y)
 
   def vis_to_right(self, x, y):
     row = [self.sq[y][i] for i in range(x+1, self.width)]
-    print(f'right {row} {y},{x} {self.num_seen(row, x, y)}')
+    # print(f'right {row} {y},{x} {self.num_seen(row, x, y)}')
     return self.num_seen(row, x, y)
 
   def vis_to_top(self, x, y):
     col = [self.sq[i][x] for i in range(y)]
     col.reverse()
-    print(f'up {col} {y},{x} {self.num_seen(col, x, y)}')
+    # print(f'up {col} {y},{x} {self.num_seen(col, x, y)}')
     return self.num_seen(col, x, y)
 
   def vis_to_bottom(self, x, y):
     col = [self.sq[i][x] for i in range(y+1, self.height)]
-    print(f'down {col} {y},{x} {self.num_seen(col, x, y)}')
+    # print(f'down {col} {y},{x} {self.num_seen(col, x, y)}')
     return self.num_seen(col, x, y)
 
   def vis(self, x, y):
@@ -50,7 +50,7 @@ class Forest:
     max = (0, None)
     for y in range(self.height):
       for x in range(self.width):
-        print(f'* {y},{x}')
+        # print(f'* {y},{x}')
         m = 1
         v = self.vis(x, y)
         for n in v:
