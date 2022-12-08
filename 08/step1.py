@@ -7,6 +7,7 @@ def main():
   #   while True:
 
   for line in open("input","r"):
+    pass
 
   print(f'total: {total}')
 
