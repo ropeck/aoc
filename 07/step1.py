@@ -6,16 +6,27 @@ class Entry:
     self.name = name
     self.byte_size = int(size)
     self.parent = parent
+    self.entries = {}
 
   def size(self):
     return self.byte_size
 
+  def print_size(self, indent=0):
+    print(f'{indent*"  "}- {self}')
+
+  def path(self):
+    if self.parent:
+      return f'{self.parent.path()}/{self.name}'
+    else:
+      return ""
+  def find_big_directories(self):
+    return
   def __str__(self):
     return f'{self.name} (file, size={self.size()})'
   def isDir(self):
     return False
 
-class Dir:
+class Dir(Entry):
   def __init__(self, name, parent):
     self.name = name
     self.parent = parent
@@ -33,25 +44,19 @@ class Dir:
   def __str__(self):
     return f'{self.name} (dir)'
 
-def print_size(e, indent=0):
-#  print(f'ps {e.name} {type(e)} {type(Dir("", None))}')
-  print(f'{indent*"  "}- {e}')
-  root = Dir("/", None)
-  if type(e) == type(root):
-    for f in e.entries.values():
-      print_size(f, indent+1)
+  def print_size(self, indent=0):
 
+    super().print_size(indent)
+    for f in self.entries.values():
+      f.print_size(indent+1)
 
-def find_big_directories(e):
-  global total_size
-  if e.size() < 100000:
-    if e.isDir():
-      print(f'{e.name} {e.size()}')
-      total_size += e.size()
-  root = Dir("/", None)
-  if type(e) == type(root):
-    for f in e.entries.values():
-      find_big_directories(f)
+  def find_big_directories(self):
+    global total_size
+    if self.size() < 100000:
+      print(f'{self.path()} {self.size()}')
+      total_size += self.size()
+    for f in self.entries.values():
+      f.find_big_directories()
 
 def main():
   cwd = None
@@ -93,12 +98,12 @@ def main():
 
   print(f'{root.size()}')
 
-  print_size(root)
+  root.print_size()
 
   global total_size
 
   total_size = 0
-  find_big_directories(root)
+  root.find_big_directories()
   print(f'total size {total_size}')
 
 if __name__ == '__main__':
