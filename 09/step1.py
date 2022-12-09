@@ -29,10 +29,10 @@ def main(path):
 
       d = sqrt(abs(head[0]-tail[0])**2 + abs(head[1]-tail[1])**2)
       if d > sqrt(2):
-        n = abs(head[0] - tail[0])
+        n = (head[0] - tail[0])
         if n:
           tail[0] += int(n/abs(n))
-        n = abs(head[1] - tail[1])
+        n = (head[1] - tail[1])
         if n:
           tail[1] += int(n/abs(n))
       print(f'-> h:{head} t:{tail}')
