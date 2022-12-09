@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import sys
+from math import sqrt
 
 def main(path):
   total = []
@@ -21,22 +22,16 @@ def main(path):
           head[0] -= 1
         case 'R':
           head[0] += 1
-      if head == tail:
-        continue
-      if head[1] == tail[1]:
-        d = head[0] - tail[0]
-        if abs(d) > 1:
-          tail[0] += int(d/abs(d))
-          if tail[1] != head[1]:
-            tail[1] = head[1]
-        continue
-      if head[0] == tail[0]:
-        d = head[1] - tail[1]
-        if abs(d) > 1:
-          tail[1] += int(d/abs(d))
-          if tail[0] != head[0]:
-            tail[0] = head[0]
-        continue
+
+      d = sqrt(abs(head[0]-tail[0])**2 + abs(head[1]-tail[1])**2)
+      if d > sqrt(2):
+        n = abs(head[0] - tail[0])
+        if n:
+          tail[0] += int(n/abs(n))
+        n = abs(head[1] - tail[1])
+        if n:
+          tail[1] += int(n/abs(n))
+
 
 
 
