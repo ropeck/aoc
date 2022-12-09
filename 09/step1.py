@@ -35,7 +35,7 @@ def main(path):
         n = (head[1] - tail[1])
         if n:
           tail[1] += int(n/abs(n))
-      print(f'-> h:{head} t:{tail}')
+      print(f'{d} -> h:{head} t:{tail}')
 
 
 
