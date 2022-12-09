@@ -16,7 +16,7 @@ def main(path):
     for i in range(int(n)):
       if tail not in total:
         total.append(tail.copy())
-      print(f'h:{head} t:{tail}')
+      print(f'   h:{head} t:{tail}')
       match m:
         case 'U':
           head[1] += 1
@@ -35,6 +35,7 @@ def main(path):
         n = abs(head[1] - tail[1])
         if n:
           tail[1] += int(n/abs(n))
+      print(f'-> h:{head} t:{tail}')
 
 
 
