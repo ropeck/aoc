@@ -7,11 +7,13 @@ def main(path):
   head = [0,0]
   tail = head.copy()
   for line in open(path,"r"):
-    if tail.copy() not in total:
+    if tail not in total:
       total.append(tail.copy())
     (m, n) = line.strip().split()
     print(m, n)
     for i in range(int(n)):
+      if tail not in total:
+        total.append(tail.copy())
       print(f'h:{head} t:{tail}')
       match m:
         case 'U':
@@ -34,7 +36,7 @@ def main(path):
 
 
 
-
+  print(total)
   print(f'total: {len(total)}')
 
 if __name__ == '__main__':
