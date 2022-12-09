@@ -6,7 +6,9 @@ def main(path):
   total = []
   head = [0,0]
   tail = head.copy()
-  for line in open(path,"r"):
+  with open(path, "r") as fh:
+    step_data = fh.read()
+  for line in step_data.splitlines():
     if tail not in total:
       total.append(tail.copy())
     (m, n) = line.strip().split()
@@ -38,6 +40,7 @@ def main(path):
 
   print(total)
   print(f'total: {len(total)}')
+  return(total)
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
