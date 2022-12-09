@@ -27,8 +27,12 @@ Due to the aforementioned Planck lengths, the rope must be quite short; in fact,
 ...
 .H. (H covers T)
 ...
+```
+
+
 If the head is ever two steps directly up, down, left, or right from the tail, the tail must also move one step in that direction so it remains close enough:
 
+```
 .....    .....    .....
 .TH.. -> .T.H. -> ..TH.
 .....    .....    .....
@@ -38,8 +42,12 @@ If the head is ever two steps directly up, down, left, or right from the tail, t
 .H. -> ... -> .T.
 ...    .H.    .H.
 ...    ...    ...
+```
+
 Otherwise, if the head and tail aren't touching and aren't in the same row or column, the tail always moves one step diagonally to keep up:
 
+
+```
 .....    .....    .....
 .....    ..H..    ..H..
 ..H.. -> ..... -> ..T..
@@ -51,10 +59,14 @@ Otherwise, if the head and tail aren't touching and aren't in the same row or co
 ..H.. -> ...H. -> ..TH.
 .T...    .T...    .....
 .....    .....    .....
+```
+
+
 You just need to work out where the tail goes as the head follows a series of motions. Assume the head and the tail both start at the same position, overlapping.
 
 For example:
 
+```
 R 4
 U 4
 L 3
@@ -63,10 +75,13 @@ R 4
 D 1
 L 5
 R 2
+```
+
 This series of motions moves the head right four steps, then up four steps, then left three steps, then down one step, and so on. After each step, you'll need to update the position of the tail if the step means the head is no longer adjacent to the tail. Visually, these motions occur as follows (s marks the starting position as a reference point):
 
 == Initial State ==
 
+```
 ......
 ......
 ......
