@@ -34,8 +34,9 @@ def main(path):
           tail[0] += int(n/abs(n))
         n = (head[1] - tail[1])
         if n:
+          import pdb; pdb.set_trace()
           tail[1] += int(n/abs(n))
-      print(f'-> h:{head} t:{tail}')
+      #print(f'-> h:{head} t:{tail}')
 
 
 
