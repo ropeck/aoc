@@ -16,7 +16,9 @@ def main(path):
     for i in range(int(n)):
       if tail not in total:
         total.append(tail.copy())
-      print(f'   h:{head} t:{tail}')
+      d = sqrt(abs(head[0]-tail[0])**2 + abs(head[1]-tail[1])**2)
+      if d > sqrt(2):
+        tail = head.copy()
       match m:
         case 'U':
           head[1] += 1
@@ -26,20 +28,7 @@ def main(path):
           head[0] -= 1
         case 'R':
           head[0] += 1
-
-      d = sqrt(abs(head[0]-tail[0])**2 + abs(head[1]-tail[1])**2)
-      if d > sqrt(2):
-        n = (head[0] - tail[0])
-        if n:
-          tail[0] += int(n/abs(n))
-        n = (head[1] - tail[1])
-        if n:
-          tail[1] += int(n/abs(n))
-      print(f'{d} -> h:{head} t:{tail}')
-
-
-
-  print(total)
+      print(f'   h:{head} t:{tail}')
   print(f'total: {len(total)}')
   return(total)
 
