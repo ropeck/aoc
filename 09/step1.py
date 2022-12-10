@@ -14,16 +14,29 @@ def move(h, t):
       t[1] += int(math.copysign(1, dy))
   return t
 
+def span(r, n):
+ low = min([eval(x)[n] for x in r])
+ high = max([eval(x)[n] for x in r])
+ return high - low
+
 def draw(r, t):
-  w = len(t)
-  h = len(eval(t[0]))
-  b = [[' ' for x in range(w)] for y in range(h)]
+  w = span(t, 0)
+  h = span(t, 1)
+  w = 20
+  h = 20
+  b = [['.' for x in range(w)] for y in range(h)]
   for s in t:
     (x,y) = eval(s)
     y = h - y -1
-    b[x][y] = '#'
-  b[r[0][0]][h - r[0][1] -1] = "H"
-  b[r[1][0]][h - r[1][1] -1] = "T"
+    b[y][x] = '#'
+
+  def mark(n, m):
+    b[h - r[n][1] - 1][r[n][0]] = m
+
+  x=r[0][0]
+  y=h - r[0][1] - 1
+  mark(0, "H")
+  mark(1, "T")
   for l in b:
     print(''.join(l))
 
@@ -38,7 +51,8 @@ def main(path):
     step_data = fh.read()
   for line in step_data.splitlines():
     (m, n) = line.strip().split()
-    print(m, n)
+    print(f'== {m} {n} ==')
+    print('')
     for i in range(int(n)):
       head = rope[0]
       match m:
@@ -54,8 +68,9 @@ def main(path):
       tail = move(rope[0], rope[1])
       rope[1] = tail
       total.append(str(rope[-1]))
-      print(f'   h:{head} t:{tail}')
+      # print(f'   h:{head} t:{tail}')
       draw(rope, total)
+      print('')
   print(set(total))
   path_len = len(set(total))
   print(f'total: {path_len}')
