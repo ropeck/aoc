@@ -1,13 +1,13 @@
 #!/usr/bin/python3
 import math
 import sys
-from math import sqrt, copysign
+
+ROOT2 = math.sqrt(2)
 
 def move(h, t):
   dx = h[0] - t[0]
   dy = h[1] - t[1]
-  d = sqrt(dx ** 2 + dy ** 2)
-  if d > sqrt(2):
+  if math.sqrt(dx ** 2 + dy ** 2) > ROOT2:
     if dx:
       t[0] += int(math.copysign(1, dx))
     if dy:
