@@ -20,21 +20,29 @@ def span(r, n):
  return high - low
 
 def draw(r, t):
-  w = span(t, 0)
-  h = span(t, 1)
-  w = 20
-  h = 20
-  b = [['.' for x in range(w)] for y in range(h)]
+  def mark(n, m):
+    b[h - r[n][1] - 1 + ymin][r[n][0] - xmin] = m
+
+  tx=[]
+  ty=[]
+  for s in r:
+    tx.append(s[0])
+    ty.append(s[1])
   for s in t:
     (x,y) = eval(s)
-    y = h - y -1
-    b[y][x] = '#'
+    tx.append(x)
+    ty.append(y)
+  xmin = min(tx)
+  ymin = min(ty)
+  w = span(t, 0)+1-xmin
+  h = span(t, 1)+1-ymin
+  b = [['.' for x in range(w)] for y in range(h)]
+  for s in t:
+    (x, y) = eval(s)
+    a = h-1-y+ymin
+    b2 = x-xmin
+    b[h-1-y+ymin][x-xmin-1] = '#'
 
-  def mark(n, m):
-    b[h - r[n][1] - 1][r[n][0]] = m
-
-  x=r[0][0]
-  y=h - r[0][1] - 1
   mark(0, "H")
   mark(1, "T")
   for l in b:
