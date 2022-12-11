@@ -53,7 +53,7 @@ def move_tail(h, t):
   return t
 
 def main(path):
-  rope = [[0,0] for i in range(2)]
+  rope = [[0,0] for i in range(10)]
 
   total = []
 
