@@ -39,13 +39,11 @@ def draw(r, t):
     print(''.join(l))
 
 def move_tail(h, t):
-  dx = h[0] - t[0]
-  dy = h[1] - t[1]
-  if math.sqrt(dx ** 2 + dy ** 2) > ROOT2:
-    if dx:
-      t[0] += int(math.copysign(1, dx))
-    if dy:
-      t[1] += int(math.copysign(1, dy))
+  d = [h[i] - t[i] for i in range(len(h))]
+  if math.sqrt(sum([n**2 for n in d])) > ROOT2:
+    for n in range(len(h)):
+      if d[n]:
+        t[n] += int(math.copysign(1, d[n]))
   return t
 
 def main(path):
