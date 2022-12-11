@@ -4,14 +4,20 @@ import sys
 
 ROOT2 = math.sqrt(2)
 
-def span(r, n):
- low = min([eval(x)[n] for x in r])
- high = max([eval(x)[n] for x in r])
+def debug(str):
+  # debug(str)
+  pass
+def span(t, r, n):
+
+ low = min([x[n] for x in r] + [eval(x)[n] for x in t])
+ high = max([x[n] for x in r] + [eval(x)[n] for x in t])
  return high - low
 
 def draw(r, t):
   def mark(n, m):
-    b[h - r[n][1] - 1 + ymin][r[n][0] - xmin] = m
+    y = h - r[n][1] - 1 + ymin
+    x = r[n][0] - xmin
+    b[y][x] = m
 
   tx=[]
   ty=[]
@@ -24,19 +30,19 @@ def draw(r, t):
     ty.append(y)
   xmin = min(tx)
   ymin = min(ty)
-  w = span(t, 0)+1-xmin
-  h = span(t, 1)+1-ymin
+  w = span(t, r, 0)+1-xmin
+  h = span(t, r, 1)+1-ymin
   b = [['.' for x in range(w)] for y in range(h)]
   for s in t:
     (x, y) = eval(s)
     a = h-1-y+ymin
     b2 = x-xmin
-    b[h-1-y+ymin][x-xmin-1] = '#'
+    b[h-1-y+ymin][x-xmin] = '#'
 
   mark(0, "H")
   mark(1, "T")
   for l in b:
-    print(''.join(l))
+    debug(''.join(l))
 
 def move_tail(h, t):
   d = [h[i] - t[i] for i in range(len(h))]
@@ -56,8 +62,8 @@ def main(path):
     step_data = fh.read()
   for line in step_data.splitlines():
     (m, n) = line.strip().split()
-    print(f'== {m} {n} ==')
-    print('')
+    debug(f'== {m} {n} ==')
+    debug('')
     for i in range(int(n)):
       head = rope[0]
       match m:
@@ -72,13 +78,14 @@ def main(path):
       rope[0] = head
       tail = move_tail(rope[0], rope[1])
       rope[1] = tail
-      total.append(str(rope[-1]))
-      # print(f'   h:{head} t:{tail}')
-      draw(rope, total)
-      print('')
-  print(set(total))
+      total.append(str(rope[1]))
+      debug(total)
+      # debug(f'   h:{head} t:{tail}')
+      # draw(rope, total)
+      debug('')
+  debug(set(total))
   path_len = len(set(total))
-  print(f'total: {path_len}')
+  debug(f'total: {path_len}')
   return(path_len)
 
 if __name__ == '__main__':
