@@ -2,7 +2,7 @@
 import sys
 
 def debug(str):
-  print(str)
+  # print(str)
   pass
 
 def main(path):
@@ -15,11 +15,11 @@ def main(path):
   lines.reverse()
   while lines:
     t += 1
-    print(f'{t} {reg} {t * reg}')
+    debug(f'{t} {reg} {t * reg}')
     if t == 20 or ((t-20)%40 == 0):
       sig = t * reg
       checkpoint.append(sig)
-      print("checkpoint")
+      debug("checkpoint")
     if carry:
       reg += carry
       carry = None
