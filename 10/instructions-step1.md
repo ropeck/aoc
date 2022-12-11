@@ -250,12 +250,15 @@ Like the CPU, the CRT is tied closely to the clock circuit: the CRT draws a
 single pixel during each cycle. Representing each pixel of the screen as a #,
 here are the cycles during which the first and last pixel in each row are drawn:
 
+```
 Cycle   1 -> ######################################## <- Cycle  40
 Cycle  41 -> ######################################## <- Cycle  80
 Cycle  81 -> ######################################## <- Cycle 120
 Cycle 121 -> ######################################## <- Cycle 160
 Cycle 161 -> ######################################## <- Cycle 200
 Cycle 201 -> ######################################## <- Cycle 240
+```
+
 So, by carefully timing the CPU instructions and the CRT drawing operations, you
 should be able to determine whether the sprite is visible the instant each pixel
 is drawn. If the sprite is positioned such that one of its three pixels is the
@@ -345,30 +348,33 @@ Current CRT row: ##..##..##..##..#
 During cycle 18: CRT draws pixel in position 17
 Current CRT row: ##..##..##..##..##
 End of cycle 18: finish executing addx 4 (Register X is now 21)
-Sprite position: ....................###.................
+Sprite position: `....................###.................`
 
 Start cycle  19: begin executing noop
 During cycle 19: CRT draws pixel in position 18
-Current CRT row: ##..##..##..##..##.
+Current CRT row: `##..##..##..##..##.`
 End of cycle 19: finish executing noop
 
 Start cycle  20: begin executing addx -1
 During cycle 20: CRT draws pixel in position 19
-Current CRT row: ##..##..##..##..##..
+Current CRT row: `##..##..##..##..##..`
 
 During cycle 21: CRT draws pixel in position 20
-Current CRT row: ##..##..##..##..##..#
+Current CRT row: `##..##..##..##..##..#`
 End of cycle 21: finish executing addx -1 (Register X is now 20)
-Sprite position: ...................###..................
+Sprite position: `...................###..................`
 Allowing the program to run to completion causes the CRT to produce the
 following image:
 
+```
 ##..##..##..##..##..##..##..##..##..##..
 ###...###...###...###...###...###...###.
 ####....####....####....####....####....
 #####.....#####.....#####.....#####.....
 ######......######......######......####
 #######.......#######.......#######.....
+```
+
 Render the image given by your program. What eight capital letters appear on
 your CRT?
 
