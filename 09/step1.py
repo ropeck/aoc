@@ -4,16 +4,6 @@ import sys
 
 ROOT2 = math.sqrt(2)
 
-def move(h, t):
-  dx = h[0] - t[0]
-  dy = h[1] - t[1]
-  if math.sqrt(dx ** 2 + dy ** 2) > ROOT2:
-    if dx:
-      t[0] += int(math.copysign(1, dx))
-    if dy:
-      t[1] += int(math.copysign(1, dy))
-  return t
-
 def span(r, n):
  low = min([eval(x)[n] for x in r])
  high = max([eval(x)[n] for x in r])
@@ -48,6 +38,15 @@ def draw(r, t):
   for l in b:
     print(''.join(l))
 
+def move_tail(h, t):
+  dx = h[0] - t[0]
+  dy = h[1] - t[1]
+  if math.sqrt(dx ** 2 + dy ** 2) > ROOT2:
+    if dx:
+      t[0] += int(math.copysign(1, dx))
+    if dy:
+      t[1] += int(math.copysign(1, dy))
+  return t
 
 def main(path):
   rope = []
@@ -73,7 +72,7 @@ def main(path):
         case 'R':
           head[0] += 1
       rope[0] = head
-      tail = move(rope[0], rope[1])
+      tail = move_tail(rope[0], rope[1])
       rope[1] = tail
       total.append(str(rope[-1]))
       # print(f'   h:{head} t:{tail}')
