@@ -53,10 +53,9 @@ def move_tail(h, t):
   return t
 
 def main(path):
-  rope = []
-  rope.append([0,0])
-  rope.append([0,0])
-  total = [str(rope[-1])]
+  rope = [[0,0] for i in range(2)]
+
+  total = []
 
   with open(path, "r") as fh:
     step_data = fh.read()
@@ -76,16 +75,17 @@ def main(path):
         case 'R':
           head[0] += 1
       rope[0] = head
-      tail = move_tail(rope[0], rope[1])
-      rope[1] = tail
-      total.append(str(rope[1]))
+      for i in range(len(rope)-1):
+        tail = move_tail(rope[i], rope[i+1])
+        rope[i+1] = tail
+      total.append(str(tail))
       debug(total)
       # debug(f'   h:{head} t:{tail}')
       # draw(rope, total)
       debug('')
   debug(set(total))
   path_len = len(set(total))
-  debug(f'total: {path_len}')
+  print(f'total: {path_len}')
   return(path_len)
 
 if __name__ == '__main__':
