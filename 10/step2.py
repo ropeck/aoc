@@ -9,17 +9,16 @@ def main(path):
   t = 0
   carry = None
   reg = 1
-  checkpoint = []
+  empty_line = [' ' for x in range(40)]
+  display = [empty_line.copy() for i in range(6)]
   with open(path, "r") as fh:
     lines = fh.read().splitlines()
   lines.reverse()
   while lines:
-    t += 1
     debug(f'{t} {reg} {t * reg}')
-    if t == 20 or ((t-20)%40 == 0):
-      sig = t * reg
-      checkpoint.append(sig)
-      debug("checkpoint")
+    if reg-1 <= t%40 and reg+1 >= t%40:
+      display[int(t/40)][t%40] = '#'
+    t += 1
     if carry:
       reg += carry
       carry = None
@@ -34,7 +33,9 @@ def main(path):
           carry = int(val)
         else:
           print("unknown line " + line)
-  return sum(checkpoint)
+  for l in display:
+    print(''.join(l))
+  return display
 
 
 
