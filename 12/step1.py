@@ -8,6 +8,7 @@ class Map:
       for l in fh:
         m.append([ord(i)-ord('a') for i in l.strip()])
     self.map = m
+    self.char_cache = {}
 
   def print(self):
     for l in self.map:
@@ -16,14 +17,22 @@ class Map:
       print(f'{o}: {eval("self."+o+"()")}')
 
   def find_char(self, char):
+    r = self.char_cache.get(char, None)
+    if r:
+      return r
     y = 0
     for l in self.map:
       x = 0
       for i in l:
         if self.map[y][x] == ord(char)-ord('a'):
-          return (x, y)
+          r = (x, y)
+          break
         x += 1
+      if r:
+        break
       y += 1
+    self.char_cache[char] = r
+    return r
 
   def start(self):
     return self.find_char('S')
