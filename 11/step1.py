@@ -47,13 +47,15 @@ Monkey 0:
       return m.group(1)
     def parse_if_line(cond):
       return int(parse_line("If {}: throw to monkey".format({True: "true", False: "false"}[cond]), regexp=" (.*)"))
+    def parse_items_line():
+      return re.split(",\s", parse_line("Starting items"))
 
     monkey = parse_line("Monkey", regexp=" (.*):")
     if monkey == None:
       return None
     m = Monkey()
     m.number = int(monkey)
-    m.items = re.split(",\s", parse_line("Starting items"))
+    m.items = parse_items_line()
     m.operation = parse_line("Operation")
     m.test = parse_line("Test")
     m.if_true = parse_if_line(True)
