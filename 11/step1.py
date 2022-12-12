@@ -44,6 +44,8 @@ Monkey 0:
         regexp = ':\s?(.*)'
       expanded_regexp = label + regexp
       m = re.match(expanded_regexp, l)
+      if not m:
+        raise ValueError("expecting '{}' but found '{}'".format(expanded_regexp, l))
       return m.group(1)
     def parse_if_line(cond):
       return int(parse_line("If {}: throw to monkey".format({True: "true", False: "false"}[cond]), regexp=" (.*)"))
