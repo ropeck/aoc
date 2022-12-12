@@ -1,92 +1,76 @@
 #!/usr/bin/python3
-import math
+import re
 import sys
-
-ROOT2 = math.sqrt(2)
 
 def debug(str):
   # debug(str)
   pass
-def span(t, r, n):
 
- low = min([x[n] for x in r] + [eval(x)[n] for x in t])
- high = max([x[n] for x in r] + [eval(x)[n] for x in t])
- return high - low
+class Monkey():
+  """
+Monkey 0:
+  Starting items: 79, 98
+  Operation: new = old * 19
+  Test: divisible by 23
+    If true: throw to monkey 2
+    If false: throw to monkey 3
+  """
+  def __init__(self):
+    self.number = None
+    self.items = []
+    self.operation = None
+    self.test = None
+    self.if_true = None
+    self.if_false = None
 
-def draw(r, t):
-  def mark(n, m):
-    y = h - r[n][1] - 1 + ymin
-    x = r[n][0] - xmin
-    b[y][x] = m
+  def __str__(self):
+    return """Monkey {}:
+  Starting items: {}
+  Operation: {}
+  Test: {}
+    If true: throw to monkey {}
+    If false: throw to monkey {}""".format(
+      self.number, ", ".join(self.items), self.operation, self.test, self.if_true, self.if_false)
 
-  tx=[]
-  ty=[]
-  for s in r:
-    tx.append(s[0])
-    ty.append(s[1])
-  for s in t:
-    (x,y) = eval(s)
-    tx.append(x)
-    ty.append(y)
-  xmin = min(tx)
-  ymin = min(ty)
-  w = span(t, r, 0)+1-xmin
-  h = span(t, r, 1)+1-ymin
-  b = [['.' for x in range(w)] for y in range(h)]
-  for s in t:
-    (x, y) = eval(s)
-    a = h-1-y+ymin
-    b2 = x-xmin
-    b[h-1-y+ymin][x-xmin] = '#'
+  def __repr__(self):
+    return "<Monkey {} [{}]>".format(self.number, ", ".join(self.items))
 
-  mark(0, "H")
-  mark(1, "T")
-  for l in b:
-    debug(''.join(l))
+  def parse_fh(fh):
+    def parse_line(label="", regexp=None):
+      l = fh.readline().strip()
+      if not l:
+        return None
+      if not regexp:
+        regexp = ':\s?(.*)'
+      expanded_regexp = label + regexp
+      m = re.match(expanded_regexp, l)
+      return m.group(1)
 
-def move_tail(h, t):
-  d = [h[i] - t[i] for i in range(len(h))]
-  if math.sqrt(sum([n**2 for n in d])) > ROOT2:
-    for n in range(len(h)):
-      if d[n]:
-        t[n] += int(math.copysign(1, d[n]))
-  return t
+    number = parse_line("Monkey", regexp=" (.*):")
+    if number == None:
+      return None
+    m = Monkey()
+    m.number = number
+    m.items = re.split(",\s", parse_line("Starting items"))
+    m.operation = parse_line("Operation")
+    m.test = parse_line("Test")
+    m.if_true = parse_line("If true: throw to monkey", regexp=" (.*)")
+    m.if_false = parse_line("If false: throw to monkey", regexp=" (.*)")
+    l = fh.readline()
+    return m
 
 def main(path):
-  rope = []
-  rope.append([0,0])
-  rope.append([0,0])
-  total = [str(rope[-1])]
-
+  monkey = []
   with open(path, "r") as fh:
-    step_data = fh.read()
-  for line in step_data.splitlines():
-    (m, n) = line.strip().split()
-    debug(f'== {m} {n} ==')
-    debug('')
-    for i in range(int(n)):
-      head = rope[0]
-      match m:
-        case 'U':
-          head[1] += 1
-        case 'D':
-          head[1] -= 1
-        case 'L':
-          head[0] -= 1
-        case 'R':
-          head[0] += 1
-      rope[0] = head
-      tail = move_tail(rope[0], rope[1])
-      rope[1] = tail
-      total.append(str(rope[1]))
-      debug(total)
-      # debug(f'   h:{head} t:{tail}')
-      # draw(rope, total)
-      debug('')
-  debug(set(total))
-  path_len = len(set(total))
-  debug(f'total: {path_len}')
-  return(path_len)
+    while True:
+      m = Monkey.parse_fh(fh)
+      if m:
+        monkey.append(m)
+      else:
+        break
+  for m in monkey:
+    print(m)
+  print(monkey)
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
