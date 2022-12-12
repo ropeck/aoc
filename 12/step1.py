@@ -2,6 +2,14 @@
 import sys
 
 class Map:
+  MOVES = []
+  for y in [-1, 0, 1]:
+    for x in [-1, 0, 1]:
+      if x == 0 and y == 0:
+        continue
+      m.append((x,y))
+  MOVES = m
+
   def __init__(self, path):
     m = []
     with open(path, "r") as fh:
@@ -51,15 +59,12 @@ class Map:
     queue = []
     (cx, cy) = self.start()
     while True:
-      for y in [-1, 0, 1]:
-        for x in [-1, 0, 1]:
-          if x == 0 and y == 0:
-            continue
-          if cx + x == ex and cy + y == ey:
-            found.append(path)
-          else:
-            if self.valid_move(cx, cy, cx + x, cy + y):
-              queue.append((cx + x, cy + y))
+      for (x, y) in MOVES:
+        if cx + x == ex and cy + y == ey:
+          found.append(path)
+        else:
+          if self.valid_move(cx, cy, cx + x, cy + y):
+            queue.append((cx + x, cy + y))
       if not queue:
         break
       (cx, cy) = queue.pop()
