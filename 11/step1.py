@@ -131,6 +131,15 @@ def main(path):
   for m in monkey:
     print(m.inspection_info())
   print(monkey)
+  mb = 1
+
+  insp = [i.inspections for i in monkey]
+  insp.sort()
+
+  for i in insp[-2:]:
+    print(f'{mb} {i}')
+    mb = mb * i
+  print(f'monkey business: {mb}')
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
