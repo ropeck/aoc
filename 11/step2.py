@@ -87,12 +87,14 @@ Monkey 0:
     else:
       n = self.op_val
     if self.op_cmd == "+":
-      return n + old
+      r = n + old
     if self.op_cmd == "*":
-#      if n == old:
-#        return n
-      return n * old
-
+      if n == old:
+        r = prime_reduce(n)**2
+      else:
+        r = n * old
+    debug(f'<{self.number} {self.test_divisible}> {n} {self.op_cmd} {old} = {r}')
+    return r
   def next_monkey(self, old):
     if old % self.test_divisible == 0:
             return self.if_true
@@ -101,14 +103,19 @@ Monkey 0:
 
   def append_item(self, i):
     self.items.append(i)
-    print(f'{self.number} append ')
 
-def prime_reduce(n):
+def old_prime_reduce(n):
   r = 1
-  for p in [2, 3, 5, 7, 11, 13, 17, 19]:
+  for p in [2, 3, 5, 7, 11, 13, 17, 19, 23]:
     if n % p == 0:
       r = r * p
   return r
+
+def prime_reduce(n):
+  r = 1
+  for p in [2, 3, 5, 7, 11, 13, 17, 19, 23]:
+    r = r * p
+  return n % r
 
 def main(path):
   monkey = []
@@ -122,21 +129,19 @@ def main(path):
 
   round = 0
   #while round < 10000:
-  while round < 20:
+  while round < 10000:
     round += 1
-    print(f'== ROUND {round} ==')
+    debug(f'== ROUND {round} ==')
     for m in monkey:
       items = m.items
       m.items = []
       for i in items:
         m.inspect()
-        print('')
-    #    print(f'{m.number} item {i}')
+        #print(f'{m.number} item {i}')
         new = m.operate(i)
-        new = prime_reduce(new)
         next = m.next_monkey(new)
         monkey[next].append_item(new)
-    print('')
+    debug('')
 
     if round % 1000 == 0:
       print(f'\n== After round {round} ==')
