@@ -74,6 +74,14 @@ def main(path):
         monkey.append(m)
       else:
         break
+
+  round = 0
+  while round < 20:
+    round += 1
+    for m in monkey:
+      for i in m.items:
+        m.thing = "foo"
+
   for m in monkey:
     print(m)
   print(monkey)
