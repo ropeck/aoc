@@ -2,7 +2,7 @@
 import sys
 
 class Map:
-  MOVES = []
+  m = []
   for y in [-1, 0, 1]:
     for x in [-1, 0, 1]:
       if x == 0 and y == 0:
@@ -17,6 +17,7 @@ class Map:
         m.append([ord(i)-ord('a') for i in l.strip()])
     self.map = m
     self.char_cache = {}
+    self.visited = []
 
   def print(self):
     for l in self.map:
@@ -54,23 +55,33 @@ class Map:
   def height(self):
     return len(self.map)
 
+
+  def check_spot(self, x, y, path):
+    if x < 0 or y < 0 or x > self.width() or y > self.height():
+      return
+    if (x, y) in self.visited:
+      return
+    print(f'check_spot({x},{y},{path}')
+    if (x, y) not in self.visited:
+      self.visited.append((x, y))
+    (ex, ey) = self.finish()
+    for (cx, cy) in Map.MOVES:
+      if cx + x == ex and cy + y == ey:
+        print('found')
+        self.found.append(path)
+        return
+      self.check_spot(x + cx, y + cy, path + [(x, y)])
+
   def find_paths(self):
-    found = []
-    queue = []
+    self.found = []
     (cx, cy) = self.start()
-    while True:
-      for (x, y) in MOVES:
-        if cx + x == ex and cy + y == ey:
-          found.append(path)
-        else:
-          if self.valid_move(cx, cy, cx + x, cy + y):
-            queue.append((cx + x, cy + y))
-      if not queue:
-        break
-      (cx, cy) = queue.pop()
+    self.check_spot(cx, cy, [])
+    print(self.found)
+
 def main(path):
   map = Map(path)
   map.print()
+  map.find_paths()
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
