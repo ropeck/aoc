@@ -45,17 +45,19 @@ Monkey 0:
       expanded_regexp = label + regexp
       m = re.match(expanded_regexp, l)
       return m.group(1)
+    def parse_if_line(cond):
+      return int(parse_line("If {}: throw to monkey".format({True: "true", False: "false"}[cond]), regexp=" (.*)"))
 
-    number = parse_line("Monkey", regexp=" (.*):")
-    if number == None:
+    monkey = parse_line("Monkey", regexp=" (.*):")
+    if monkey == None:
       return None
     m = Monkey()
-    m.number = number
+    m.number = int(monkey)
     m.items = re.split(",\s", parse_line("Starting items"))
     m.operation = parse_line("Operation")
     m.test = parse_line("Test")
-    m.if_true = parse_line("If true: throw to monkey", regexp=" (.*)")
-    m.if_false = parse_line("If false: throw to monkey", regexp=" (.*)")
+    m.if_true = parse_if_line(True)
+    m.if_false = parse_if_line(False)
     l = fh.readline()
     return m
 
