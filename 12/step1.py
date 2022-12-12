@@ -58,7 +58,11 @@ class Map:
     if m == Map.charmap('E'):
       m = 26
     return m
-  def check_spot(self, x, y, path):
+  def check_spot(self, x, y, path=None, visited=None):
+    if not path:
+      path = []
+    if not visited:
+      visited = {}
     def in_bounds(x, y):
       return not(x < 0 or y < 0 or x > self.width()-1 or y > self.height()-1)
     def move_allowed(x, y, nx, ny):
@@ -67,22 +71,22 @@ class Map:
 
     if self.map[y][x] == Map.charmap('E'):
       print('found')
-      # path = path + [(x, y)]
       self.found.append(path)
       return
-    print(f'check_spot({x},{y},{self.map[y][x]} {path}')
+    print(f'check_spot({x},{y},{self.map[y][x]} {len(path)}')
     for (cx, cy) in Map.MOVES:
       nx = x + cx
       ny = y + cy
-      if (nx, ny) in path:
+      if visited.get((nx, ny), None):
         continue
       if in_bounds(nx, ny) and move_allowed(x,y, nx, ny):
-        self.check_spot(x + cx, y + cy, path + [(nx, ny)])
+        visited[(nx, ny)] = 1
+        self.check_spot(x + cx, y + cy, path + [(nx, ny)], visited.copy())
 
   def find_paths(self):
     self.found = []
     (cx, cy) = self.start()
-    self.check_spot(cx, cy, [])
+    self.check_spot(cx, cy)
     print(self.found)
     return self.found
 
