@@ -108,7 +108,7 @@ class Map:
       if all([self.in_bounds(nx, ny),
               self.move_allowed(x,y, nx, ny),
               (nx, ny) not in path]):
-        self.queue.append((nx, ny, path + [(nx, ny)]))
+        self.queue.append((nx, ny, path + [(x, y)]))
     return path
 
   def find_paths(self):
