@@ -3,7 +3,7 @@ import sys
 from collections import deque
 
 class Map:
-  MOVES = [(0, -1), (0, 1), (-1, 0), (1, 0)]
+  MOVES = [(1, 0), (0, -1), (0, 1), (-1, 0)]
 
   def charmap(char):
     return ord(char) - ord('a')
@@ -80,21 +80,20 @@ class Map:
       print('found')
       self.found.append(path)
       return
-    print(f'check_spot({x},{y},{self.map[y][x]} {len(path)}')
+    print(f'check_spot({x},{y},{self.map[y][x]} {len(path)} {len(self.found)}')
     for (cx, cy) in Map.MOVES:
       nx = x + cx
       ny = y + cy
-      if visited.get((nx, ny), None):
-        continue
+#      if visited.get((nx, ny), None):
+#        continue
       if in_bounds(nx, ny) and move_allowed(x,y, nx, ny):
-        visited[(nx, ny)] = 1
-        self.check_spot(x + cx, y + cy, path + [(nx, ny)], visited.copy())
+#        visited[(x, y)] = 1
+        self.check_spot(x + cx, y + cy, path + [(nx, ny)], )
 
 
   def check_spot(self, x, y, path=None):
     if not path:
       path = []
-
     if self.map[y][x] == Map.charmap('E'):
       print('found')
       self.found.append(path)
@@ -103,15 +102,19 @@ class Map:
     for (cx, cy) in Map.MOVES:
       nx = x + cx
       ny = y + cy
+      if self.visited.get((nx, ny), None):
+        continue
+      self.visited[(x, y)] = 1
       if all([self.in_bounds(nx, ny),
               self.move_allowed(x,y, nx, ny),
               (nx, ny) not in path]):
-        self.queue.append((nx, ny, path + [(nx, ny)]))
+        self.queue.append((nx, ny, path + [(x, y)]))
     return path
 
   def find_paths(self):
     self.found = []
     self.queue = deque([self.start() + ([],)])
+    self.visited = {}
     while self.queue:
       q = self.queue
       (cx, cy, path) = self.queue.popleft()
