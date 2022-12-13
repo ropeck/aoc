@@ -99,7 +99,7 @@ class Map:
       print('found')
       self.found.append(path)
       return
-    print(f'check_spot({x},{y},{self.map[y][x]} {len(self.queue)} {len(path)} {len(self.found)}')
+    print(f'check_spot({x},{y},{self.map[y][x]} {len(self.queue)} {len(path)} {path} {len(self.found)}')
     for (cx, cy) in Map.MOVES:
       nx = x + cx
       ny = y + cy
@@ -113,6 +113,7 @@ class Map:
     self.found = []
     self.queue = deque([self.start() + ([],)])
     while self.queue:
+      q = self.queue
       (cx, cy, path) = self.queue.popleft()
       self.check_spot(cx, cy, path)
     print(self.found)
