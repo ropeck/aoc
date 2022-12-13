@@ -73,7 +73,7 @@ class Map:
       print('found')
       self.found.append(path)
       return
-    print(f'check_spot({x},{y},{self.map[y][x]} {len(path)}')
+    print(f'check_spot({x},{y},{self.map[y][x]} {len(path)} {len(self.found)}')
     for (cx, cy) in Map.MOVES:
       nx = x + cx
       ny = y + cy
