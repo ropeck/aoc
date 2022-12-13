@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import sys
+from collections import deque
 
 class Map:
   MOVES = [(0, -1), (0, 1), (-1, 0), (1, 0)]
@@ -52,22 +53,28 @@ class Map:
     return len(self.map)
 
   def map_height(self, x, y):
+    if not self.in_bounds(x,y):
+      return None
     m = self.map[y][x]
     if m == Map.charmap('S'):
       m = 0
     if m == Map.charmap('E'):
       m = 26
     return m
-  def check_spot(self, x, y, path=None, visited=None):
+
+  def in_bounds(self, x, y):
+    return not (x < 0 or y < 0 or x > self.width() - 1 or y > self.height() - 1)
+
+  def move_allowed(self, x, y, nx, ny):
+    try:
+      return self.map_height(nx, ny) - self.map_height(x, y) <= 1
+    except TypeError:
+      return False
+  def check_spot_dfs(self, x, y, path=None, visited=None):
     if not path:
       path = []
     if not visited:
       visited = {}
-    def in_bounds(x, y):
-      return not(x < 0 or y < 0 or x > self.width()-1 or y > self.height()-1)
-    def move_allowed(x, y, nx, ny):
-      return self.map_height(nx, ny) - self.map_height(x, y) <= 1
-
 
     if self.map[y][x] == Map.charmap('E'):
       print('found')
@@ -83,10 +90,31 @@ class Map:
         visited[(nx, ny)] = 1
         self.check_spot(x + cx, y + cy, path + [(nx, ny)], visited.copy())
 
+
+  def check_spot(self, x, y, path=None):
+    if not path:
+      path = []
+
+    if self.map[y][x] == Map.charmap('E'):
+      print('found')
+      self.found.append(path)
+      return
+    print(f'check_spot({x},{y},{self.map[y][x]} {len(self.queue)} {len(path)} {len(self.found)}')
+    for (cx, cy) in Map.MOVES:
+      nx = x + cx
+      ny = y + cy
+      if all([self.in_bounds(nx, ny),
+              self.move_allowed(x,y, nx, ny),
+              (nx, ny) not in path]):
+        self.queue.append((nx, ny, path + [(nx, ny)]))
+    return path
+
   def find_paths(self):
     self.found = []
-    (cx, cy) = self.start()
-    self.check_spot(cx, cy)
+    self.queue = deque([self.start() + ([],)])
+    while self.queue:
+      (cx, cy, path) = self.queue.popleft()
+      self.check_spot(cx, cy, path)
     print(self.found)
     return self.found
 
