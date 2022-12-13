@@ -87,14 +87,13 @@ class Map:
       if visited.get((nx, ny), None):
         continue
       if in_bounds(nx, ny) and move_allowed(x,y, nx, ny):
-        visited[(nx, ny)] = 1
+        visited[(x, y)] = 1
         self.check_spot(x + cx, y + cy, path + [(nx, ny)], visited.copy())
 
 
   def check_spot(self, x, y, path=None):
     if not path:
       path = []
-
     if self.map[y][x] == Map.charmap('E'):
       print('found')
       self.found.append(path)
@@ -103,6 +102,9 @@ class Map:
     for (cx, cy) in Map.MOVES:
       nx = x + cx
       ny = y + cy
+      if self.visited.get((nx, ny), None):
+        continue
+      self.visited[(nx, ny)] = 1
       if all([self.in_bounds(nx, ny),
               self.move_allowed(x,y, nx, ny),
               (nx, ny) not in path]):
@@ -112,6 +114,7 @@ class Map:
   def find_paths(self):
     self.found = []
     self.queue = deque([self.start() + ([],)])
+    self.visited = {}
     while self.queue:
       (cx, cy, path) = self.queue.popleft()
       self.check_spot(cx, cy, path)
