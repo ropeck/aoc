@@ -3,7 +3,7 @@ import sys
 from collections import deque
 
 class Map:
-  MOVES = [(0, -1), (0, 1), (-1, 0), (1, 0)]
+  MOVES = [(1, 0), (0, -1), (0, 1), (-1, 0)]
 
   def charmap(char):
     return ord(char) - ord('a')
@@ -84,11 +84,11 @@ class Map:
     for (cx, cy) in Map.MOVES:
       nx = x + cx
       ny = y + cy
-      if visited.get((nx, ny), None):
-        continue
+#      if visited.get((nx, ny), None):
+#        continue
       if in_bounds(nx, ny) and move_allowed(x,y, nx, ny):
-        visited[(x, y)] = 1
-        self.check_spot(x + cx, y + cy, path + [(nx, ny)], visited.copy())
+#        visited[(x, y)] = 1
+        self.check_spot(x + cx, y + cy, path + [(nx, ny)], )
 
 
   def check_spot(self, x, y, path=None):
@@ -104,7 +104,7 @@ class Map:
       ny = y + cy
       if self.visited.get((nx, ny), None):
         continue
-      self.visited[(nx, ny)] = 1
+      self.visited[(x, y)] = 1
       if all([self.in_bounds(nx, ny),
               self.move_allowed(x,y, nx, ny),
               (nx, ny) not in path]):
