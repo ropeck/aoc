@@ -86,7 +86,7 @@ class Map:
       ny = y + cy
 #      if visited.get((nx, ny), None):
 #        continue
-      if in_bounds(nx, ny) and move_allowed(x,y, nx, ny):
+      if self.in_bounds(nx, ny) and self.move_allowed(x,y, nx, ny):
 #        visited[(x, y)] = 1
         self.check_spot(x + cx, y + cy, path + [(nx, ny)], )
 
@@ -128,7 +128,8 @@ def main(path):
   found = map.find_paths()
   found.sort(key=lambda p: len(p))
   print(f'shortest path {len(found[0])}')
-  print(found[0])
+  for p in found:
+    print(p)
   return len(found[0])
 
 if __name__ == '__main__':
