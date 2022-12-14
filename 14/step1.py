@@ -1,15 +1,18 @@
 #!/usr/bin/python3
 import sys
 
-def main(path):
-  total = 0
-  # with open("input","r") as fh:
-  #   line = fh.readline().strip()
-  #   while True:
+class Drawing:
+  def __init__(self, path):
+    drawing = []
+    with open(path,"r") as fh:
+      for line in fh:
+        drawing.append([tuple(p.split(",")) for p in line.strip().split(" -> ")])
+    print(drawing)
+    self.d = drawing
 
-  for line in open(path,"r"):
-    pass
-  print(f'total: {total}')
+def main(path):
+  d = Drawing(path)
+  return d.d
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
