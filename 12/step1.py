@@ -1,9 +1,11 @@
 #!/usr/bin/python3
-import sys
 from collections import deque
+import os
+import sys
+import time
 
 class Map:
-  MOVES = [(1, 0), (0, -1), (0, 1), (-1, 0)]
+  MOVES = [(1, 0, 'R'), (0, -1, 'U'), (0, 1, 'D'), (-1, 0, 'L')]
 
   def charmap(char):
     return ord(char) - ord('a')
@@ -67,8 +69,7 @@ class Map:
 
   def move_allowed(self, x, y, nx, ny):
     try:
-      step = self.map_height(nx, ny) - self.map_height(x, y)
-      return step <= 1 and step >= 0
+      return self.map_height(nx, ny) - self.map_height(x, y) <= 1
     except TypeError:
       return False
   def check_spot_dfs(self, x, y, path=None, visited=None):
@@ -81,46 +82,61 @@ class Map:
       print('found')
       self.found.append(path)
       return
-    print(f'check_spot({x},{y},{self.map[y][x]} {len(path)} {len(self.found)}')
+    print(f'check_spot({x},{y}){self.map[y][x]} {len(path)} {len(self.found)}')
     for (cx, cy) in Map.MOVES:
       nx = x + cx
       ny = y + cy
-#      if visited.get((nx, ny), None):
-#        continue
-      if self.in_bounds(nx, ny) and self.move_allowed(x,y, nx, ny):
-#        visited[(x, y)] = 1
-        self.check_spot(x + cx, y + cy, path + [(nx, ny)], )
+      if in_bounds(nx, ny) and move_allowed(x, y, nx, ny):
+        self.check_spot(x + cx, y + cy, (path + [(nx, ny)]).copy(), )
 
+
+  def draw(self, path):
+    os.system('clear')
+    m = [l.copy() for l in self.map]
+    for (x, y) in path:
+      m[y][x] = ord('*')-ord('a')
+    print(path)
+    for l in m:
+      print ("".join([chr(ord('a') + i) for i in l]))
+    time.sleep(0.5)
 
   def check_spot(self, x, y, path=None):
     if not path:
       path = []
     if self.map[y][x] == Map.charmap('E'):
       print('found')
-      self.found.append(path)
+      self.found.append(path+[(x,y)])
       return
-    print(f'check_spot({x},{y},{self.map[y][x]} {len(self.queue)} {len(path)} {len(self.found)}')
-    for (cx, cy) in Map.MOVES:
+    q = []
+    for i in self.queue:
+      (a,b,p) = i
+      q.append((a,b))
+
+    print(f'check_spot({x},{y}){self.map[y][x]} {path} {len(self.queue)} {len(path)} ')
+    for (cx, cy, l) in Map.MOVES:
       nx = x + cx
       ny = y + cy
-      if self.visited.get((nx, ny), None):
-        continue
-      self.visited[(x, y)] = 1
+  #    if (nx, ny) in q:
+  #      continue
+      print(f'  ({nx},{ny}){l} {len(self.queue)}')
       if all([self.in_bounds(nx, ny),
               self.move_allowed(x,y, nx, ny),
               (nx, ny) not in path]):
-        self.queue.append((nx, ny, path + [(x, y)]))
-    return path
+        print(f'    added')
+        self.queue.append((nx, ny, path + [(x, y)], ))
 
   def find_paths(self):
     self.found = []
-    self.queue = deque([self.start() + ([],)])
-    self.visited = {}
+    self.queue = deque([self.start() + ([], )])
     while self.queue:
       q = self.queue
       (cx, cy, path) = self.queue.popleft()
+      self.draw(path)
       self.check_spot(cx, cy, path)
-    print(self.found)
+      print('')
+      if self.found:
+        break
+  #  print(self.found)
     return self.found
 
 def main(path):
@@ -128,9 +144,10 @@ def main(path):
   map.print()
   found = map.find_paths()
   found.sort(key=lambda p: len(p))
+  print(found[0])
   print(f'shortest path {len(found[0])}')
-  for p in found:
-    print(p)
+  print(f'total found {len(found)}')
+  map.draw(found[0])
   return len(found[0])
 
 if __name__ == '__main__':
