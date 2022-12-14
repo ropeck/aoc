@@ -91,6 +91,7 @@ class Map:
 
 
   def draw(self, path):
+    return
     os.system('clear')
     m = [l.copy() for l in self.map]
     for (x, y) in path:
