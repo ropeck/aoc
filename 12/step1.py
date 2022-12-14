@@ -67,7 +67,8 @@ class Map:
 
   def move_allowed(self, x, y, nx, ny):
     try:
-      return self.map_height(nx, ny) - self.map_height(x, y) <= 1
+      step = self.map_height(nx, ny) - self.map_height(x, y)
+      return step <= 1 and step >= 0
     except TypeError:
       return False
   def check_spot_dfs(self, x, y, path=None, visited=None):
@@ -98,7 +99,7 @@ class Map:
       print('found')
       self.found.append(path)
       return
-    print(f'check_spot({x},{y},{self.map[y][x]} {len(self.queue)} {len(path)} {path} {len(self.found)}')
+    print(f'check_spot({x},{y},{self.map[y][x]} {len(self.queue)} {len(path)} {len(self.found)}')
     for (cx, cy) in Map.MOVES:
       nx = x + cx
       ny = y + cy
