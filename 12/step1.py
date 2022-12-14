@@ -72,36 +72,37 @@ class Map:
       return self.map_height(nx, ny) - self.map_height(x, y) <= 1
     except TypeError:
       return False
-  def check_spot_dfs(self, x, y, path=None, visited=None):
+  def check_spot_dfs(self, x, y, path=None):
     if not path:
       path = []
-    if not visited:
-      visited = {}
-
+    visited = []
     if self.map[y][x] == Map.charmap('E'):
       print('found')
       self.found.append(path)
       return
     print(f'check_spot({x},{y}){self.map[y][x]} {len(path)} {len(self.found)}')
     for (cx, cy) in Map.MOVES:
+      if (cx, cy) in visited:
+        continue
       nx = x + cx
       ny = y + cy
       if in_bounds(nx, ny) and move_allowed(x, y, nx, ny):
-        self.check_spot(x + cx, y + cy, (path + [(nx, ny)]).copy(), )
+        self.check_spot(x + cx, y + cy, (path + [(nx, ny)]).copy(), (visited + [(nx, ny)]).copy() )
 
 
   def draw(self, path):
-    return
     os.system('clear')
     m = [l.copy() for l in self.map]
+    for (x, y, p) in self.queue:
+      m[y][x] = ord(' ')-ord('a')
     for (x, y) in path:
       m[y][x] = ord('*')-ord('a')
     print(path)
     for l in m:
       print ("".join([chr(ord('a') + i) for i in l]))
-    time.sleep(0.5)
+    time.sleep(0.1)
 
-  def check_spot(self, x, y, path=None):
+  def check_spot(self, x, y, path=None, visited=None):
     if not path:
       path = []
     if self.map[y][x] == Map.charmap('E'):
@@ -117,11 +118,13 @@ class Map:
     for (cx, cy, l) in Map.MOVES:
       nx = x + cx
       ny = y + cy
-  #    if (nx, ny) in q:
-  #      continue
+      if (nx, ny) in visited + path:
+        continue
+
       print(f'  ({nx},{ny}){l} {len(self.queue)}')
       if all([self.in_bounds(nx, ny),
               self.move_allowed(x,y, nx, ny),
+  #            (nx, ny) not in q,
               (nx, ny) not in path]):
         print(f'    added')
         self.queue.append((nx, ny, path + [(x, y)], ))
@@ -129,11 +132,13 @@ class Map:
   def find_paths(self):
     self.found = []
     self.queue = deque([self.start() + ([], )])
+    visited = []
     while self.queue:
       q = self.queue
-      (cx, cy, path) = self.queue.popleft()
+      (cx, cy, path) = self.queue.pop()
       self.draw(path)
-      self.check_spot(cx, cy, path)
+      self.check_spot(cx, cy, path, visited)
+      visited.append((cx, cy))
       print('')
       if self.found:
         break
