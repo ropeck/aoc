@@ -23,7 +23,7 @@ class Drawing:
     self.height = self.max_y - self.min_y
     self.sand = 0
 
-    self.grid = [[" " for x in range(self.width+1)] for y in range(self.height+2)]
+    self.grid = [[" " for x in range(self.width+1)] for y in range(self.height+4)]
 
     for l in drawing:
       c = l[0]
@@ -49,10 +49,19 @@ class Drawing:
     # print(f'g({x},{y})=#  g({x-self.min_x},{y-self.min_y})=#')
     self.grid[y - self.min_y][x - self.min_x] = m
 
+  def make_bigger(self):
+    padding = [' ' for n in range(int((self.max_x - self.min_x) / 2))]
+    g = [ padding + row + padding for row in self.grid]
+    self.grid = g
+    self.min_x -= len(padding)
+    self.max_x += len(padding)
+
   def get(self, x, y):
+    if x > self.max_x or x < self.min_x:
+      self.make_bigger()
     return  self.grid[y - self.min_y][x - self.min_x]
   def empty(self, x, y):
-    return self.get(x, y) == ' ' and y < self.max_y + 2
+    return self.get(x, y) == ' ' and y < self.max_y + 3
 
   def print(self):
     os.system("clear")
