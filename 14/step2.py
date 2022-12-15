@@ -73,24 +73,22 @@ class Drawing:
     self.set(x, y, '*')
 
   def drop_sand(self):
-    (x, y) = Drawing.START
+    x = None
     while self.empty(*Drawing.START) :
+      if x is None:
+        (x, y) = Drawing.START
       if self.empty(x, y+1):
         y = y + 1
-        continue
-      if self.empty(x-1, y+1):
+      elif self.empty(x-1, y+1):
         x = x - 1
         y = y + 1
-        continue
-      if self.empty(x+1, y+1):
+      elif self.empty(x+1, y+1):
         x = x + 1
         y = y + 1
-        continue
-      self.mark_sand(x, y)
-      (x, y) = Drawing.START
-      self.sand += 1
-      # if self.sand % 10 == 0:
-      #   self.print()
+      else:
+        self.mark_sand(x, y)
+        x = None
+        self.sand += 1
     self.print()
 
 
