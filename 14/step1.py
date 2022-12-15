@@ -3,6 +3,7 @@ from functools import reduce
 import sys
 
 class Drawing:
+  START = (500, 0)
   def __init__(self, path):
     drawing = []
     with open(path,"r") as fh:
@@ -12,6 +13,7 @@ class Drawing:
       print(l)
     self.d = drawing
     flat = reduce(lambda a, b: a+b, self.d)
+    flat.append(Drawing.START)
     self.min_x = min([x for (x,y) in flat])
     self.max_x = max([x for (x,y) in flat])
     self.min_y = min([y for (x,y) in flat])
@@ -37,11 +39,12 @@ class Drawing:
           for x in range(hl[0], hl[1]+1):
             self.mark_grid(x, c[1])
         c = m
+    self.mark_grid(*Drawing.START, '*')
     self.print()
 
-  def mark_grid(self, x, y):
+  def mark_grid(self, x, y, m='#'):
     # print(f'g({x},{y})=#  g({x-self.min_x},{y-self.min_y})=#')
-    self.grid[y - self.min_y][x - self.min_x] = '#'
+    self.grid[y - self.min_y][x - self.min_x] = m
 
   def print(self):
     print("\n".join(["".join(l) for l in self.grid]))
