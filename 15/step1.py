@@ -22,7 +22,7 @@ class Beacon:
 
   def intersect(self, y):
     offset = self.sensor_dist() - abs(self.y - y)
-    if offset <= 0:
+    if offset < 0:
       return None
     return [self.x - offset, self.x + offset]
 
@@ -37,13 +37,16 @@ def intersect(b, y):
 
 def reduce_intersect(b, y):
   i = [n for n in intersect(b, y) if n]
-  c = i[0]
-  for x in i[1:]:
-    # print(f'{c} {x} {i}')
-    if x[0] < c[0] and x[1] >= c[0]:
-      c[0] = x[0]
-    if x[1] > c[1] and x[0] <= c[1]:
-      c[1] = x[1]
+  d = [i.pop()]
+  print(i)
+  while True:
+    for n, c in enumerate(d):
+      for x in i:
+        if x[0] < c[0] and x[1] >= c[0]:
+          c[0] = x[0]
+        if x[1] > c[1] and x[0] <= c[1]:
+          c[1] = x[1]
+  print(f'{c} {c[1]-c[0]}')
   return c[1] - c[0]
 
 def main(path, y):
