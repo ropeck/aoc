@@ -61,7 +61,7 @@ class Drawing:
       self.make_bigger()
     return  self.grid[y - self.min_y][x - self.min_x]
   def empty(self, x, y):
-    return self.get(x, y) == ' ' and y < self.max_y + 3
+    return self.get(x, y) == ' ' and y < self.max_y + 2
 
   def print(self):
     os.system("clear")
