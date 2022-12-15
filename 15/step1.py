@@ -35,19 +35,27 @@ class Beacon:
 def intersect(b, y):
   return [i.intersect(y) for i in b]
 
+
 def reduce_intersect(b, y):
   i = [n for n in intersect(b, y) if n]
   d = [i.pop()]
   print(i)
-  while True:
-    for n, c in enumerate(d):
-      for x in i:
-        if x[0] < c[0] and x[1] >= c[0]:
-          c[0] = x[0]
-        if x[1] > c[1] and x[0] <= c[1]:
-          c[1] = x[1]
-  print(f'{c} {c[1]-c[0]}')
-  return c[1] - c[0]
+  for x in i:
+    for n, c in enumerate(d.copy()):
+      import pdb; pdb.set_trace()
+      o = False
+      if x[0] < c[0] and x[1] >= c[0]:
+        d[n][0] = x[0]
+        o = True
+      if x[1] > c[1] and x[0] <= c[1]:
+        d[n][1] = x[1]
+        o = True
+      if o:
+        continue
+      d.append(x)
+  print(d)
+  diff = [abs(n[0]-n[1]) for n in d]
+  return sum(diff)
 
 def main(path, y):
   b = []
