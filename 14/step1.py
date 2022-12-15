@@ -19,24 +19,29 @@ class Drawing:
     self.width = self.max_x - self.min_x
     self.height = self.max_y - self.min_y
 
-    self.grid = [[" " for x in range(self.width)] for y in range(self.height)]
+    self.grid = [[" " for x in range(self.width+1)] for y in range(self.height+1)]
 
     for l in drawing:
-      c = l[-1]
-      for m in l[:-1]:
+      c = l[0]
+      for m in l[1:]:
         if c[0] == m[0]:
           # vertical line
           vl = [m[1], c[1]]
           vl.sort()
-          for y in range(vl[0], vl[1]):
-            self.grid[y-self.min_y-1][c[0]-self.min_x-1] = '#'
+          for y in range(vl[0], vl[1]+1):
+            self.mark_grid(c[0], y)
         else:
           # horizontal line
           hl = [m[0], c[0]]
           hl.sort()
-          for x in range(hl[0], hl[1]):
-            self.grid[c[1]-self.min_y-1][x-self.min_x-1] = '#'
+          for x in range(hl[0], hl[1]+1):
+            self.mark_grid(x, c[1])
+        c = m
     self.print()
+
+  def mark_grid(self, x, y):
+    # print(f'g({x},{y})=#  g({x-self.min_x},{y-self.min_y})=#')
+    self.grid[y - self.min_y][x - self.min_x] = '#'
 
   def print(self):
     print("\n".join(["".join(l) for l in self.grid]))
