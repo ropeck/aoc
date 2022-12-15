@@ -24,7 +24,7 @@ class Beacon:
     offset = self.sensor_dist() - abs(self.y - y)
     if offset <= 0:
       return None
-    return (self.x - offset, self.x + offset)
+    return [self.x - offset, self.x + offset]
 
   def __repr__(self):
     return f'<Beacon {self.x}, {self.y} {self.sensor_dist()}>'
@@ -35,11 +35,24 @@ class Beacon:
 def intersect(b, y):
   return [i.intersect(y) for i in b]
 
+def reduce_intersect(b, y):
+  i = [n for n in intersect(b, y) if n]
+  c = i[0]
+  for x in i[1:]:
+    # print(f'{c} {x} {i}')
+    if x[0] < c[0] and x[1] >= c[0]:
+      c[0] = x[0]
+    if x[1] > c[1] and x[0] <= c[1]:
+      c[1] = x[1]
+  return c[1] - c[0]
+
 def main(path, y):
   b = []
   with open(path,"r") as fh:
     b = [Beacon(l) for l in fh]
-  return intersect(b, y)
+  r = reduce_intersect(b, y)
+  print(r)
+  return r
 
 
 if __name__ == '__main__':
@@ -49,4 +62,4 @@ if __name__ == '__main__':
   else:
     path = "input"
     y = 2000000
-  main(path)
+  main(path, y)
