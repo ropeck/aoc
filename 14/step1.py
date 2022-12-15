@@ -56,8 +56,8 @@ class Drawing:
 
   def print(self):
     os.system("clear")
-    print(f'sand: {self.sand}')
     print("\n".join(["".join(l) for l in self.grid]))
+    print(f'sand: {self.sand}')
 
   def mark_sand(self, x, y):
     # print(f'[{x},{y}] = *')
