@@ -20,25 +20,33 @@ class Beacon:
   def dist(self, x, y):
     return abs(self.x - x) + abs(self.y - y)
 
+  def intersect(self, y):
+    offset = self.sensor_dist() - abs(self.y - y)
+    if offset <= 0:
+      return None
+    return (self.x - offset, self.x + offset)
+
   def __repr__(self):
     return f'<Beacon {self.x}, {self.y} {self.sensor_dist()}>'
 
   def distance(self, other):
     return abs(self.x - other.x) + abs(self.y - other.y)
 
-  def intersecting_slice(self, y):
-    # somehow find the start and end of the part that is within range
-    pass
-def main(path):
+def intersect(b, y):
+  return [i.intersect(y) for i in b]
+
+def main(path, y):
   b = []
-  with open("input","r") as fh:
+  with open(path,"r") as fh:
     b = [Beacon(l) for l in fh]
-  print(b)
+  return intersect(b, y)
 
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
     path = sys.argv[1]
+    y = sys.argv[2]
   else:
     path = "input"
+    y = 2000000
   main(path)
