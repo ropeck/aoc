@@ -2,6 +2,7 @@
 from pprint import pprint
 import re
 import sys
+from copy import copy
 
 class Valve:
   def __init__(self, line):
@@ -24,6 +25,24 @@ def main(path):
     for n in [Valve(l) for l in fh]:
       v[n.name] = n
   pprint(v)
+
+  p = []
+  q = [(0, v['AA'], [], [], 0)]
+  while q:
+    print("---")
+    for i in q:
+      print(i)
+    (t, c, o, p, score) = q.pop()
+    print(f'{t} {c} {o} {p} {score}')
+    if t >= 30:
+      break
+    # add current score
+    # open a valve maybe or move
+    for n in c.v:
+      print(f'append {v[n].name} {p} {c.name}')
+      q.append((t+1, v[n], o, p + [copy(c)], score))
+
+
   return v
 
 
