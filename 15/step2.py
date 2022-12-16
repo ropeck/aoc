@@ -40,35 +40,41 @@ def intersect(b, y):
 def reduce_intersect(b, y):
   i = [n for n in intersect(b, y) if n]
   i.sort(key=lambda x: x[0])
-  print(i)
+  #print(i)
   iq = deque(i)
   d = [iq.popleft()]
-  print(d, iq)
+  #print(d, iq)
   for x in iq:
     for n, c in enumerate(d.copy()):
       o = False
-      if x[0] < c[0] and x[1] >= c[0]:
+      if x[0] <= c[0] and x[1] >= c[0]:
         d[n][0] = x[0]
         o = True
-        print("update left")
-      if x[1] > c[1] and x[0] <= c[1]:
+        #print("update left")
+      if x[1] >= c[1] and x[0] <= c[1]:
         d[n][1] = x[1]
         o = True
-        print("update right " + str(x[1]))
+        #print("update right " + str(x[1]))
       if not o and not (x[0] >= c[0] and x[1] <= c[1]):
         d.append(x)
-        print("append segment")
+        #print("append segment")
 
-  print(d)
-  diff = [abs(n[0]-n[1]) for n in d]
-  return sum(diff)
+  # diff = [abs(n[0]-n[1]) for n in d]
+  #print(d)
+  return d
 
-def main(path, y):
+def main(path, size):
   b = []
+  r = []
   with open(path,"r") as fh:
     b = [Beacon(l) for l in fh]
-  r = reduce_intersect(b, y)
-  print(r)
+  for y in range(size):
+    l = (y, reduce_intersect(b, y))
+    r.append(l)
+    #print(f'y:{y} {l}')
+  for l in r:
+    if len(l[1]) > 1:
+      print(l)
   return r
 
 
@@ -78,5 +84,5 @@ if __name__ == '__main__':
     y = sys.argv[2]
   else:
     path = "input"
-    y = 2000000
+    y = 4000000
   main(path, y)
