@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+from collections import deque
 import re
 import sys
 
@@ -38,21 +39,26 @@ def intersect(b, y):
 
 def reduce_intersect(b, y):
   i = [n for n in intersect(b, y) if n]
-  d = [i.pop()]
+  i.sort(key=lambda x: x[0])
   print(i)
-  for x in i:
+  iq = deque(i)
+  d = [iq.popleft()]
+  print(d, iq)
+  for x in iq:
     for n, c in enumerate(d.copy()):
-      import pdb; pdb.set_trace()
       o = False
       if x[0] < c[0] and x[1] >= c[0]:
         d[n][0] = x[0]
         o = True
+        print("update left")
       if x[1] > c[1] and x[0] <= c[1]:
         d[n][1] = x[1]
         o = True
-      if o:
-        continue
-      d.append(x)
+        print("update right " + str(x[1]))
+      if not o and not (x[0] >= c[0] and x[1] <= c[1]):
+        d.append(x)
+        print("append segment")
+
   print(d)
   diff = [abs(n[0]-n[1]) for n in d]
   return sum(diff)
