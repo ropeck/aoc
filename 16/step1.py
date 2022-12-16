@@ -1,8 +1,9 @@
 #!/usr/bin/python3
+from collections import deque
+from copy import copy
 from pprint import pprint
 import re
 import sys
-from copy import copy
 
 class Valve:
   def __init__(self, line):
@@ -27,12 +28,12 @@ def main(path):
   pprint(v)
 
   p = []
-  q = [(0, v['AA'], [], [], 0)]
+  q = deque([(0, v['AA'], [], [], 0)])
   while q:
     print("---")
     for i in q:
       print(i)
-    (t, c, o, p, score) = q.pop()
+    (t, c, o, p, score) = q.popleft()
     print(f'{t} {c} {o} {p} {score}')
     if t >= 30:
       break
