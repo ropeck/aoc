@@ -45,7 +45,7 @@ class Tower:
     # use binary AND of the tower with the rock - if (rock & tower top ) != 0 then it's colliding
     r = self.next_rock()
     print(f'rock: {r}')
-    current_rock = [row << int((6 - r[0]) / 2) for row in r[1]]
+    current_rock = [row << int((7 - r[0]) / 2) for row in r[1]]
     tower = self.t + [0, 0, 0] + [0 for i in current_rock]
     tower.reverse()
     overlap = 0
@@ -57,9 +57,11 @@ class Tower:
       prev_rock = current_rock
       jet = self.next_jet()
       if jet == 1:
+        print("jet right")
         if not self.rock_side(current_rock, 6):
           current_rock = [r << 1 for r in current_rock]
       else:
+        print("jet left")
         if not self.rock_side(current_rock, 0):
           current_rock = [r >> 1 for r in current_rock]
     if not overlap:
