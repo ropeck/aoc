@@ -19,8 +19,9 @@ class Tower:
   def next_rock(self):
     if not self.pending_rocks:
       self.pending_rocks = self.rocks.copy()
-      self.pending_rocks.reverse()
-    return self.pending_rocks.pop()
+    r = self.pending_rocks.pop()
+    # print(f'{r} pending: {self.pending_rocks}')
+    return r
 
   def read_jets(self):
     with open(path, "r") as fh:
@@ -66,14 +67,17 @@ class Tower:
         if not r:
           rock_list.reverse()
           return rock_list
+        r.reverse()
         rock_list.append((w, r))
 
 
-def main(path, max_height):
+def main(path, max_count):
   t = Tower()
-  while t.height() < max_height:
+  n=0
+  while n < max_count:
     t.drop()
-  print(f'hegiht: {t.height()}')
+    n += 1
+  print(f'height: {t.height()}')
 
 
 if __name__ == '__main__':
