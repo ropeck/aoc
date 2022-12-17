@@ -46,28 +46,31 @@ class Tower:
     r = self.next_rock()
     print(f'rock: {r}')
     current_rock = [row << int((7 - r[0]) / 2) for row in r[1]]
-    tower = self.t + [0, 0, 0] + [0 for i in current_rock]
+    print(f'centered {current_rock}')
+    tower = self.t + [0, 0] + [0 for i in current_rock]
     tower.reverse()
     overlap = 0
+    print(list(enumerate(tower)))
     for i, row in enumerate(tower):
-      if row & current_rock[0]:
-        overlap = -1
-        break
       # apply jet to current_rock position
-      prev_rock = current_rock
       jet = self.next_jet()
       if jet == 1:
         print("jet right")
-        if not self.rock_side(current_rock, 6):
-          current_rock = [r << 1 for r in current_rock]
-      else:
-        print("jet left")
         if not self.rock_side(current_rock, 0):
           current_rock = [r >> 1 for r in current_rock]
-    if not overlap:
-      prev_rock = current_rock
+      else:
+        print("jet left")
+        if not self.rock_side(current_rock, 6):
+          current_rock = [r << 1 for r in current_rock]
+      print(f'current: {current_rock}')
+      if row & current_rock[0]:
+        overlap = -1
+        print('overlap next')
+        break
     i += overlap
-    for n, rock_row in enumerate(prev_rock):
+    if not overlap:
+      print('bottom')
+    for n, rock_row in enumerate(current_rock):
       tower[i-n] = tower[i-n] | rock_row
     tower.reverse()
     self.t = [row for row in tower if row]
