@@ -3,7 +3,7 @@ import sys
 
 class Tower:
   def __init__(self):
-    self.t = [0]   # each row is a byte
+    self.t = [255]   # each row is a byte
     self.rocks = self.read_rocks()
     self.pending_rocks = self.rocks.copy()
 
@@ -38,6 +38,30 @@ class Tower:
         return True
     return False
 
+  def draw(self, t=None, i=None, r=None):
+    if not t:
+      t=self.t
+    t.reverse()
+    #print(f'{r} {i}')
+    for row in t:
+      if row == 255:
+        continue
+      s=""
+      for n in range(7):
+        nn = 7-n
+        m=2**nn
+        #import pdb; pdb.set_trace()
+        #print(f'  {i} {nn} {i-nn}')
+        if (r and (i-nn<=0) and (nn >= i-len(r) and nn <= i) and m & r[i-nn]):
+          s += "@"
+        elif (m & row):
+          s += "#"
+        else:
+          s += "."
+      print(f'|{s}|')
+    print('+-------+')
+    print('')
+
   def drop(self):
     # start at top + 3, then apply jets and move down until stopped
     # self.t + [0, 0, 0]
@@ -47,11 +71,13 @@ class Tower:
     print(f'rock: {r}')
     current_rock = [row << int((7 - r[0]) / 2) for row in r[1]]
     print(f'centered {current_rock}')
-    tower = self.t + [0, 0] + [0 for i in current_rock]
+    tower = self.t + [0, 0, 0, 0] 
     tower.reverse()
-    overlap = 0
     print(list(enumerate(tower)))
-    for i, row in enumerate(tower):
+    for i in range(len(tower)):
+      d=tower.copy()
+      d.reverse()
+      self.draw(d, i, current_rock)
       # apply jet to current_rock position
       jet = self.next_jet()
       if jet == 1:
@@ -62,14 +88,10 @@ class Tower:
         print("jet left")
         if not self.rock_side(current_rock, 6):
           current_rock = [r << 1 for r in current_rock]
-      print(f'current: {current_rock}')
-      if row & current_rock[0]:
-        overlap = -1
+      print(f'current: {i} {current_rock}  t:{tower}')
+      if tower[i+1] & current_rock[0]:
         print('overlap next')
         break
-    i += overlap
-    if not overlap:
-      print('bottom')
     for n, rock_row in enumerate(current_rock):
       tower[i-n] = tower[i-n] | rock_row
     tower.reverse()
@@ -105,6 +127,7 @@ def main(path, max_count):
   n=0
   while n <= max_count:
     t.drop()
+  #  t.draw()
     n += 1
   print(f'height: {t.height()}')
 
