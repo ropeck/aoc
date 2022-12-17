@@ -30,18 +30,20 @@ def main(path):
   p = []
   q = deque([(0, v['AA'], [], [], 0)])
   while q:
-    print("---")
-    for i in q:
-      print(i)
+    print(f'--- {len(q)}')
+    # for i in q:
+    #   print(i)
     (t, c, o, p, score) = q.popleft()
-    print(f'{t} {c} {o} {p} {score}')
+    print(f'{t} {c} {o} {p[:3]} {score}')
     if t >= 30:
       break
     # add current score
     # open a valve maybe or move
     for n in c.v:
-      print(f'append {v[n].name} {p} {c.name}')
-      q.append((t+1, v[n], o, p + [copy(c)], score))
+      print(f'append {v[n].name} {p[:3]} {c.name}')
+      q.append((t+1, v[n], o, copy(p + [c.name]), score))
+      print("queue")
+      print(q)
 
 
   return v
