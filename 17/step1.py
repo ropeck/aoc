@@ -39,17 +39,18 @@ class Tower:
           l = fh.readline().strip()
           if not l:
             break
-          r.append(l)
+          w = len(l)
+          byte = sum(2 ** i for i, v in enumerate(reversed([ch == "#" for ch in l])) if v)
+          r.append(byte)
         if not r:
           return rock_list
-        rock_list.append(r)
+        rock_list.append((w, r))
 
 
 def main(path):
   t = Tower()
   for i in range(10):
-    print(i, t.rock_n)
-    print("\n".join(t.next_rock()))
+    print(t.next_rock())
     print("")
 
 if __name__ == '__main__':
