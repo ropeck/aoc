@@ -3,29 +3,39 @@ from pprint import pprint
 import re
 import sys
 
-class Valve:
-  def __init__(self, line):
-    m = re.match("Valve (.*) has flow rate=(.*); tunnels? leads? to valves? (.*)", line)
-    if not m:
-      print("Valve (.*) has flow rate=(.*); tunnels? leads? to valves? (.*)")
-      print("line mismatch: " + line)
-      return
-    self.name = m.group(1)
-    self.rate = int(m.group(2))
-    self.v = m.group(3).split(", ")
-    self.open = False
+class Tower:
+  def __init__(self):
+    self.t = [["." for x in range(7)] for y in range(4)]
+    self.top = 0
+    with open(path,"r") as fh:
+      self.jet = fh.read()
 
-  def __repr__(self):
-    return f'<Valve {self.name} {self.rate}->{",".join(self.v)}>'
+  def drop(self, r):
+    # start at top + 3, then apply jets and move down until stopped
+    #
+    pass
+
+def read_rocks():
+  rock_list = []
+  with open("rocks","r") as fh:
+    while True:
+      r = []
+      while True:
+        l = fh.readline().strip()
+        if not l:
+          break
+        r.append(l)
+      if not r:
+        return rock_list
+      rock_list.append(r)
+
 
 def main(path):
-  v = {}
-  with open(path,"r") as fh:
-    for n in [Valve(l) for l in fh]:
-      v[n.name] = n
-  pprint(v)
-  return v
+  r = read_rocks()
+  t = Tower()
 
+  print(r)# 
+  print(t.jet)
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
