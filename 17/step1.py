@@ -11,7 +11,18 @@ class Tower:
 
     self.rock_n = 0
     self.jet = self.read_jets()
-    self.read_jets()
+    self._next_jet = []
+
+  def read_jets(self):
+    with open(path, "r") as fh:
+      return fh.read().strip()
+
+  def next_jet(self):
+    if not self._next_jet:
+      self._next_jet = list(self.jet)
+      self._next_jet.reverse()
+    r = self._next_jet.pop()
+    return {'<': -1, '>': 1}[r]
 
   def height(self):
     return len(self.t)
@@ -23,26 +34,26 @@ class Tower:
     # print(f'{r} pending: {self.pending_rocks}')
     return r
 
-  def read_jets(self):
-    with open(path, "r") as fh:
-      return fh.read()
-
   def drop(self):
     # start at top + 3, then apply jets and move down until stopped
     # self.t + [0, 0, 0]
     # loop from top down, check to see if the rock overlaps
     # use binary AND of the tower with the rock - if (rock & tower top ) != 0 then it's colliding
     r = self.next_rock()
-    tower = self.t + [0, 0, 0] + [0 for i in r[1]]
+    current_rock = r[1]
+    tower = self.t + [0, 0, 0] + [0 for i in current_rock]
     tower.reverse()
     overlap = 0
     for i, row in enumerate(tower):
-      if row & r[1][0]:
+      # apply jet to current_rock position
+      jet = self.next_jet()
+      print(f'jet: {jet}')
+      if row & current_rock[0]:
         overlap = -1
         break
     i += overlap
-    for n, rock in enumerate(r[1]):
-      tower[i-n] = tower[i-n] | rock
+    for n, rock_row in enumerate(current_rock):
+      tower[i-n] = tower[i-n] | rock_row
     tower.reverse()
     self.t = [row for row in tower if row]
     print(self.t)

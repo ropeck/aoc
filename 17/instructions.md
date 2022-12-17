@@ -5,6 +5,7 @@ The tunnels eventually open into a very tall, narrow chamber. Large, oddly-shape
 
 The five types of rocks have the following peculiar shapes, where # is rock and . is empty space:
 
+```
 ####
 
 .#.
@@ -22,13 +23,16 @@ The five types of rocks have the following peculiar shapes, where # is rock and 
 
 ##
 ##
+```
+
 The rocks fall in the order shown above: first the - shape, then the + shape, and so on. Once the end of the list is reached, the same order repeats: the - shape falls first, sixth, 11th, 16th, etc.
 
 The rocks don't spin, but they do get pushed around by jets of hot gas coming out of the walls themselves. A quick scan reveals the effect the jets of hot gas will have on the rocks as they fall (your puzzle input).
 
 For example, suppose this was the jet pattern in your cave:
-
+```
 >>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>
+```
 In jet patterns, < means a push to the left, while > means a push to the right. The pattern above means that the jets will push a falling rock right, then right, then right, then left, then left, then right, and so on. If the end of the list is reached, it repeats.
 
 The tall, vertical chamber is exactly seven units wide. Each rock appears so that its left edge is two units away from the left wall and its bottom edge is three units above the highest rock in the room (or the floor, if there isn't one).
