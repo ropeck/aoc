@@ -34,10 +34,14 @@ class Tower:
     # use binary AND of the tower with the rock - if (rock & tower top ) != 0 then it's colliding
     tower = self.t + [0, 0, 0] + [0 for i in r[1]]
     tower.reverse()
+    overlap = 0
     for i, row in enumerate(tower):
       if row & r[1][0]:
+        overlap = -1
         break
-    tower[i-1] = tower[i-1] | r[1][0]
+    i += overlap
+    for n, rock in enumerate(r[1]):
+      tower[i-n] = tower[i-n] | r[1][n]
     tower.reverse()
     self.t = [row for row in tower if row]
     print(self.t)
