@@ -5,12 +5,14 @@ import sys
 
 class Tower:
   def __init__(self):
-    self.t = [["." for x in range(7)] for y in range(4)]
-    self.top = 0
+    self.t = [0]   # each row is a byte
     self.rocks = self.read_rocks()
     self.rock_n = 0
     self.jet = self.read_jets()
     self.read_jets()
+
+  def height(self):
+    return len(self.t)
 
   def next_rock(self):
     n = self.rock_n
@@ -27,8 +29,15 @@ class Tower:
 
   def drop(self, r):
     # start at top + 3, then apply jets and move down until stopped
-    #
-    pass
+    # self.t + [0, 0, 0]
+    # loop from top down, check to see if the rock overlaps
+    # use binary AND of the tower with the rock - if (rock & tower top ) != 0 then it's colliding
+    tower = self.t + [0, 0, 0] + [0 for i in len(r)]
+    tower.reverse()
+    while True:
+      # if overlap(tower, r, i):
+      #   mark r
+      #   break
 
   def read_rocks(self):
     rock_list = []
