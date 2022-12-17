@@ -7,6 +7,8 @@ class Tower:
   def __init__(self):
     self.t = [0]   # each row is a byte
     self.rocks = self.read_rocks()
+    self.pending_rocks = self.rocks.copy()
+
     self.rock_n = 0
     self.jet = self.read_jets()
     self.read_jets()
@@ -15,23 +17,21 @@ class Tower:
     return len(self.t)
 
   def next_rock(self):
-    n = self.rock_n
-    if n + 1> len(self.rocks):
-      n = 0
-      self.rock_n = 0
-    else:
-      self.rock_n += 1
-    return self.rocks[n]
+    if not self.pending_rocks:
+      self.pending_rocks = self.rocks.copy()
+      self.pending_rocks.reverse()
+    return self.pending_rocks.pop()
 
   def read_jets(self):
     with open(path, "r") as fh:
       return fh.read()
 
-  def drop(self, r):
+  def drop(self):
     # start at top + 3, then apply jets and move down until stopped
     # self.t + [0, 0, 0]
     # loop from top down, check to see if the rock overlaps
     # use binary AND of the tower with the rock - if (rock & tower top ) != 0 then it's colliding
+    r = self.next_rock()
     tower = self.t + [0, 0, 0] + [0 for i in r[1]]
     tower.reverse()
     overlap = 0
@@ -41,10 +41,11 @@ class Tower:
         break
     i += overlap
     for n, rock in enumerate(r[1]):
-      tower[i-n] = tower[i-n] | r[1][n]
+      tower[i-n] = tower[i-n] | rock
     tower.reverse()
     self.t = [row for row in tower if row]
     print(self.t)
+    print(self.height())
     # handle multiple line rocks
       # if overlap(tower, r, i):
       #   mark r
@@ -63,18 +64,16 @@ class Tower:
           byte = sum(2 ** i for i, v in enumerate(reversed([ch == "#" for ch in l])) if v)
           r.append(byte)
         if not r:
+          rock_list.reverse()
           return rock_list
         rock_list.append((w, r))
 
 
-def main(path):
+def main(path, max_height):
   t = Tower()
-  t.drop(t.next_rock())
-  t.drop(t.next_rock())
-
-  for i in range(10):
-    print(t.next_rock())
-    print("")
+  while t.height() < max_height:
+    t.drop()
+  print(f'hegiht: {t.height()}')
 
 
 if __name__ == '__main__':
@@ -82,4 +81,4 @@ if __name__ == '__main__':
     path = sys.argv[1]
   else:
     path = "input"
-  main(path)
+  main(path, 2022)
