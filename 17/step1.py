@@ -1,6 +1,4 @@
 #!/usr/bin/python3
-from pprint import pprint
-import re
 import sys
 
 class Tower:
@@ -46,24 +44,28 @@ class Tower:
     # loop from top down, check to see if the rock overlaps
     # use binary AND of the tower with the rock - if (rock & tower top ) != 0 then it's colliding
     r = self.next_rock()
-    current_rock = [row >> int(r[0] / 2) for row in r[1]]
+    print(f'rock: {r}')
+    current_rock = [row << int((6 - r[0]) / 2) for row in r[1]]
     tower = self.t + [0, 0, 0] + [0 for i in current_rock]
     tower.reverse()
     overlap = 0
     for i, row in enumerate(tower):
+      if row & current_rock[0]:
+        overlap = -1
+        break
       # apply jet to current_rock position
+      prev_rock = current_rock
       jet = self.next_jet()
-      if jet == -1:
+      if jet == 1:
         if not self.rock_side(current_rock, 6):
           current_rock = [r << 1 for r in current_rock]
       else:
         if not self.rock_side(current_rock, 0):
           current_rock = [r >> 1 for r in current_rock]
-      if row & current_rock[0]:
-        overlap = -1
-        break
+    if not overlap:
+      prev_rock = current_rock
     i += overlap
-    for n, rock_row in enumerate(current_rock):
+    for n, rock_row in enumerate(prev_rock):
       tower[i-n] = tower[i-n] | rock_row
     tower.reverse()
     self.t = [row for row in tower if row]
@@ -96,7 +98,7 @@ class Tower:
 def main(path, max_count):
   t = Tower()
   n=0
-  while n < max_count:
+  while n <= max_count:
     t.drop()
     n += 1
   print(f'height: {t.height()}')
