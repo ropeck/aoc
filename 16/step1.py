@@ -36,14 +36,15 @@ def main(path):
     (t, c, o, p, score) = q.pop()
     print(f'{t} {c} {o} {p[:3]} {score}')
     if t >= 30:
+      print(f'timed out: {p}')
       continue
     # add current score
     # open a valve maybe or move
     for n in c.v:
       print(f'append {v[n].name} {p[:3]} {c.name}')
       q.append((t+1, v[n], o, copy(p + [v[n].name]), score))
-      print("queue")
-      print(q)
+      # print("queue")
+      # print(q)
 
 
   return v
