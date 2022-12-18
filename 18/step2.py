@@ -14,8 +14,8 @@ def count_faces(p):
           if ((sum([abs(n) for n in [xd, yd, zd]]) not in [1, 2])):
             #print(f'big  {xd} {yd} {zd}  ({x+xd}, {y+yd}, {z+zd})')
             continue
-          if is_inside((x, y, z), p):
-            print(f'{x},{y},{x} inside')
+#          if is_inside((x, y, z), p):
+#            print(f'{x},{y},{x} inside')
             continue
           else:
             if (x+xd, y+yd, z+zd) not in p:
@@ -24,8 +24,6 @@ def count_faces(p):
             else:
               c[(x+xd,y+yd,z+zd)] = c.get((x+xd,y+yd,z+zd),0) +1
               print(f'  {xd} {yd} {zd}  ({x+xd}, {y+yd}, {z+zd}) {s}')
-      if s == 0:
-        s == -1
     print(f'({x}, {y}, {z}) {s}')
     total += s
   return total, c
