@@ -42,7 +42,7 @@ class Tower:
     if not t:
       t=self.t
     t.reverse()
-    #print(f'{r} {i}')
+    print(f'{r} {i} {t}')
     for row in t:
       if row == 255:
         continue
@@ -52,7 +52,7 @@ class Tower:
         m=2**nn
         #import pdb; pdb.set_trace()
         #print(f'  {i} {nn} {i-nn}')
-        if (r and (i-nn<=0) and (nn >= i-len(r) and nn <= i) and m & r[i-nn]):
+        if (r and (i-n<=0) and (n >= i-len(r) and n <= i) and m & r[i-n]):
           s += "@"
         elif (m & row):
           s += "#"
@@ -90,6 +90,8 @@ class Tower:
           current_rock = [r << 1 for r in current_rock]
       print(f'current: {i} {current_rock}  t:{tower}')
       if tower[i+1] & current_rock[0]:
+        print('rock: ' + str(current_rock))
+        print(f' {tower[i+1]} {current_rock[0]} {tower[i+1] & current_rock[0]}')
         print('overlap next')
         break
     for n, rock_row in enumerate(current_rock):
