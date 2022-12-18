@@ -11,6 +11,7 @@ To approximate the surface area, count the number of sides of each cube that are
 
 Here's a larger example:
 
+```
 2,2,2
 1,2,2
 3,2,2
@@ -24,6 +25,8 @@ Here's a larger example:
 3,2,5
 2,1,5
 2,3,5
+```
+
 In the above example, after counting up all the sides that aren't connected to another cube, the total surface area is 64.
 
 What is the surface area of your scanned lava droplet?
