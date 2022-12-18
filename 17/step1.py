@@ -41,8 +41,8 @@ class Tower:
   def draw(self, t=None, i=None, r=None):
     if not t:
       t=self.t
-    t.reverse()
     print(f'{r} {i} {t}')
+    row_num = len(t)
     for row in t:
       if row == 255:
         continue
@@ -52,7 +52,7 @@ class Tower:
         m=2**nn
         #import pdb; pdb.set_trace()
         #print(f'  {i} {nn} {i-nn}')
-        if (r and (i-n<=0) and (n >= i-len(r) and n <= i) and m & r[i-n]):
+        if (r and (row_num-i<=0) and (row_num >= i-len(r) and row_num <= i) and m & r[i-n]):
           s += "@"
         elif (m & row):
           s += "#"
@@ -71,13 +71,11 @@ class Tower:
     print(f'rock: {r}')
     current_rock = [row << int((7 - r[0]) / 2) for row in r[1]]
     print(f'centered {current_rock}')
-    tower = self.t + [0, 0, 0, 0] 
-    tower.reverse()
+    tower = [0, 0, 0, 0] + self.t
     print(list(enumerate(tower)))
     for i in range(len(tower)):
-      d=tower.copy()
-      d.reverse()
-      self.draw(d, i, current_rock)
+      #d=tower.copy()
+      #self.draw(d, i, current_rock)
       # apply jet to current_rock position
       jet = self.next_jet()
       if jet == 1:
@@ -86,24 +84,18 @@ class Tower:
           current_rock = [r >> 1 for r in current_rock]
       else:
         print("jet left")
-        if not self.rock_side(current_rock, 6):
+        if not self.rock_side(current_rock, 7):
           current_rock = [r << 1 for r in current_rock]
       print(f'current: {i} {current_rock}  t:{tower}')
       if tower[i+1] & current_rock[0]:
         print('rock: ' + str(current_rock))
         print(f' {tower[i+1]} {current_rock[0]} {tower[i+1] & current_rock[0]}')
         print('overlap next')
+        i -= 1
         break
     for n, rock_row in enumerate(current_rock):
       tower[i-n] = tower[i-n] | rock_row
-    tower.reverse()
     self.t = [row for row in tower if row]
-    print(self.t)
-    print(self.height())
-    # handle multiple line rocks
-      # if overlap(tower, r, i):
-      #   mark r
-      #   break
 
   def read_rocks(self):
     rock_list = []
