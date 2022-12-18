@@ -121,7 +121,7 @@ def main(path, max_count):
   n=0
   while n <= max_count:
     t.drop()
-  #  t.draw()
+    t.draw()
     n += 1
   print(f'height: {t.height()}')
 
