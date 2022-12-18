@@ -11,9 +11,12 @@ def count_faces(p):
     for xd in range(-1, 2):
       for yd in range(-1, 2):
         for zd in range(-1, 2):
-          if ((sum([abs(n) for n in [xd, yd, zd]]) > 1)):
+          if ((sum([abs(n) for n in [xd, yd, zd]]) not in [1, 2])):
             #print(f'big  {xd} {yd} {zd}  ({x+xd}, {y+yd}, {z+zd})')
-            pass
+            continue
+          if is_inside((x, y, z), p):
+            print(f'{x},{y},{x} inside')
+            continue
           else:
             if (x+xd, y+yd, z+zd) not in p:
               c[(x+xd,y+yd,z+zd)] = -1
@@ -59,18 +62,6 @@ def main(path):
 
   total, c = count_faces(p)
   print(f'total: {total}')
-  pprint(c)
-
-  inside = []
-  for q in c:
-    if c[q] > 0:
-      continue
-    if is_inside(q, p):
-      inside.append(q)
-  t, cc = count_faces(inside)
-  print(f'int {t} {inside}')
-  print(f'total: {total-t}')
-  print(f'total: {total-6*len(inside)}')
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
