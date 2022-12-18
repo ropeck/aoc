@@ -6,6 +6,7 @@ import sys
 
 def main(path):
   p = []
+  c = {}
   with open(path, "r") as fh:
     for l in fh:
       print(l.strip())
@@ -24,6 +25,7 @@ def main(path):
             if (x+xd, y+yd, z+zd) not in p:
               s += 1
             else:
+              c[(x+xd,y+yd,z+zd)] = c.get((x+xd,y+yd,z+zd),0) +1
               print(f'  {xd} {yd} {zd}  ({x+xd}, {y+yd}, {z+zd}) {s}')
       if s == 0:
         s == -1
@@ -31,6 +33,7 @@ def main(path):
     total += s 
 
   print(f'total: {total}')
+  pprint(c)
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
