@@ -19,7 +19,7 @@ class Blueprint:
       cost = {}
       for item in m.group(2).strip().split(" and "):
         (count, name) = item.split(" ")
-        cost[name] = count
+        cost[name] = int(count)
       self.bp[robot] = cost
   def __repr__(self):
     return f'<Blueprint {self.number} {self.bp}>'
