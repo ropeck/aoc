@@ -1,33 +1,36 @@
 #!/usr/bin/python3
-import numpy as np
-from pprint import pprint
+import re
 import sys
+
+class Blueprint:
+  def __init__(self, line):
+    line = line.strip()
+    line = line.replace(".","")
+    p = line.split("Each ")
+    m = re.match("Blueprint (\d+): ", p[0])
+    self.number = m.group(1)
+    self.bp = {}
+    for e in p[1:]:
+      m = re.match("(.*) robot costs (.*)", e)
+      if not m:
+        print(e)
+        exit(1)
+      robot = m.group(1)
+      cost = {}
+      for item in m.group(2).strip().split(" and "):
+        (count, name) = item.split(" ")
+        cost[name] = count
+      self.bp[robot] = cost
+  def __repr__(self):
+    return f'<Blueprint {self.number} {self.bp}>'
 
 
 def main(path):
-  p = []
+  bp = []
   with open(path, "r") as fh:
-    for l in fh:
-      print(l.strip())
-      p.append(tuple([int(x) for x in l.strip().split(",")]))
-
-  total = 0
-  for (x, y, z) in p:
-    s = 0
-    for xd in range(-1, 2):
-      for yd in range(-1, 2):
-        for zd in range(-1, 2):
-          if ((sum([abs(n) for n in [xd, yd, zd]]) > 1)):
-            #print(f'big  {xd} {yd} {zd}  ({x+xd}, {y+yd}, {z+zd})')
-            pass
-          else:
-            if (x+xd, y+yd, z+zd) not in p:
-              s += 1
-            else:
-              print(f'  {xd} {yd} {zd}  ({x+xd}, {y+yd}, {z+zd}) {s}')
-    print(f'({x}, {y}, {z}) {s}')
-    total += s 
-  print(f'total: {total}')
+    for line in fh:
+      bp.append(Blueprint(line))
+  print(bp)
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
