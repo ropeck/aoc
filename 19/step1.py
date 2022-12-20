@@ -7,6 +7,30 @@ CLAY=1
 OBSIDIAN=2
 GEODE=3
 
+class Inventory:
+  def __init__(self, type):
+    self.inv = [0 for i in [ORE, CLAY, OBSIDIAN, GEODE]]
+    self.type = type
+  def __repr__(self):
+    return f'<Inventory {self.type} {self.inv}>'
+
+  def get(self, i):
+    return self.inv[i]
+
+  def set(self, i, v):
+    self.inv[i] = v
+    return self.inv[i]
+
+  def incr(self, i, v=1):
+    self.inv[i] += v
+    return self.inv[i]
+
+  def sub(self, i, v):
+    return self.incr(i, v * -1)
+
+  def ore(self):
+    return self.inv[ORE]
+
 class Blueprint:
   def __init__(self, line):
     self._name={'ore': ORE, 'clay': CLAY, 'obsidian': OBSIDIAN, 'geode': GEODE}
@@ -43,6 +67,10 @@ def main(path):
     for line in fh:
       bp.append(Blueprint(line))
   print(bp)
+  mat = Inventory("material")
+  robot = Inventory("robot")
+  print(mat, robot)
+
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
