@@ -8,18 +8,20 @@ def main(path):
       d.append(int(line))
 
   print(d)
-  s=[]
-  d = enumerate(d)
+
+  d = list(enumerate(d))
   for n in d.copy():
-    if n in s:
-      continue
-    s.append(s)
     i = d.index(n)
     d.pop(i)
-    d.insert((i+n)%len(d), n)
+    d.insert((i+n[1])%len(d), n)
     #print(n, d)
 
-  res = [d[(n + d.index(0)) % len(d)] for n in [1000, 2000, 3000]]
+  for x in d:
+    if x[1] == 0:
+      i = x
+      break
+
+  res = [d[(n + d.index(x)) % len(d)][1] for n in [1000, 2000, 3000]]
   print(res)
   print(sum(res))
 
