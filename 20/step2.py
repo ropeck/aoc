@@ -64,7 +64,9 @@ def main(path, use_ring=False):
       i = x
       break
   print(f'zero {i}')
-  res = [rem * d[(n + d.index(i)) % len(d)][1] for n in [1000, 2000, 3000]]
+  if use_ring:
+    d = [(i, n/rem*SECRET_KEY) for (i,n) in d]
+  res = [d[(n + d.index(i)) % len(d)][1] for n in [1000, 2000, 3000]]
   print(res)
   print(math.log2(sum(res)))
   print(sum(res))
