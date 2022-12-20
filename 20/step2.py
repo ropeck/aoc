@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import math
 import sys
 
 SECRET_KEY = 811589153
@@ -15,6 +16,12 @@ def main(path):
   print(f'r {rem} {modu}')
   d = [(n, i * rem) for (n, i) in d]
 
+  dl=[]
+  for i in d:
+    if not i[1]:
+      continue
+    dl.append(math.log2(abs(i[1])))
+  print(f'max log {max(dl)}')
   print(d[:5])
 
   item_order = d.copy()
@@ -31,6 +38,7 @@ def main(path):
 
   res = [rem * d[(n + d.index(i)) % len(d)][1] for n in [1000, 2000, 3000]]
   print(res)
+  print(math.log2(sum(res)))
   print(sum(res))
   return(sum(res))
 
