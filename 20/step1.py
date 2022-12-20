@@ -9,6 +9,7 @@ def main(path):
 
   print(d)
   s=[]
+  d = enumerate(d)
   for n in d.copy():
     if n in s:
       continue
