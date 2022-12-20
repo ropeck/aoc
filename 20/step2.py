@@ -27,6 +27,7 @@ def main1(path, use_ring=False):
   res = [d[(n + d.index(x)) % len(d)][1] for n in [1000, 2000, 3000]]
   print(res)
   print(sum(res))
+  return(sum(res))
 
 def main(path, use_ring=False):
   d = []

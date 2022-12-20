@@ -4,11 +4,11 @@ import step2
 
 class TestStep1_1(unittest.TestCase):
     def runTest(self):
-        self.assertEqual(48, step2.main("test/input"))
+        self.assertEqual(1623178306, step2.main("test/input"))
 
 class TestStep1_1mod(unittest.TestCase):
     def runTest(self):
-        self.assertEqual(48, step2.main("test/input", True))
+        self.assertEqual(1623178306, step2.main("test/input", True))
 
 class TestStep1mod(unittest.TestCase):
     def runTest(self):
