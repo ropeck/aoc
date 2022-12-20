@@ -4,6 +4,30 @@ import sys
 
 SECRET_KEY = 811589153
 
+def main1(path, use_ring=False):
+  d = []
+  with open(path, "r") as fh:
+    for line in fh:
+      d.append(int(line) * 811589153)
+
+  d = list(enumerate(d))
+  item_order = d.copy()
+  for mix in range(10):
+    for n in item_order:
+      i = d.index(n)
+      d.pop(i)
+      d.insert((i+n[1])%len(d), n)
+      #print(n, d)
+
+  for x in d:
+    if x[1] == 0:
+      i = x
+      break
+
+  res = [d[(n + d.index(x)) % len(d)][1] for n in [1000, 2000, 3000]]
+  print(res)
+  print(sum(res))
+
 def main(path, use_ring=False):
   d = []
   i = 0
@@ -17,6 +41,7 @@ def main(path, use_ring=False):
     d = [(n, i * rem) for (n, i) in d]
   else:
     rem = 1
+    d = [(n, i * SECRET_KEY) for (n, i) in d]
   print(f'r {rem} {modu}')
 
   dl=[]
