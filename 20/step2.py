@@ -4,17 +4,20 @@ import sys
 
 SECRET_KEY = 811589153
 
-def main(path):
+def main(path, use_ring=False):
   d = []
   i = 0
   with open(path, "r") as fh:
     for line in fh:
       d.append((i, int(line)))
       i += 1
-  rem = SECRET_KEY % len(d)
   modu = int(SECRET_KEY / len(d))
+  if use_ring:
+    rem = SECRET_KEY % len(d)
+    d = [(n, i * rem) for (n, i) in d]
+  else:
+    rem = 1
   print(f'r {rem} {modu}')
-  d = [(n, i * rem) for (n, i) in d]
 
   dl=[]
   for i in d:
@@ -35,7 +38,7 @@ def main(path):
     if x[1] == 0:
       i = x
       break
-
+  print(f'zero {i}')
   res = [rem * d[(n + d.index(i)) % len(d)][1] for n in [1000, 2000, 3000]]
   print(res)
   print(math.log2(sum(res)))
