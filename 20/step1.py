@@ -8,23 +8,17 @@ def main(path):
       d.append(int(line))
 
   print(d)
+  s=[]
   for n in d.copy():
-    if n == 0:
-      print(n, d)
+    if n in s:
       continue
+    s.append(s)
     i = d.index(n)
     d.pop(i)
-    if i+n == 0:
-      d.append(n)
-    else:
-      d.insert((i+n)%len(d), n)
-    print(n, d)
+    d.insert((i+n)%len(d), n)
+    #print(n, d)
 
-  i = d.index(0)
-  l = len(d)
-  o = l - i
-
-  res = [d[((n-o)%l)] for n in [1000, 2000, 3000]]
+  res = [d[(n + d.index(0)) % len(d)] for n in [1000, 2000, 3000]]
   print(res)
   print(sum(res))
 
