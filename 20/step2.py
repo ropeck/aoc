@@ -24,7 +24,7 @@ def main(path):
   res = [d[(n + d.index(x)) % len(d)][1] for n in [1000, 2000, 3000]]
   print(res)
   print(sum(res))
-
+  return(sum(res))
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
