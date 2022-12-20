@@ -1,12 +1,14 @@
 #!/usr/bin/python3
 import sys
 
+SECRET_KEY = 811589153
+
 def main(path):
   d = []
   i = 0
   with open(path, "r") as fh:
     for line in fh:
-      d.append((i, int(line)))
+      d.append((i, int(line) * SECRET_KEY))
       i += 1
   print(d[:5])
 
@@ -22,7 +24,7 @@ def main(path):
       i = x
       break
 
-  res = [d[(n + d.index(x)) % len(d)][1] for n in [1000, 2000, 3000]]
+  res = [d[(n + d.index(i)) % len(d)][1] for n in [1000, 2000, 3000]]
   print(res)
   print(sum(res))
 

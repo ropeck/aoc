@@ -23,7 +23,7 @@ def main(path):
       i = x
       break
 
-  res = [d[(n + d.index(x)) % len(d)][1] for n in [1000, 2000, 3000]]
+  res = [d[(n + d.index(i)) % len(d)][1] for n in [1000, 2000, 3000]]
   print(res)
   print(sum(res))
 
