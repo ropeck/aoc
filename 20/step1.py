@@ -3,17 +3,19 @@ import sys
 
 def main(path):
   d = []
+  i = 0
   with open(path, "r") as fh:
     for line in fh:
-      d.append(int(line))
+      d.append((i, int(line)))
+      i += 1
+  print(d[:5])
 
-  print(d)
-
-  d = list(enumerate(d))
   for n in d.copy():
     i = d.index(n)
     d.pop(i)
-    d.insert((i+n[1])%len(d), n)
+    v = n[1]
+    new_i = (i + v) % len(d)
+    d.insert(new_i, n)
     #print(n, d)
 
   for x in d:
@@ -21,7 +23,7 @@ def main(path):
       i = x
       break
 
-  res = [d[(n + d.index(x)) % len(d)][1] for n in [1000, 2000, 3000]]
+  res = [d[(n + d.index(i)) % len(d)][1] for n in [1000, 2000, 3000]]
   print(res)
   print(sum(res))
 
