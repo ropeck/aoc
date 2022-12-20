@@ -8,8 +8,13 @@ def main(path):
   i = 0
   with open(path, "r") as fh:
     for line in fh:
-      d.append((i, int(line) * SECRET_KEY))
+      d.append((i, int(line)))
       i += 1
+  rem = SECRET_KEY % len(d)
+  modu = int(SECRET_KEY / len(d))
+  print(f'r {rem} {modu}')
+  d = [(n, i * rem) for (n, i) in d]
+
   print(d[:5])
 
   item_order = d.copy()
@@ -24,7 +29,7 @@ def main(path):
       i = x
       break
 
-  res = [d[(n + d.index(i)) % len(d)][1] for n in [1000, 2000, 3000]]
+  res = [rem * d[(n + d.index(i)) % len(d)][1] for n in [1000, 2000, 3000]]
   print(res)
   print(sum(res))
   return(sum(res))
