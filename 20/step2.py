@@ -39,7 +39,7 @@ def main(path, use_ring=False):
   modu = int(SECRET_KEY / len(d))
   if use_ring:
     rem = SECRET_KEY % len(d)
-    d = [(n, i * rem) for (n, i) in d]
+    d = [(n, i % len(d)) for (n, i) in d]
   else:
     rem = 1
     d = [(n, i * SECRET_KEY) for (n, i) in d]
@@ -66,7 +66,7 @@ def main(path, use_ring=False):
       break
   print(f'zero {i}')
   if use_ring:
-    d = [(ii, n*SECRET_KEY*(len(d)-rem) % len(d)) for (ii,n) in d]
+    d = [(ii, n*SECRET_KEY ) for (ii,n) in d]
   res = [d[(n + d.index(i)) % len(d)][1] for n in [1000, 2000, 3000]]
   print(res)
   print(math.log2(sum(res)))
