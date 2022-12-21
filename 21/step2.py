@@ -30,6 +30,12 @@ def main(path):
   guess = 1
   prev = 0
   shout = monkey_eval(m,"root", 0)
+  if shout > 0:
+    while shout > 0:
+      prev = guess
+      guess += shout
+      shout = monkey_eval(m, "root", guess)
+
   while shout < 0:
     prev = guess
     guess *= 2
@@ -54,6 +60,8 @@ def main(path):
 
   print(f'monkey eval "root"=monkey({guess}) {shout}')
   print(guess)
+  return guess
+
 if __name__ == '__main__':
   if len(sys.argv) > 1:
     path = sys.argv[1]
