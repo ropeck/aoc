@@ -27,27 +27,29 @@ def main(path):
       (name, job) = line.split(": ")
       m[name] = job.split(" ")
 
-  guess = 10
-  prev = monkey_eval(m,"root", 0)
-  while True:
+  guess = 1
+  prev = 0
+  shout = monkey_eval(m,"root", 0)
+  while shout < 0:
+    prev = guess
+    guess *= 2
     shout = monkey_eval(m,"root", guess)
-    if shout == 0:
-      break
-    if prev * shout > 0:
-      guess = guess * 2
-      prev = shout
-    else:
-      break
-  low = prev
-  high = guess
+    print(f'g {guess} s{shout}')
+
+
+  mm = [guess, prev]
+  mm.sort()
+  (low, high) = mm
+  print(f'me({low})={monkey_eval(m,"root",low)} me({high})={monkey_eval(m,"root",high)}')
   while shout:
+    mid = int((high - low) / 2) + low
+    guess = mid
+    print(f'guess {guess}  shout {shout}  {low} {mid} {high}')
+    shout = monkey_eval(m, "root", guess)
     if shout > 0:
-      print("low")
-      low = int((low + high) / 2)
-    else:
-      print("high")
-      high = int((low + high) / 2)
-    shout = monkey_eval(m, "root", int((low + high)/2))
+      high = guess
+    elif shout < 0:
+      low = guess
 
 
   print(f'monkey eval "root"=monkey({guess}) {shout}')
