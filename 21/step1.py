@@ -19,7 +19,9 @@ def main(path):
       line = line.strip()
       (name, job) = line.split(": ")
       m[name] = job.split(" ")
-  print(f'monkey eval "root"={monkey_eval(m, "root")}')
+  val = monkey_eval(m, "root")
+  print(f'monkey eval "root"={val}')
+  return val
 
 
 if __name__ == '__main__':
