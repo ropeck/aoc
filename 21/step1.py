@@ -1,31 +1,25 @@
 #!/usr/bin/python3
 import sys
 
+
+
+def monkey_eval(m, name):
+  job = m[name]
+  if len(job) == 1:
+    return int(job[0])
+  (a_name, op, b_name) = job
+  a = monkey_eval(m, a_name)
+  b = monkey_eval(m, b_name)
+  return eval(f'{a} {op} {b}')
+
 def main(path):
-  d = []
-  i = 0
-  with open(path, "r") as fh:
-    for line in fh:
-      d.append((i, int(line)))
-      i += 1
-  print(d[:5])
-
-  for n in d.copy():
-    i = d.index(n)
-    d.pop(i)
-    v = n[1]
-    new_i = (i + v) % len(d)
-    d.insert(new_i, n)
-    #print(n, d)
-
-  for x in d:
-    if x[1] == 0:
-      i = x
-      break
-
-  res = [d[(n + d.index(i)) % len(d)][1] for n in [1000, 2000, 3000]]
-  print(res)
-  print(sum(res))
+  m = {}
+  with open(path, "r") as fw:
+    for line in fw:
+      line = line.strip()
+      (name, job) = line.split(": ")
+      m[name] = job.split(" ")
+  print(f'monkey eval "root"={monkey_eval(m, "root")}')
 
 
 if __name__ == '__main__':
