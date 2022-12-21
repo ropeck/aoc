@@ -51,6 +51,13 @@ def main(path):
     elif shout < 0:
       low = guess
 
+  while not monkey_eval(m, "root", guess):
+    final = guess
+    guess -= 1
+  guess = final
+  print("final")
+  print(f'guess {final}')
+
 
   print(f'monkey eval "root"=monkey({guess}) {shout}')
   print(guess)
