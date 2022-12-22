@@ -36,17 +36,21 @@ def main(path):
       (dx, dy) = MOVEDIR[FACE[dir]]
     print(f'{count} {movedir} {dx},{dy}')
     for n in range(int(count)):
-      import pdb; pdb.set_trace()
+      # import pdb; pdb.set_trace()
       nx = (x + dx) % len(grid)
       ny = (y + dy) % len(grid[0])
       print(f'grid[{x},{y}]={grid[y][x]}')
-      if grid[ny][nx] == " ":
+      g = grid[ny][nx]
+      if g == " ":
         while grid[ny][nx] == " ":
+          grid[ny][nx] = FACE[dir]
           ny = (ny + dy) % len(grid[0])
           nx = (nx + dx) % len(grid)
-      if grid[ny][nx] == "#":
-        continue
-      grid[y][x] = FACE[dir]
+      g = grid[ny][nx]
+      grid[ny][nx] = FACE[dir]
+
+      if g == "#":
+        break
       # mark old grid pos with direction here
       x = nx
       y = ny
