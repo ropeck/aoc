@@ -3,7 +3,7 @@ import sys
 
 def main(path):
   total = 0
-  # with open("input","r") as fh:
+  # with open(path, "r") as fh:
   #   line = fh.readline().strip()
   #   while True:
 
