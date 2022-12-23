@@ -34,7 +34,6 @@ def main(path):
     x += 1
   dir = 0  # face right
 
-  print(follow)
   while follow:
     move = follow.popleft()
     print(f'{x},{y} move {move}')
@@ -47,19 +46,15 @@ def main(path):
     for n in range(int(move)):
       ny = (y + dy) % len(grid)
       nx = (x + dx) % len(grid[ny])
-      g = grid[ny][nx]
-      if g == " ":
-        while grid[ny][nx] == " ":
-          ny = (ny + dy) % len(grid)
-          nx = (nx + dx) % len(grid[ny])
+      while grid[ny][nx] == " ":
+        ny = (ny + dy) % len(grid)
+        nx = (nx + dx) % len(grid[ny])
       grid[y][x] = FACE[dir]
-      g = grid[ny][nx]
-      if g == "#":
+      if grid[ny][nx] == "#":
         break
       x = nx
       y = ny
-    #  print(f'{FACE[dir]} {x},{y}')
-    draw(grid, y)
+    #draw(grid, y)
 
   print(x,y,FACE[dir])
   #  The final password is the sum of 1000 times the row, 4 times the column, and the facing.
