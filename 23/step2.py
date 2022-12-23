@@ -22,7 +22,7 @@ class Board:
           e.append((y,x))
     return e
 
-  def has_neighbor(self, y, x):
+  def neighbors(self, y, x):
     n = []
     b = self.b
     for dy in range(y-1,y+2):
@@ -48,26 +48,26 @@ class Board:
     t = {}
     self.enlarge_board()
     for ey,ex in self.elf_loc():
-      n = self.has_neighbor(ey, ex)
-      if not n:
+      if not self.neighbors(ey, ex):
         continue
-      clear = False
+      space_found = False
       #print("elf",ey,ex)
       for m in self.moves:
         #print(m)
         #for y,x in m:
           #print(f'{y},{x} {b[y+ey][x+ex]}')
         if all([self.b[y+ey][x+ex]!="#" for y,x in m]):
-          clear = True
+          space_found = True
+          y, x = m[0]
+          target_space = (ey+y, ex+x)
           break
-      if not clear:
+      if not space_found:
         continue
-      y,x = m[0]
       ty = y + ey
       tx = x + ex
       #print(f'move {ey},{ex} to {ty},{tx}')
-      p.append([(ey, ex), (ey+y, ex+x)])
-      t[(ey+y, ex+x)] = t.get((ey+y, ex+x), 0) + 1
+      p.append([(ey, ex), target_space])
+      t[target_space] = t.get(target_space, 0) + 1
     for move in p:
       y,x = move[1]
       if t.get((y,x), 0) == 1:
