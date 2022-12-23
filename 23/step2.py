@@ -16,14 +16,14 @@ class Board:
     self.b = []
     if path:
       self.read_board(path)
+    self.update_elf_loc()
 
   def update_elf_loc(self):
-    e=[]
+    self.has_elf={}
     for y in range(len(self.b)):
       for x in range(len(self.b[y])):
         if self.is_elf(y, x):
-          e.append((y,x))
-    self.elf_locations = e
+          self.has_elf[(y,x)] = True
 
   def board(self, y, x):
     b = self.b
@@ -40,9 +40,10 @@ class Board:
 
   def neighbors(self, y, x):
     n = []
-    for ey, ex in self.elf_locations:
-      if abs(ey-y)<2 and abs(ex-x)<2:
-        n.append((ey,ex))
+    for ex in range(x-1, x+2):
+      for ey in range(y-1, y+2):
+        if self.has_elf.get((ey, ex), False):
+          n.append((ey,ex))
     n.remove((y,x))
     return n
 
@@ -57,7 +58,7 @@ class Board:
     p = []
     t = {}
     self.enlarge_board()
-    for ey,ex in self.elf_locations:
+    for ey,ex in self.has_elf.keys():
       if not self.neighbors(ey, ex):
         continue
       space_found = False
@@ -66,7 +67,7 @@ class Board:
         #print(m)
         #for y,x in m:
           #print(f'{y},{x} {b[y+ey][x+ex]}')
-        if all([(y+ey, x+ex) not in self.elf_locations for y,x in m]):
+        if all([not self.has_elf.get((y+ey, x+ex), False) for y,x in m]):
           space_found = True
           y, x = m[0]
           target_space = (ey+y, ex+x)
@@ -86,26 +87,32 @@ class Board:
         oy, ox = move[0]
         self.b[oy][ox] = SPACE
         self.b[y][x] = ELF
-        self.elf_locations.remove((oy,ox))
-        self.elf_locations.append((y,x))
+        del(self.has_elf[(oy, ox)])
+        self.has_elf[(y, x)] = True
         moved = True
     self.rotate_moves()
     return moved
 
   def enlarge_board(self):
     b = self.b
+    update = False
     if ELF in b[0]:
       b = [[SPACE for x in b[0]]] + b
+      update = True
     if ELF in b[-1]:
       b = b + [[SPACE for x in b[0]]]
+      update = True
     if any([b[y][0] == ELF for y in range(len(b))]):
       c = [[SPACE] + l for l in b]
       b = c
+      update = True
     if any([b[y][-1] == ELF for y in range(len(b))]):
       c = [l + [SPACE] for l in b]
       b = c
+      update = True
     self.b = b
-    self.update_elf_loc()
+    if update:
+      self.update_elf_loc()
 
   def draw(self):
     for l in self.b:
