@@ -66,7 +66,7 @@ class Board:
         #print(m)
         #for y,x in m:
           #print(f'{y},{x} {b[y+ey][x+ex]}')
-        if all([not self.is_elf(y+ey, x+ex) for y,x in m]):
+        if all([(y+ey, x+ex) not in self.elf_locations for y,x in m]):
           space_found = True
           y, x = m[0]
           target_space = (ey+y, ex+x)
@@ -86,6 +86,8 @@ class Board:
         oy, ox = move[0]
         self.b[oy][ox] = SPACE
         self.b[y][x] = ELF
+        self.elf_locations.remove((oy,ox))
+        self.elf_locations.append((y,x))
         moved = True
     self.rotate_moves()
     return moved
