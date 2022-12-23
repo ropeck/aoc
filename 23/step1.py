@@ -1,10 +1,13 @@
 #!/usr/bin/python3
 import sys
 
-moves = [[(0,-1),(-1,-1),(1,-1)],
-         [(0,1),(-1,1),(1,1)],
+moves = [
          [(-1,0),(-1,-1),(-1,1)],
-         [(1,0)],(1,-1),(1,1)]
+         [(1,0),(1,-1),(1,1)],
+         [(0,-1),(-1,-1),(1,-1)],
+         [(0,1),(-1,1),(1,1)],
+        ]
+
 
 def elf_loc(b):
   e=[]
@@ -29,11 +32,45 @@ def has_neighbor(b, y, x):
 
 def move_elves(b):
   p = []
-  for elf in elf_loc(b):
-    print("elf", elf, has_neighbor(b, *elf))
+  t = {}
+  for ey,ex in elf_loc(b):
+    n = has_neighbor(b, ey, ex)
+    if not n:
+      continue
+    clear = False
+    #print("elf",ey,ex)
+    for m in moves:
+      #print(m)
+      #for y,x in m:
+        #print(f'{y},{x} {b[y+ey][x+ex]}')
+      if all([b[y+ey][x+ex]!="#" for y,x in m]):
+        clear = True
+        break
+    if not clear:
+      continue
+    y,x = m[0]
+    ty = y + ey
+    tx = x + ex
+    print(f'move {ey},{ex} to {ty},{tx}')
+    p.append([(ey, ex), (ey+y, ex+x)])
+    t[(ey+y, ex+x)] = t.get((ey+y, ex+x), 0) + 1
+  for move in p:
+    y,x = move[1]
+    if t.get((y,x), 0) == 1:
+      print("move", move)
+      oy, ox = move[0]
+      b[oy][ox] = "."
+      b[y][x] = "#"
   return b
 
+def draw(b):
+  for l in b:
+    print("".join(l))
+  print("")
+
 def main(path):
+  global moves
+
   b = []
   with open(path,"r") as fh:
     for line in fh:
@@ -41,6 +78,11 @@ def main(path):
 
   for i in range(10):
     b = move_elves(b)
+    draw(b)
+
+    m = moves[0]
+    moves = moves[1:]
+    moves.append(m)
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
