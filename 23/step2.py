@@ -51,17 +51,17 @@ def move_elves(b):
     y,x = m[0]
     ty = y + ey
     tx = x + ex
-    print(f'move {ey},{ex} to {ty},{tx}')
+    #print(f'move {ey},{ex} to {ty},{tx}')
     p.append([(ey, ex), (ey+y, ex+x)])
     t[(ey+y, ex+x)] = t.get((ey+y, ex+x), 0) + 1
   for move in p:
     y,x = move[1]
     if t.get((y,x), 0) == 1:
-      print("move", move)
+      #print("move", move)
       oy, ox = move[0]
       b[oy][ox] = "."
       b[y][x] = "#"
-  return b
+  return b, p
 
 def enlarge_board(b):
   if "#" in b[0]:
@@ -89,40 +89,26 @@ def main(path):
     for line in fh:
       b.append(list(line.strip()))
 
-  for i in range(10):
+  i = 0
+  while True:
     b = enlarge_board(b)
-    b = move_elves(b)
+    b, p = move_elves(b)
     print(i)
     draw(b)
+    i += 1
+
+    if not p:
+      break
 
     m = moves[0]
     moves = moves[1:]
     moves.append(m)
 
-  min_x = len(b[0])
-  max_x = 0
-  min_y = len(b)
-  max_y = 0
+  print("rounds", i)
+  return i
 
-  for y in range(len(b)):
-    for x in range(len(b[y])):
-      if b[y][x] == "#":
-        if y < min_y:
-          min_y = y
-        if y > max_y:
-          max_y = y
-        if x < min_x:
-          min_x = x
-        if x > max_x:
-          max_x = x
 
-  total = 0
-  for y in range(min_y, max_y+1):
-    for x in range(min_x, max_x+1):
-      if b[y][x] != "#":
-        total += 1
-  print("total", total)
-  return total
+
 if __name__ == '__main__':
   if len(sys.argv) > 1:
     path = sys.argv[1]
