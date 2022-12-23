@@ -21,7 +21,7 @@ class Board:
     e=[]
     for y in range(len(self.b)):
       for x in range(len(self.b[y])):
-        if self.cmp(y, x, ELF):
+        if self.is_elf(y, x):
           e.append((y,x))
     return e
 
@@ -35,11 +35,14 @@ class Board:
   def cmp(self, y, x, v):
     return self.board(y, x) == v
 
+  def is_elf(self, y, x):
+    return self.cmp(y, x, ELF)
+
   def neighbors(self, y, x):
     n = []
     for dy in range(y-1,y+2):
       for dx in range(x-1,x+2):
-        if self.cmp(dy, dx, ELF):
+        if self.is_elf(dy, dx):
           n.append((dy,dx))
     n.remove((y,x))
     return n
@@ -64,7 +67,7 @@ class Board:
         #print(m)
         #for y,x in m:
           #print(f'{y},{x} {b[y+ey][x+ex]}')
-        if all([not self.cmp(y+ey, x+ex, ELF) for y,x in m]):
+        if all([not self.is_elf(y+ey, x+ex) for y,x in m]):
           space_found = True
           y, x = m[0]
           target_space = (ey+y, ex+x)
