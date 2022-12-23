@@ -17,27 +17,31 @@ class Board:
     if path:
       self.read_board(path)
 
-
   def elf_loc(self):
     e=[]
     for y in range(len(self.b)):
       for x in range(len(self.b[y])):
-        if self.b[y][x] == ELF:
+        if self.cmp(y, x, ELF):
           e.append((y,x))
     return e
 
+  def board(self, y, x):
+    b = self.b
+    if (x < 0 or x > len(b[0])-1 or
+        y < 0 or y > len(b)-1):
+         return None
+    return b[y][x]
+
+  def cmp(self, y, x, v):
+    return self.board(y, x) == v
+
   def neighbors(self, y, x):
     n = []
-    b = self.b
     for dy in range(y-1,y+2):
       for dx in range(x-1,x+2):
-        if dx==x and dy==y:
-          continue
-        if (dx < 0 or dx > len(b[0])-1 or
-            dy < 0 or dy > len(b)-1):
-             continue
-        if b[dy][dx] == ELF:
+        if self.cmp(dy, dx, ELF):
           n.append((dy,dx))
+    n.remove((y,x))
     return n
 
   def rotate_moves(self):
@@ -55,12 +59,12 @@ class Board:
       if not self.neighbors(ey, ex):
         continue
       space_found = False
-      #print("elf",ey,ex)
+      print("elf",ey,ex)
       for m in self.moves:
         #print(m)
         #for y,x in m:
           #print(f'{y},{x} {b[y+ey][x+ex]}')
-        if all([self.b[y+ey][x+ex]!=ELF for y,x in m]):
+        if all([not self.cmp(y+ey, x+ex, ELF) for y,x in m]):
           space_found = True
           y, x = m[0]
           target_space = (ey+y, ex+x)
