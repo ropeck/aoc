@@ -22,7 +22,7 @@ def main(path):
       if not line:
         break
       grid.append(list(line))
-    follow = deque(re.findall("(\d+)([LR]?)",fh.read().strip()))
+    follow = deque(re.findall("(\d+|[LR])",fh.read().strip()))
 
   (x,y) = (0,0)
   while grid[y][x] != ".":
@@ -31,23 +31,23 @@ def main(path):
 
   print(follow)
   while follow:
-    (count, movedir) = follow.popleft()
-    if movedir:
-      (dx, dy) = MOVEDIR[FACE[dir]]
-    print(f'{count} {movedir} {dx},{dy}')
-    for n in range(int(count)):
-      # import pdb; pdb.set_trace()
-      nx = (x + dx) % len(grid)
-      ny = (y + dy) % len(grid[0])
-      print(f'grid[{x},{y}]={grid[y][x]}')
+    move = follow.popleft()
+    if move in ["L","R"]:
+      dir = (dir + TURN[move]) % len(FACE)
+      print(f'turn {move} dir {FACE[dir]} {MOVEDIR[FACE[dir]]}')
+      continue
+    (dy, dx) = MOVEDIR[FACE[dir]]
+    for n in range(int(move)):
+      ny = (y + dy) % len(grid)
+      nx = (x + dx) % len(grid[ny])
+      print(f'grid[{x},{y}]={grid[ny][nx]}')
       g = grid[ny][nx]
       if g == " ":
         while grid[ny][nx] == " ":
-          grid[ny][nx] = FACE[dir]
-          ny = (ny + dy) % len(grid[0])
-          nx = (nx + dx) % len(grid)
+          ny = (ny + dy) % len(grid)
+          nx = (nx + dx) % len(grid[ny])
       g = grid[ny][nx]
-      grid[ny][nx] = FACE[dir]
+      grid[y][x] = FACE[dir]
 
       if g == "#":
         break
@@ -55,12 +55,13 @@ def main(path):
       x = nx
       y = ny
       print(f'{FACE[dir]} {x},{y}')
-    if movedir:
-      dir = (dir + TURN[movedir]) % len(FACE)
-    draw(grid)
+    # draw(grid)
     #import pdb; pdb.set_trace()
 
   print(x,y,FACE[dir])
+  #  The final password is the sum of 1000 times the row, 4 times the column, and the facing.
+  pw = (y+1)*1000 + (x+1)*4 + dir
+  print(f'password: {pw}')
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
