@@ -1,7 +1,11 @@
 #!/usr/bin/python3
 import sys
 
+ELF = "#"
+SPACE = SPACE
+
 class Board:
+
   def __init__(self, path=None):
     self.moves = [
              [(-1,0),(-1,-1),(-1,1)],
@@ -18,7 +22,7 @@ class Board:
     e=[]
     for y in range(len(self.b)):
       for x in range(len(self.b[y])):
-        if self.b[y][x] == "#":
+        if self.b[y][x] == ELF:
           e.append((y,x))
     return e
 
@@ -32,7 +36,7 @@ class Board:
         if (dx < 0 or dx > len(b[0])-1 or
             dy < 0 or dy > len(b)-1):
              continue
-        if b[dy][dx] == "#":
+        if b[dy][dx] == ELF:
           n.append((dy,dx))
     return n
 
@@ -56,7 +60,7 @@ class Board:
         #print(m)
         #for y,x in m:
           #print(f'{y},{x} {b[y+ey][x+ex]}')
-        if all([self.b[y+ey][x+ex]!="#" for y,x in m]):
+        if all([self.b[y+ey][x+ex]!=ELF for y,x in m]):
           space_found = True
           y, x = m[0]
           target_space = (ey+y, ex+x)
@@ -73,22 +77,22 @@ class Board:
       if t.get((y,x), 0) == 1:
         #print("move", move)
         oy, ox = move[0]
-        self.b[oy][ox] = "."
-        self.b[y][x] = "#"
+        self.b[oy][ox] = SPACE
+        self.b[y][x] = ELF
     self.rotate_moves()
     return p
 
   def enlarge_board(self):
     b = self.b
-    if "#" in b[0]:
-      b = [["." for x in b[0]]] + b
-    if "#" in b[-1]:
-      b = b + [["." for x in b[0]]]
-    if any([b[y][0] == "#" for y in range(len(b))]):
-      c = [["."] + l for l in b]
+    if ELF in b[0]:
+      b = [[SPACE for x in b[0]]] + b
+    if ELF in b[-1]:
+      b = b + [[SPACE for x in b[0]]]
+    if any([b[y][0] == ELF for y in range(len(b))]):
+      c = [[SPACE] + l for l in b]
       b = c
-    if any([b[y][-1] == "#" for y in range(len(b))]):
-      c = [l + ["."] for l in b]
+    if any([b[y][-1] == ELF for y in range(len(b))]):
+      c = [l + [SPACE] for l in b]
       b = c
     self.b = b
     return b
