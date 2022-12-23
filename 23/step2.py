@@ -40,10 +40,9 @@ class Board:
 
   def neighbors(self, y, x):
     n = []
-    for dy in range(y-1,y+2):
-      for dx in range(x-1,x+2):
-        if self.is_elf(dy, dx):
-          n.append((dy,dx))
+    for ey, ex in self.elf_locations:
+      if abs(ey-y)<2 and abs(ex-x)<2:
+        n.append((ey,ex))
     n.remove((y,x))
     return n
 
