@@ -63,6 +63,19 @@ def move_elves(b):
       b[y][x] = "#"
   return b
 
+def enlarge_board(b):
+  if "#" in b[0]:
+    b = [["." for x in b[0]]] + b
+  if "#" in b[-1]:
+    b = b + [["." for x in b[0]]]
+  if any([b[y][0] == "#" for y in range(len(b))]):
+    c = [["."] + l for l in b]
+    b = c
+  if any([b[y][-1] == "#" for y in range(len(b))]):
+    c = [l + ["."] for l in b]
+    b = c
+  return b
+
 def draw(b):
   for l in b:
     print("".join(l))
@@ -77,13 +90,39 @@ def main(path):
       b.append(list(line.strip()))
 
   for i in range(10):
+    b = enlarge_board(b)
     b = move_elves(b)
+    print(i)
     draw(b)
 
     m = moves[0]
     moves = moves[1:]
     moves.append(m)
 
+  min_x = len(b[0])
+  max_x = 0
+  min_y = len(b)
+  max_y = 0
+
+  for y in range(len(b)):
+    for x in range(len(b[y])):
+      if b[y][x] == "#":
+        if y < min_y:
+          min_y = y
+        if y > max_y:
+          max_y = y
+        if x < min_x:
+          min_x = x
+        if x > max_x:
+          max_x = x
+
+  total = 0
+  for y in range(min_y, max_y+1):
+    for x in range(min_x, max_x+1):
+      if b[y][x] != "#":
+        total += 1
+  print("total", total)
+  return total
 if __name__ == '__main__':
   if len(sys.argv) > 1:
     path = sys.argv[1]
