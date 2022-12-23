@@ -59,7 +59,7 @@ class Board:
       if not self.neighbors(ey, ex):
         continue
       space_found = False
-      print("elf",ey,ex)
+      #print("elf",ey,ex)
       for m in self.moves:
         #print(m)
         #for y,x in m:
@@ -69,13 +69,14 @@ class Board:
           y, x = m[0]
           target_space = (ey+y, ex+x)
           break
-      if not space_found:
-        continue
-      ty = y + ey
-      tx = x + ex
-      #print(f'move {ey},{ex} to {ty},{tx}')
-      p.append([(ey, ex), target_space])
-      t[target_space] = t.get(target_space, 0) + 1
+      if space_found:
+        ty = y + ey
+        tx = x + ex
+        #print(f'move {ey},{ex} to {ty},{tx}')
+        p.append([(ey, ex), target_space])
+        t[target_space] = t.get(target_space, 0) + 1
+
+    moved = False
     for move in p:
       y,x = move[1]
       if t.get((y,x), 0) == 1:
@@ -83,8 +84,9 @@ class Board:
         oy, ox = move[0]
         self.b[oy][ox] = SPACE
         self.b[y][x] = ELF
+        moved = True
     self.rotate_moves()
-    return p
+    return moved
 
   def enlarge_board(self):
     b = self.b
