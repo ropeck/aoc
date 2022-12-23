@@ -2,7 +2,7 @@
 import sys
 
 ELF = "#"
-SPACE = SPACE
+SPACE = "."
 
 class Board:
 
