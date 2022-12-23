@@ -17,13 +17,13 @@ class Board:
     if path:
       self.read_board(path)
 
-  def elf_loc(self):
+  def update_elf_loc(self):
     e=[]
     for y in range(len(self.b)):
       for x in range(len(self.b[y])):
         if self.is_elf(y, x):
           e.append((y,x))
-    return e
+    self.elf_locations = e
 
   def board(self, y, x):
     b = self.b
@@ -58,7 +58,7 @@ class Board:
     p = []
     t = {}
     self.enlarge_board()
-    for ey,ex in self.elf_loc():
+    for ey,ex in self.elf_locations:
       if not self.neighbors(ey, ex):
         continue
       space_found = False
@@ -104,7 +104,7 @@ class Board:
       c = [l + [SPACE] for l in b]
       b = c
     self.b = b
-    return b
+    self.update_elf_loc()
 
   def draw(self):
     for l in self.b:
