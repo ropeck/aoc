@@ -5,6 +5,7 @@ import sys
 WALL = "#"
 SPACE = "."
 STORM = {"<": (0,-1), ">": (0,1), "^": (-1,0), "v": (1,0)}
+DIR = STORM
 
 class Storm:
   def __init__(self, board, x, y, dir):
@@ -62,8 +63,12 @@ class Valley:
     self.height = len(self.board)
     self.width = len(self.board[0])
 
-  def draw(self):
-    for l in self.board:
+  def draw(self, coord=None, mark=None):
+    b = [r.copy() for r in self.board]
+    if coord:
+      y,x=coord
+      b[y][x] = mark
+    for l in b:
       print("".join(l))
     print("")
 
@@ -78,16 +83,31 @@ class Valley:
     for x, v in enumerate(self.board[0]):
       if self.board[0][x] == SPACE:
         queue.append((0,x))
-
+    move_dir = ""
     while queue:
       self.move_storms()
-      ex, ey = queue.pop()
+      ey, ex = queue.pop()
+      path.append((ey, ex))
+      for dir, (dy, dx) in DIR.items():
+        ny = ey + dy
+        nx = ex + dx
+        if self.board[ny][nx] == SPACE and ((ey, ex) != (ny, nx) or move_dir == "wait"):
+          queue.append((ny,nx))
+          move_dir = dir
+      if not queue:
+        move_dir = "wait"
+        queue.append(path[-1])
       # loop around position looking for open spaces, put them on the queue
       # save current location to path
       # choose the move and mark it
-      print("Minute", t)
-      self.draw()
+      print(queue)
+      print("Minute", t, "move", move_dir)
+      self.draw((ny,nx), "E")
       t += 1
+      if t>10:
+        break
+      if ey == len(self.board):
+        break
       # nx, ny = pop_move
       # find possible moves, push them onto the queue to check. save storms too?
       # for each move:
