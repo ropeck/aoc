@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+from collections import defaultdict
 import sys
 
 ELF = "#"
@@ -13,27 +14,17 @@ class Board:
              [(0,-1),(-1,-1),(1,-1)],
              [(0,1),(-1,1),(1,1)],
             ]
-    self.b = []
     if path:
       self.read_board(path)
-    self.update_elf_loc()
-
-  def update_elf_loc(self):
-    self.has_elf={}
-    for y in range(len(self.b)):
-      for x in range(len(self.b[y])):
-        if self.board(y, x) == ELF:
-          self.has_elf[(y,x)] = True
 
   def board(self, y, x):
-    b = self.b
-    if (x < 0 or x > len(b[0])-1 or
-        y < 0 or y > len(b)-1):
-         return None
-    return b[y][x]
+    if self.is_elf(y, x):
+      return ELF
+    else:
+      return SPACE
 
   def is_elf(self, y, x):
-    return self.has_elf.get((y,x), False)
+    return self.has_elf.get((y,x))
 
   def neighbors(self, y, x):
     n = []
@@ -54,7 +45,6 @@ class Board:
   def move_elves(self):
     p = []
     t = {}
-    self.enlarge_board()
     for ey,ex in self.has_elf.keys():
       if not self.neighbors(ey, ex):
         continue
@@ -79,46 +69,38 @@ class Board:
       if t.get((y,x), 0) == 1:
         #print("move", move)
         oy, ox = move[0]
-        self.b[oy][ox] = SPACE
-        self.b[y][x] = ELF
         del(self.has_elf[(oy, ox)])
         self.has_elf[(y, x)] = True
+        self.board[y] = None
         moved = True
     self.rotate_moves()
     return moved
 
-  def enlarge_board(self):
-    b = self.b
-    update = False
-    if ELF in b[0]:
-      b = [[SPACE for x in b[0]]] + b
-      update = True
-    if ELF in b[-1]:
-      b = b + [[SPACE for x in b[0]]]
-      update = True
-    if any([b[y][0] == ELF for y in range(len(b))]):
-      c = [[SPACE] + l for l in b]
-      b = c
-      update = True
-    if any([b[y][-1] == ELF for y in range(len(b))]):
-      c = [l + [SPACE] for l in b]
-      b = c
-      update = True
-    self.b = b
-    if update:
-      self.update_elf_loc()
+  def ys(self):
+    return [y for y,x in self.has_elf.keys()]
+
+  def xs(self):
+    return [x for x,x in self.has_elf.keys()]
 
   def draw(self):
-    for l in self.b:
-      print("".join(l))
+    for y in range(min(self.ys()), max(self.ys())+1):
+      if not self.board[y]:
+        row = [ELF if self.is_elf(y, x) else SPACE for x in range(min(self.xs()), max(self.xs())+1)]
+        self.board[y] = "".join(row)
+      print(self.board[y])
     print("")
 
   def read_board(self, path):
-    b = []
+    self.has_elf = defaultdict(lambda: False)
+    self.board = {}
+    y = 0
     with open(path, "r") as fh:
       for line in fh:
-        b.append(list(line.strip()))
-    self.b = b
+        self.board[y] = line.strip()
+        for x, mark in enumerate(list(line.strip())):
+          if mark == ELF:
+            self.has_elf[(y, x)] = True
+        y += 1
 
   def find_moves(self):
     i = 1
