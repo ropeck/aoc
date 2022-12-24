@@ -30,12 +30,17 @@ class Valley:
         self.board.append(list(line.strip()))
         y += 1
 
+  def move_storms(self):
+    for s in self.storms:
+      (dy, dx) = STORM[s[1]]
+      # if new spot is a wall, move to the other side
+
   def find_path(self):
     # put start on queue
     while not queue_empty:
       self.move_storms()
       nx, ny = pop_move
-      # find possible moves, push them onto the queue to check
+      # find possible moves, push them onto the queue to check. save storms too?
       # for each move:
       #   at exit?:
       #      add path score
