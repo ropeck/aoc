@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from collections import defaultdict
+from collections import deque
 import sys
 
 WALL = "#"
@@ -72,12 +72,21 @@ class Valley:
       s.move()
 
   def find_path(self):
-    # put start on queue
     t = 1
-    while True:
+    path = []
+    queue = deque()
+    for x, v in enumerate(self.board[0]):
+      if self.board[0][x] == SPACE:
+        queue.append((0,x))
+
+    while queue:
+      self.move_storms()
+      ex, ey = queue.pop()
+      # loop around position looking for open spaces, put them on the queue
+      # save current location to path
+      # choose the move and mark it
       print("Minute", t)
       self.draw()
-      self.move_storms()
       t += 1
       # nx, ny = pop_move
       # find possible moves, push them onto the queue to check. save storms too?
