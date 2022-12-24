@@ -30,10 +30,21 @@ class Valley:
         self.board.append(list(line.strip()))
         y += 1
 
+  def find_path(self):
+    # put start on queue
+    while not queue_empty:
+      self.move_storms()
+      nx, ny = pop_move
+      # find possible moves, push them onto the queue to check
+      # for each move:
+      #   at exit?:
+      #      add path score
+   sort the paths by score
+   return best path
+
 def main(path):
   v = Valley(path)
-  print("\n".join(["".join(r) for r in v.board]))
-  print(v.storms)
+  return v.find_path()
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
