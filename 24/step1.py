@@ -4,7 +4,7 @@ import sys
 
 WALL = "#"
 SPACE = "."
-STORM = {"<": (-1,0), ">": (1,0), "^": (0,-1), "v": (0,1)}
+STORM = {"<": (0,-1), ">": (0,1), "^": (-1,0), "v": (1,0)}
 
 class Storm:
   def __init__(self, board, x, y, dir):
@@ -20,10 +20,21 @@ class Storm:
     while self.board.board[ny][nx] == WALL:
       ny = (ny + dy) % self.board.height
       nx = (nx + dx) % self.board.width
-    self.board.board[self.y][self.x] = SPACE
+    self.unmark()
     self.y = ny
     self.x = nx
     self.mark()
+
+  def unmark(self):
+    v = self.board.board[self.y][self.x]
+    if v in STORM.keys():
+      n = SPACE
+    elif v != SPACE:
+      n = str(int(v) - 1)
+    if n == "1":
+      n = self.dir
+    self.board.board[self.y][self.x] = n
+
 
   def mark(self):
     v = self.board.board[self.y][self.x]
@@ -36,17 +47,7 @@ class Storm:
     self.board.board[self.y][self.x] = n
 
 class Valley:
-  def __init__(self, path=None):
-    self.moves = [
-             [(-1,0),(-1,-1),(-1,1)],
-             [(1,0),(1,-1),(1,1)],
-             [(0,-1),(-1,-1),(1,-1)],
-             [(0,1),(-1,1),(1,1)],
-            ]
-    if path:
-      self.read_board(path)
-
-  def read_board(self, path):
+  def __init__(self, path):
     self.board = []
     self.storms = []
     y = 0
@@ -72,10 +73,12 @@ class Valley:
 
   def find_path(self):
     # put start on queue
-    q = [(1,1)]
-    while q:
+    t = 1
+    while True:
+      print("Minute", t)
       self.draw()
       self.move_storms()
+      t += 1
       # nx, ny = pop_move
       # find possible moves, push them onto the queue to check. save storms too?
       # for each move:
