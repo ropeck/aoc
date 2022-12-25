@@ -26,12 +26,12 @@ def carry(n, i):
 
 def borrow(n, i):
   if i < len(n):
-    v = "012-=".index(str(n[i]))
+    v = "012=-".index(str(n[i]))
     if v == 0:
-      n = borrow(n, i+1)
+      #n = borrow(n, i+1)
       n[i] = 4
     if v == 3:
-      n = carry(n, i+1)
+      n = borrow(n, i+1)
       n[i] = 2
     else:
       n[i] = v - 1
@@ -60,6 +60,7 @@ def toSnafu(d):
   return conv
 
 def fromSnafu(n):
+  print("from Snafu", n)
   n = list(n)
   n.reverse()
   for i, v in enumerate(n):
@@ -79,7 +80,7 @@ def fromSnafu(n):
 def main(path):
   total = 0
   mismatch = []
-  fromSnafu("1=")
+
   with open(path, "r") as fh:
     header = fh.readline()
     line = True
@@ -97,8 +98,11 @@ def main(path):
       print("")
 
   #print(f'total: {total}')
-  print("MISMATCH TOTAL")
-  print("\n".join(mismatch))
+  if mismatch:
+    print("MISMATCH TOTAL")
+    print("\n".join(mismatch))
+  else:
+    print("no mismatched")
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
