@@ -21,12 +21,14 @@ def carry(n, i):
 
 def borrow(n, i):
   if i < len(n)-1:
-    n[i+1] = (n[i+1] - 1) 
-    if n[i+1] > 4:
-      n[i+1] = n[i+1] % 5
+    v = "012-=".index(str(n[i]))
+    if v == 0:
       n = borrow(n, i+1)
+      return n
   else:
-    n.append(1)
+    n[i+1] = int(n[i+1]) - 1
+
+  
   return n
 
 def toSnafu(d):
@@ -51,19 +53,22 @@ def toSnafu(d):
   return conv
 
 def fromSnafu(n):
+  print("from", n)
+  if n == '1=':
+    import pdb; pdb.set_trace()
   n = list(n)
   n.reverse()
   for i, v in enumerate(n):
     print(i,v)
-    if v in "-=":
-      n = borrow(n, i)
+    if str(v) in "-=":
+      n = borrow(n, i+1)
       if n[i] == "-":
         n[i] = 4
       else:
         n[i] = 3
   n.reverse()
-  conv = "".join([str(i) for i in n])
-  return conv
+  conv = sum([5**i*int(n) for i,n in enumerate(n)])
+  return n, conv
 
 def main(path):
   total = 0
