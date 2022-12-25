@@ -19,6 +19,16 @@ def carry(n, i):
     n.append(1)
   return n
 
+def borrow(n, i):
+  if i < len(n)-1:
+    n[i+1] = (n[i+1] - 1) 
+    if n[i+1] > 4:
+      n[i+1] = n[i+1] % 5
+      n = borrow(n, i+1)
+  else:
+    n.append(1)
+  return n
+
 def toSnafu(d):
   n = numberToBase(d, 5)
   n1 = n.copy()
@@ -40,6 +50,15 @@ def toSnafu(d):
   conv = "".join([str(i) for i in n])
   return conv
 
+def fromSnafu(n):
+  n.reverse()
+  for i, v in enumerate(n):
+    if v > 2:
+      n = borrow(n, i)
+      if n[i] == "-":
+        n[i] = 4
+      else:
+        n[i] = 3
 def main(path):
   total = 0
   with open(path, "r") as fh:
