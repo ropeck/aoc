@@ -90,21 +90,23 @@ class Valley:
     while queue:
       self.move_storms()
       ey, ex = queue.pop()
-      path.append((ey, ex))
+      if (ey, ex) not in path:
+        path.append((ey, ex))
       for dir, (dy, dx) in DIR.items():
         ny = (ey + dy) % self.height
         nx = (ex + dx) % self.width
         if self.board[ny][nx] == SPACE and (ny, nx) not in path:
           queue.append((ny,nx))
           move_dir = dir
+          break
       val = self.board[ey][ex]
       if move_dir == "wait" and len(queue) == 0:
-        queue.append((oy, ox))
+        queue.append(prev)
+        (ny, nx) = prev
         move_dir = None
-      if not queue:
+      elif not queue:
         move_dir = "wait"
-        oy, ox = path[-2]
-        queue.append(path[-1])
+        queue.append((ey, ex))
       prev = (ey, ex)
       # loop around position looking for open spaces, put them on the queue
       # save current location to path
