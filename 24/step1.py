@@ -83,24 +83,29 @@ class Valley:
     for x, v in enumerate(self.board[0]):
       if self.board[0][x] == SPACE:
         queue.append((0,x))
+    print("initial state")
+    self.draw((0,x), "E")
     move_dir = ""
+    prev = None
     while queue:
       self.move_storms()
       ey, ex = queue.pop()
       path.append((ey, ex))
       for dir, (dy, dx) in DIR.items():
-        ny = ey + dy
-        nx = ex + dx
-        if self.board[ny][nx] == SPACE and (ny, nx) != path[-1]:
+        ny = (ey + dy) % self.height
+        nx = (ex + dx) % self.width
+        if self.board[ny][nx] == SPACE and (ny, nx) not in path:
           queue.append((ny,nx))
           move_dir = dir
       val = self.board[ey][ex]
       if move_dir == "wait" and len(queue) == 0:
         queue.append((oy, ox))
+        move_dir = None
       if not queue:
         move_dir = "wait"
         oy, ox = path[-2]
         queue.append(path[-1])
+      prev = (ey, ex)
       # loop around position looking for open spaces, put them on the queue
       # save current location to path
       # choose the move and mark it
