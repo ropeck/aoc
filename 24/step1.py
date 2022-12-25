@@ -91,13 +91,15 @@ class Valley:
       for dir, (dy, dx) in DIR.items():
         ny = ey + dy
         nx = ex + dx
-        if self.board[ny][nx] == SPACE and (ny, nx) not in path:
+        if self.board[ny][nx] == SPACE and (ny, nx) != path[-1]:
           queue.append((ny,nx))
           move_dir = dir
-      if move_dir == "wait" and self.board[ey][ex] == SPACE and len(queue) == 0:
-        queue.append((ey, ex))
+      val = self.board[ey][ex]
+      if move_dir == "wait" and len(queue) == 0:
+        queue.append((oy, ox))
       if not queue:
         move_dir = "wait"
+        oy, ox = path[-2]
         queue.append(path[-1])
       # loop around position looking for open spaces, put them on the queue
       # save current location to path
@@ -106,7 +108,7 @@ class Valley:
       print("Minute", t, "move", move_dir)
       self.draw((ny,nx), "E")
       t += 1
-      if t>10:
+      if t>30:
         break
       if ey == len(self.board):
         break
