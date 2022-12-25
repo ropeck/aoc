@@ -55,6 +55,7 @@ def toSnafu(d):
         n.append(1)
       n[i] = "="
   n.reverse()
+  print("toSnafu",d, n1, n)
   conv = "".join([str(i) for i in n])
   return conv
 
@@ -71,7 +72,9 @@ def fromSnafu(n):
         n[i] = 3
   # n.reverse()
   conv = sum([(5**(i))*int(n) for i,n in enumerate(n)])
-  return n, conv
+  r = n.copy()
+  r.reverse()
+  return r, conv
 
 def main(path):
   total = 0
@@ -87,7 +90,7 @@ def main(path):
       d = line.split()
       conv = toSnafu(int(d[1]))
       rev = fromSnafu(d[0])
-      print (d, conv, rev)
+      print (line, conv, rev)
       if (int(d[1]) != rev[-1]):
         print("MISMATCH")
         mismatch.append(str((d, conv, rev)))
