@@ -20,16 +20,17 @@ def carry(n, i):
   return n
 
 def borrow(n, i):
-  if i < len(n)-1:
+  if i < len(n):
     if str(n[i]) in "-=":
       v = "012-=".index(str(n[i]))
     else:
       v = int(n[i])
     if v == 0:
       n = borrow(n, i+1)
+      n[i] = 4
     else:
-      v = "012-=".index(str(n[i+1]))
-      n[i+1] = v - 1
+      v = "012-=".index(str(n[i]))
+      n[i] = v - 1
   return n
 
 def toSnafu(d):
@@ -64,12 +65,13 @@ def fromSnafu(n):
         n[i] = 4
       else:
         n[i] = 3
-  n.reverse()
+  # n.reverse()
   conv = sum([(5**(i))*int(n) for i,n in enumerate(n)])
   return n, conv
 
 def main(path):
   total = 0
+  fromSnafu("1=")
   with open(path, "r") as fh:
     header = fh.readline()
     line = True
