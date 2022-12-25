@@ -11,7 +11,12 @@ def numberToBase(n, b):
 
 def carry(n, i):
   if i < len(n)-1:
-    n[i+1] = (n[i+1] + 1) 
+    if str(n[i+1]) in "-=":
+      v = "012-=".index(str(n[i+1]))
+    else:
+      v = int(i)
+
+    n[i+1] = (v + 1)
     if n[i+1] > 4:
       n[i+1] = n[i+1] % 5
       n = carry(n, i+1)
@@ -25,7 +30,8 @@ def borrow(n, i):
     if v == 0:
       n = borrow(n, i+1)
       n[i] = 4
-    n[i] = v - 1
+    else:
+      n[i] = v - 1
   return n
 
 def toSnafu(d):
