@@ -71,6 +71,7 @@ def fromSnafu(n):
 
 def main(path):
   total = 0
+  mismatch = []
   fromSnafu("1=")
   with open(path, "r") as fh:
     header = fh.readline()
@@ -83,9 +84,14 @@ def main(path):
       conv = toSnafu(int(d[1]))
       rev = fromSnafu(d[0])
       print (d, conv, rev)
+      if (int(d[1]) != rev[-1]):
+        print("MISMATCH")
+        mismatch.append(str((d, conv, rev)))
       print("")
 
   #print(f'total: {total}')
+  print("MISMATCH TOTAL")
+  print("\n".join(mismatch))
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
