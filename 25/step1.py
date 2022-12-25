@@ -21,16 +21,11 @@ def carry(n, i):
 
 def borrow(n, i):
   if i < len(n):
-    if str(n[i]) in "-=":
-      v = "012-=".index(str(n[i]))
-    else:
-      v = int(n[i])
+    v = "012-=".index(str(n[i]))
     if v == 0:
       n = borrow(n, i+1)
       n[i] = 4
-    else:
-      v = "012-=".index(str(n[i]))
-      n[i] = v - 1
+    n[i] = v - 1
   return n
 
 def toSnafu(d):
