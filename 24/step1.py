@@ -91,9 +91,11 @@ class Valley:
       for dir, (dy, dx) in DIR.items():
         ny = ey + dy
         nx = ex + dx
-        if self.board[ny][nx] == SPACE and ((ey, ex) != (ny, nx) or move_dir == "wait"):
+        if self.board[ny][nx] == SPACE and (ny, nx) not in path:
           queue.append((ny,nx))
           move_dir = dir
+      if move_dir == "wait" and self.board[ey][ex] == SPACE and len(queue) == 0:
+        queue.append((ey, ex))
       if not queue:
         move_dir = "wait"
         queue.append(path[-1])
