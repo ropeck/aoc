@@ -51,14 +51,20 @@ def toSnafu(d):
   return conv
 
 def fromSnafu(n):
+  n = list(n)
   n.reverse()
   for i, v in enumerate(n):
-    if v > 2:
+    print(i,v)
+    if v in "-=":
       n = borrow(n, i)
       if n[i] == "-":
         n[i] = 4
       else:
         n[i] = 3
+  n.reverse()
+  conv = "".join([str(i) for i in n])
+  return conv
+
 def main(path):
   total = 0
   with open(path, "r") as fh:
@@ -70,7 +76,8 @@ def main(path):
         break
       d = line.split()
       conv = toSnafu(int(d[1]))
-      print (d, conv)
+      rev = fromSnafu(d[0])
+      print (d, conv, rev)
       print("")
 
   #print(f'total: {total}')
