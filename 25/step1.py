@@ -30,6 +30,9 @@ def borrow(n, i):
     if v == 0:
       n = borrow(n, i+1)
       n[i] = 4
+    if v == 3:
+      n = carry(n, i+1)
+      n[i] = 2
     else:
       n[i] = v - 1
   return n
