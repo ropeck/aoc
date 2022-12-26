@@ -78,6 +78,7 @@ class Valley:
         s.move(t)
       b=[s.position() for s in self.storms]
       b.sort()
+      moved = False
       for dir, (dy, dx) in DIR.items():
         new_loc = (x + dx, y + dy)
         if new_loc == self.finish:
@@ -89,7 +90,8 @@ class Valley:
           continue
         if new_loc not in b:
           queue.append((t + 1, new_loc, p + [(x, y, dir)]))
-      if (x,y) not in b and y != 0:
+          moved = True
+      if (x,y) not in b and moved:
         queue.append((t+1, (x, y), p+ [(x, y, "W")]))
 
 
