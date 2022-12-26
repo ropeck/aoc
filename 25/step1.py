@@ -68,15 +68,16 @@ def toSnafu(d):
 def fromSnafu(n):
   print("from Snafu", n)
   n = list(n)
-  n.reverse()
   for i, v in enumerate(n):
-    print(i,v)
     if str(v) in "-=":
-      n = borrow(n, i+1)
-      if n[i] == "-":
+      n[i-1] = int(n[i-1]) - 1
+      if v == "-":
         n[i] = 4
       else:
         n[i] = 3
+  n.reverse()
+  for i, v in enumerate(n):
+    print(i,v)
   # n.reverse()
   conv = sum([(5**(i))*int(n) for i,n in enumerate(n)])
   r = n.copy()
@@ -86,7 +87,7 @@ def fromSnafu(n):
 def main(path):
   total = 0
   mismatch = []
-  for i in range(250):
+  for i in range(2250):
     t = toSnafu(i)
     f = fromSnafu(t)[1]
     if f != i:
