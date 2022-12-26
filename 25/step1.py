@@ -89,20 +89,15 @@ def main(path):
   mismatch = []
 
   with open(path, "r") as fh:
-    header = fh.readline()
     line = True
     while line:
       line = fh.readline().strip()
       if not line:
         break
       d = line.split()
-      conv = toSnafu(int(d[1]))
       rev = fromSnafu(d[0])
       total += rev[1]
-      print (line, conv, rev)
-      if (int(d[1]) != rev[-1]):
-        print("MISMATCH")
-        mismatch.append(str((d, conv, rev)))
+      print (line, rev)
       print("")
 
   print(f'total: {total}  {toSnafu(total)}')
