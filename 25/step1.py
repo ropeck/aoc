@@ -42,6 +42,7 @@ def toSnafu(d):
   n1 = n.copy()
   n.reverse()
   for i, v in enumerate(n):
+    print("--")
     if v == 4:
       if i < len(n)-1:
         n = carry(n, i)
@@ -66,9 +67,9 @@ def fromSnafu(n):
   for i, v in enumerate(n):
     print(i,v)
     if str(v) in "-=":
-      n = borrow(n, i+1)
+      n = borrow(n, i)
       if n[i] == "-":
-        n[i] =  4
+        n[i] = 4
       else:
         n[i] = 3
   # n.reverse()
@@ -86,6 +87,7 @@ def main(path):
     if f != i:
       mismatch.append((i, t, f))
       print("mismatch", i, t, f)
+    print(i, t, f)
   print("MISMATCH TOTAL")
   print("\n".join([str(n) for n in mismatch]))
   exit(1)
