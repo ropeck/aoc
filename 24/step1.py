@@ -91,7 +91,7 @@ class Valley:
         if new_loc not in b:
           queue.append((t + 1, new_loc, p + [(x, y, dir)]))
           moved = True
-      if (x,y) not in b and moved:
+      if (x,y) not in b and not moved:
         queue.append((t+1, (x, y), p+ [(x, y, "W")]))
 
 
