@@ -24,49 +24,22 @@ def carry(n, i):
     n.append(1)
   return n
 
-def borrow(n, i):
-  if i < len(n):
-    if str(n[i]) in "-=":
-      # n = borrow(n, i+1)
-      v = "012=-".index(str(n[i]))
-      n[i] = v
-    else:
-      v = int(n[i])
-    if v == 0:
-      n = borrow(n, i+1)
-      n[i] = 4
-    if v == 3:
-      n = borrow(n, i+1)
-      n[i] = 2
-    else:
-      n[i] = v - 1
-  return n
-
 def toSnafu(d):
   n = numberToBase(d, 5)
   n1 = n.copy()
   n.reverse()
   for i, v in enumerate(n):
-    print("--")
     if v == 4:
-      if i < len(n)-1:
-        n = carry(n, i)
-      else:
-        n.append(1)
+      n = carry(n, i)
       n[i] = "-"
     if v == 3:
-      if i < len(n)-1:
-        n = carry(n, i)
-      else:
-        n.append(1)
+      n = carry(n, i)
       n[i] = "="
   n.reverse()
-  print("toSnafu",d, n1, n)
   conv = "".join([str(i) for i in n])
   return conv
 
 def fromSnafu(n):
-  print("from Snafu", n)
   n = list(n)
   for i, v in enumerate(n):
     if str(v) in "-=":
@@ -75,19 +48,11 @@ def fromSnafu(n):
         n[i] = 4
       else:
         n[i] = 3
-  n.reverse()
-  for i, v in enumerate(n):
-    print(i,v)
-  # n.reverse()
   conv = sum([(5**(i))*int(n) for i,n in enumerate(n)])
-  r = n.copy()
-  r.reverse()
-  return r, conv
+  return conv
 
 def main(path):
   total = 0
-  mismatch = []
-
   with open(path, "r") as fh:
     line = True
     while line:
@@ -96,16 +61,8 @@ def main(path):
         break
       d = line.split()
       rev = fromSnafu(d[0])
-      total += rev[1]
-      print (line, rev)
-      print("")
-
+      total += rev
   print(f'total: {total}  {toSnafu(total)}')
-  if mismatch:
-    print("MISMATCH TOTAL")
-    print("\n".join(mismatch))
-  else:
-    print("no mismatched")
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
