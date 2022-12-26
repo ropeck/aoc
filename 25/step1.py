@@ -14,7 +14,7 @@ def carry(n, i):
     if str(n[i+1]) in "-=":
       v = "012-=".index(str(n[i+1]))
     else:
-      v = int(i)
+      v = int(n[i+1])
 
     n[i+1] = (v + 1)
     if n[i+1] > 4:
