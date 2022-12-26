@@ -87,16 +87,6 @@ def fromSnafu(n):
 def main(path):
   total = 0
   mismatch = []
-  for i in range(2250):
-    t = toSnafu(i)
-    f = fromSnafu(t)[1]
-    if f != i:
-      mismatch.append((i, t, f))
-      print("mismatch", i, t, f)
-    print(i, t, f)
-  print("MISMATCH TOTAL")
-  print("\n".join([str(n) for n in mismatch]))
-  exit(1)
 
   with open(path, "r") as fh:
     header = fh.readline()
@@ -108,13 +98,14 @@ def main(path):
       d = line.split()
       conv = toSnafu(int(d[1]))
       rev = fromSnafu(d[0])
+      total += rev[1]
       print (line, conv, rev)
       if (int(d[1]) != rev[-1]):
         print("MISMATCH")
         mismatch.append(str((d, conv, rev)))
       print("")
 
-  #print(f'total: {total}')
+  print(f'total: {total}  {toSnafu(total)}')
   if mismatch:
     print("MISMATCH TOTAL")
     print("\n".join(mismatch))
