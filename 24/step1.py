@@ -8,44 +8,15 @@ STORM = {"<": (0,-1), ">": (0,1), "^": (-1,0), "v": (1,0)}
 DIR = STORM
 
 class Storm:
-  def __init__(self, board, x, y, dir):
-    self.x = x
-    self.y = y
+  def __init__(self, x, y, dir):
+    self.x_init = x
+    self.y_init = y
     self.dir = dir
-    self.board = board
 
-  def move(self):
-    (dy, dx) = STORM[self.dir]
-    ny = (self.y + dy) % self.board.height
-    nx = (self.x + dx) % self.board.width
-    while self.board.board[ny][nx] == WALL:
-      ny = (ny + dy) % self.board.height
-      nx = (nx + dx) % self.board.width
-    self.unmark()
-    self.y = ny
-    self.x = nx
-    self.mark()
+  def move(self, t):
+    self.x = (self.x_init + t) % self.width
+    self.y = (self.y_init + t) % self.height
 
-  def unmark(self):
-    v = self.board.board[self.y][self.x]
-    if v in STORM.keys():
-      n = SPACE
-    elif v != SPACE:
-      n = str(int(v) - 1)
-    if n == "1":
-      n = self.dir
-    self.board.board[self.y][self.x] = n
-
-
-  def mark(self):
-    v = self.board.board[self.y][self.x]
-    if v in STORM.keys():
-      n = "2"
-    elif v != SPACE:
-      n = str(int(v) + 1)
-    else:
-      n = self.dir
-    self.board.board[self.y][self.x] = n
 
 class Valley:
   def __init__(self, path):
@@ -71,10 +42,6 @@ class Valley:
     for l in b:
       print("".join(l))
     print("")
-
-  def move_storms(self):
-    for s in self.storms:
-      s.move()
 
   def find_path(self):
     t = 1
