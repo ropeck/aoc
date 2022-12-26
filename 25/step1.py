@@ -67,7 +67,7 @@ def fromSnafu(n):
     if str(v) in "-=":
       n = borrow(n, i+1)
       if n[i] == "-":
-        n[i] = 4
+        n[i] =  4
       else:
         n[i] = 3
   # n.reverse()
@@ -79,7 +79,16 @@ def fromSnafu(n):
 def main(path):
   total = 0
   mismatch = []
-  fromSnafu("1=")
+  for i in range(250):
+    t = toSnafu(i)
+    f = fromSnafu(t)[1]
+    if f != i:
+      mismatch.append((i, t, f))
+      print("mismatch", i, t, f)
+  print("MISMATCH TOTAL")
+  print("\n".join([str(n) for n in mismatch]))
+  exit(1)
+
   with open(path, "r") as fh:
     header = fh.readline()
     line = True
