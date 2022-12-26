@@ -26,9 +26,14 @@ def carry(n, i):
 
 def borrow(n, i):
   if i < len(n):
-    v = "012=-".index(str(n[i]))
+    if str(n[i]) in "-=":
+      # n = borrow(n, i+1)
+      v = "012=-".index(str(n[i]))
+      n[i] = v
+    else:
+      v = int(n[i])
     if v == 0:
-      #n = borrow(n, i+1)
+      n = borrow(n, i+1)
       n[i] = 4
     if v == 3:
       n = borrow(n, i+1)
@@ -67,7 +72,7 @@ def fromSnafu(n):
   for i, v in enumerate(n):
     print(i,v)
     if str(v) in "-=":
-      n = borrow(n, i)
+      n = borrow(n, i+1)
       if n[i] == "-":
         n[i] = 4
       else:
