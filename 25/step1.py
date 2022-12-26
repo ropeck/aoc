@@ -26,7 +26,6 @@ def carry(n, i):
 
 def toSnafu(d):
   n = numberToBase(d, 5)
-  n1 = n.copy()
   n.reverse()
   for i, v in enumerate(n):
     if v == 4:
