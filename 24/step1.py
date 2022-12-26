@@ -26,8 +26,8 @@ class Storm:
   def move(self, t):
     (dy, dx) = DIR[self.dir]
     # adjust to edges here..
-    self.x = 1 + (self.x_init + t*dx - 1) % (self.width()-2)
-    self.y = 1 + (self.y_init + t*dy - 1) % (self.height()-2)
+    self.x = 1 + ((self.x_init + t*dx - 1) % (self.width()-2))
+    self.y = 1 + ((self.y_init + t*dy - 1) % (self.height()-2))
     return self.position()
   def position(self):
     return (self.x, self.y)
@@ -68,17 +68,16 @@ class Valley:
     found=[]
     queue = deque([(1, self.start, []),])
     while queue:
+      if found:
+        break
       print(len(queue))
 
       (t, (x, y), p) = queue.popleft()
-      if t > 18:
-        break
       orig_p = p.copy()
-      p.append((x,y))
       for s in self.storms:
         s.move(t)
       b=[s.position() for s in self.storms]
-
+      b.sort()
       for dir, (dy, dx) in DIR.items():
         new_loc = (x + dx, y + dy)
         if new_loc == self.finish:
@@ -88,10 +87,10 @@ class Valley:
           continue
         if self.board[y+dy][x+dx] == WALL:
           continue
-        if new_loc not in b + orig_p:
-          queue.append((t + 1, new_loc, p.copy()))
+        if new_loc not in b:
+          queue.append((t + 1, new_loc, p + [(x, y, dir)]))
       if (x,y) not in b and y != 0:
-        queue.append((t+1, (x, y), p.copy()))
+        queue.append((t+1, (x, y), p+ [(x, y, "W")]))
 
 
 
