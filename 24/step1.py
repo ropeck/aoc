@@ -66,30 +66,24 @@ class Valley:
   def find_path(self):
     found=[]
     min_time = None
-    queue = deque([(0, self.start, []),])
+    queue = deque([(1, self.start, []),])
     visited = set()
     while queue:
       (t, (x, y), p) = queue.pop()
+      visited.add((x,y))
       tt = t % len(self.storms)
-      if (tt, x,y) in visited:
-        continue
+
       if not queue:
         queue.append((t+1, (x, y), p+ [(x, y, "W")]))
-      visited.add((tt, x,y))
       queue_times = [i[0] for i in queue] or [0]
       print(t, min_time, len(found), len(queue), min(queue_times), max(queue_times))
-      if min_time and t+1 >= min_time:
-        print("too long", t+1)
-        continue
-      orig_p = p.copy()
+
       for s in self.storms:
         s.move(t)
       b=[s.position() for s in self.storms]
       b.sort()
       for dir, (dy, dx) in DIR.items():
         new_loc = (x + dx, y + dy)
-        if new_loc in p:
-          continue
         if new_loc == self.finish:
           found.append((t, p.copy()))
           visited = set()
@@ -98,7 +92,9 @@ class Valley:
             (y + dy <= 0 or y + dy >= self.height-1)):
           continue
         if new_loc not in b:
-          queue.append((t + 1, new_loc, p + [(x, y, dir)]))
+          print("visited", visited, new_loc)
+          if new_loc not in visited or True:
+            queue.append((t + 1, new_loc, p + [(x, y, dir)]))
           print("    "*5 + "move",t, new_loc, dir)
 
 
