@@ -68,12 +68,14 @@ class Valley:
     min_time = None
     queue = deque([(1, self.start, []),])
     visited = set()
-    import pdb; pdb.set_trace()
     while queue:
-      (t, (x, y), p) = queue.popleft()
-      if (x,y) in visited:
+      (t, (x, y), p) = queue.pop()
+      if not queue:
+        queue.append((t+1, (x, y), p+ [(x, y, "W")]))
+      tt = t % len(self.storms)
+      if (tt, x,y) in visited:
         continue
-      visited.add((x,y))
+      visited.add((tt, x,y))
       queue_times = [i[0] for i in queue] or [0]
       print(t, min_time, len(found), len(queue), min(queue_times), max(queue_times))
       if min_time and t+1 >= min_time:
@@ -84,8 +86,6 @@ class Valley:
         s.move(t)
       b=[s.position() for s in self.storms]
       b.sort()
-      if (x,y) not in b and (not queue or y!=0):
-        queue.append((t+1, (x, y), p+ [(x, y, "W")]))
       for dir, (dy, dx) in DIR.items():
         new_loc = (x + dx, y + dy)
         if new_loc in p:
