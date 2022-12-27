@@ -32,7 +32,6 @@ class Storm:
   def position(self):
     return (self.x, self.y)
 
-
 class Valley:
   def __init__(self, path):
     self.board = []
@@ -66,33 +65,41 @@ class Valley:
 
   def find_path(self):
     found=[]
+    min_time = None
     queue = deque([(1, self.start, []),])
+    visited = set()
+    import pdb; pdb.set_trace()
     while queue:
-      if found:
-        break
-      print(len(queue))
-
       (t, (x, y), p) = queue.popleft()
+      if (x,y) in visited:
+        continue
+      visited.add((x,y))
+      queue_times = [i[0] for i in queue] or [0]
+      print(t, min_time, len(found), len(queue), min(queue_times), max(queue_times))
+      if min_time and t+1 >= min_time:
+        print("too long", t+1)
+        continue
       orig_p = p.copy()
       for s in self.storms:
         s.move(t)
       b=[s.position() for s in self.storms]
       b.sort()
-      moved = False
+      if (x,y) not in b and (not queue or y!=0):
+        queue.append((t+1, (x, y), p+ [(x, y, "W")]))
       for dir, (dy, dx) in DIR.items():
         new_loc = (x + dx, y + dy)
+        if new_loc in p:
+          continue
         if new_loc == self.finish:
           found.append((t, p.copy()))
+          visited = set()
+          min_time = t
         if ((x + dx <= 0 or x + dx >= self.width-1) or
             (y + dy <= 0 or y + dy >= self.height-1)):
           continue
-        if self.board[y+dy][x+dx] == WALL:
-          continue
         if new_loc not in b:
           queue.append((t + 1, new_loc, p + [(x, y, dir)]))
-          moved = True
-      if (x,y) not in b and not moved:
-        queue.append((t+1, (x, y), p+ [(x, y, "W")]))
+          print("    "*5 + "move",t, new_loc, dir)
 
 
 
@@ -101,10 +108,10 @@ class Valley:
 def main(path):
   v = Valley(path)
   res = v.find_path()
+  res.sort(key=lambda t: t[0])
+  res = res[0]
   print(v.finish)
-  print("len", len(res))
-  for l in res[:10]:
-    print(l)
+  print("len", len(res[1]))
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
