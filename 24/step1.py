@@ -66,15 +66,15 @@ class Valley:
   def find_path(self):
     found=[]
     min_time = None
-    queue = deque([(1, self.start, []),])
+    queue = deque([(0, self.start, []),])
     visited = set()
     while queue:
       (t, (x, y), p) = queue.pop()
-      if not queue:
-        queue.append((t+1, (x, y), p+ [(x, y, "W")]))
       tt = t % len(self.storms)
       if (tt, x,y) in visited:
         continue
+      if not queue:
+        queue.append((t+1, (x, y), p+ [(x, y, "W")]))
       visited.add((tt, x,y))
       queue_times = [i[0] for i in queue] or [0]
       print(t, min_time, len(found), len(queue), min(queue_times), max(queue_times))
