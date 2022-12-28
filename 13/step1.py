@@ -8,12 +8,14 @@ def compare(l, r, d=0):
   if type(l) == list and type(r) == list:
     for a,b in zip(l, r):
       if not compare(a, b, d+2):
+        print(" "*d + "<false>")
         return False
     return len(l) <= len(r)
   if type(l) == int:
-    return r and compare(l,r[0], d+2)
+    l = [l]
   else:
-    return l and compare(l[0],r, d+2)
+    r = [r]
+  return compare(l,r, d+ 2)
 
 def main(path):
   signals = []
