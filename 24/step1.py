@@ -49,6 +49,7 @@ class Board:
     visited = set()
     q = deque([(0, self.start),])
     while q:
+      print(len(q), list(q)[:5])
       t, (x, y) = q.popleft()
       tt = (t+1)%self.lcm
       if (tt, x, y) in visited:
@@ -59,23 +60,21 @@ class Board:
       for dir, (dy, dx) in DIR.items():
         ny = (dy + y) % self.height
         nx = (dx + x) % self.width
+        if (nx, ny) == self.finish:
+          return tt
         if (0 >= nx or nx >= self.width-1):
           continue
         if (0 >= ny or ny >= self.height-1):
           continue
-        if (nx, ny) == self.finish:
-          return t
         if self.state[tt][ny][nx] == SPACE:
           q.append((t+1, (nx, ny)))
+    print ("not found")
 
 
 def main(path):
   v = Board(path)
   res = v.find_path()
-  res.sort(key=lambda t: t[0])
-  res = res[0]
-  print(v.finish)
-  print("len", len(res[1]))
+  print ("time", res)
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
