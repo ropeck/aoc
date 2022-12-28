@@ -31,7 +31,7 @@ class Board:
     for t in range(self.lcm):
       b = [[SPACE for x in range(self.width)] for y in range(self.height)]
       for (x, y, dir) in self.storms:
-        (dx, dy) = DIR[dir]
+        (dy, dx) = DIR[dir]
         fx = 1 + ((x + t * dx - 1) % (self.width - 2))
         fy = 1 + ((y + t * dy - 1) % (self.height - 2))
         v = b[fy][fx]
@@ -47,27 +47,26 @@ class Board:
 
   def find_path(self):
     visited = set()
-    q = deque([(0, self.start),])
+    q = deque([(1, self.start, []),])
     while q:
-      print(len(q), list(q)[:5])
-      t, (x, y) = q.popleft()
+      t, (x, y), p = q.popleft()
       tt = (t+1)%self.lcm
       if (tt, x, y) in visited:
         continue
       visited.add((tt, x, y))
-      if self.state[tt][y][x]:
-        q.append((t+1, (x,y)))
+      if self.state[tt][y][x] == SPACE:
+        q.append((t+1, (x,y), p.copy() + [((x,y), "W")]))
       for dir, (dy, dx) in DIR.items():
         ny = (dy + y) % self.height
         nx = (dx + x) % self.width
         if (nx, ny) == self.finish:
-          return tt
+          return t, p
         if (0 >= nx or nx >= self.width-1):
           continue
         if (0 >= ny or ny >= self.height-1):
           continue
         if self.state[tt][ny][nx] == SPACE:
-          q.append((t+1, (nx, ny)))
+          q.append((t+1,(nx, ny),  p.copy() + [((x,y), dir)]))
     print ("not found")
 
 
