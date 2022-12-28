@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 from collections import deque
+from math import lcm
 import sys
 
 WALL = "#"
@@ -7,44 +8,16 @@ SPACE = "."
 STORM = {"<": (0,-1), ">": (0,1), "^": (-1,0), "v": (1,0)}
 DIR = STORM
 
-class Storm:
-  def __init__(self, valley, x, y, dir):
-    self.x_init = x
-    self.x = x
-    self.y_init = y
-    self.y = y
-    self.dir = dir
-    self.valley = valley
-
-  def __repr__(self):
-    return f'<Storm ({self.x_init},{self.y_init}) {self.dir}>'
-  def width(self):
-    return self.valley.width
-  def height(self):
-    return self.valley.height
-
-  def move(self, t):
-    (dy, dx) = DIR[self.dir]
-    # adjust to edges here..
-    self.x = 1 + ((self.x_init + t*dx - 1) % (self.width()-2))
-    self.y = 1 + ((self.y_init + t*dy - 1) % (self.height()-2))
-    return self.position()
-  def position(self):
-    return (self.x, self.y)
-
-class Valley:
+class Board:
   def __init__(self, path):
-    self.board = []
     self.storms = []
-    h = 0
     with open(path, "r") as fh:
       self.board = fh.read().splitlines()
-      for line in self.board:
+      for y, line in enumerate(self.board):
         row = list(line.strip())
         for x, mark in enumerate(row):
           if mark in STORM.keys():
-            self.storms.append(Storm(self, x, h, mark))
-        h += 1
+            self.storms.append((x, y, mark))
     self.height = len(self.board)
     self.width = len(self.board[0])
     for x, v in enumerate(self.board[0]):
@@ -53,60 +26,51 @@ class Valley:
     for x, v in enumerate(self.board[-1]):
       if v == SPACE:
         self.finish = (x, self.height-1)
-
-  def draw(self, coord=None, mark=None):
-    b = [r.copy() for r in self.board]
-    if coord:
-      y,x=coord
-      b[y][x] = mark
-    for l in b:
-      print("".join(l))
-    print("")
+    self.state = []
+    self.lcm = lcm(self.width - 2, self.height - 2)
+    for t in range(self.lcm):
+      b = [[SPACE for x in range(self.width)] for y in range(self.height)]
+      for (x, y, dir) in self.storms:
+        (dx, dy) = DIR[dir]
+        fx = 1 + ((x + t * dx - 1) % (self.width - 2))
+        fy = 1 + ((y + t * dy - 1) % (self.height - 2))
+        v = b[fy][fx]
+        if v != SPACE:
+          if v in DIR.keys():
+            v = '2'
+          else:
+            v = str(int(v) + 1)
+        else:
+          v = dir
+        b[fy][fx] = v
+      self.state.append(b)
 
   def find_path(self):
-    found=[]
-    min_time = None
-    queue = deque([(1, self.start, []),])
     visited = set()
-    while queue:
-      (t, (x, y), p) = queue.pop()
-      if not queue:
-        queue.append((t+1, (x, y), p+ [(x, y, "W")]))
-      tt = t % len(self.storms)
-      if (tt, x,y) in visited:
+    q = deque([(0, self.start),])
+    while q:
+      t, (x, y) = q.popleft()
+      tt = (t+1)%self.lcm
+      if (tt, x, y) in visited:
         continue
-      visited.add((tt, x,y))
-      queue_times = [i[0] for i in queue] or [0]
-      print(t, min_time, len(found), len(queue), min(queue_times), max(queue_times))
-      if min_time and t+1 >= min_time:
-        print("too long", t+1)
-        continue
-      orig_p = p.copy()
-      for s in self.storms:
-        s.move(t)
-      b=[s.position() for s in self.storms]
-      b.sort()
+      visited.add((tt, x, y))
+      if self.state[tt][y][x]:
+        q.append((t+1, (x,y)))
       for dir, (dy, dx) in DIR.items():
-        new_loc = (x + dx, y + dy)
-        if new_loc in p:
+        ny = (dy + y) % self.height
+        nx = (dx + x) % self.width
+        if (0 >= nx or nx >= self.width-1):
           continue
-        if new_loc == self.finish:
-          found.append((t, p.copy()))
-          visited = set()
-          min_time = t
-        if ((x + dx <= 0 or x + dx >= self.width-1) or
-            (y + dy <= 0 or y + dy >= self.height-1)):
+        if (0 >= ny or ny >= self.height-1):
           continue
-        if new_loc not in b:
-          queue.append((t + 1, new_loc, p + [(x, y, dir)]))
-          print("    "*5 + "move",t, new_loc, dir)
+        if (nx, ny) == self.finish:
+          return t
+        if self.state[tt][ny][nx] == SPACE:
+          q.append((t+1, (nx, ny)))
 
-
-
-    return found
 
 def main(path):
-  v = Valley(path)
+  v = Board(path)
   res = v.find_path()
   res.sort(key=lambda t: t[0])
   res = res[0]
