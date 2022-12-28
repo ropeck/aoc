@@ -69,7 +69,6 @@ class Board:
           q.append((t+1,(nx, ny),  p.copy() + [((x,y), dir)]))
     print ("not found")
 
-
 def main(path):
   v = Board(path)
   res = v.find_path()
