@@ -54,8 +54,6 @@ class Board:
       if (tt, x, y) in visited:
         continue
       visited.add((tt, x, y))
-      if self.state[tt][y][x] == SPACE:
-        q.append((t+1, (x,y), p.copy() + [((x,y), "W")]))
       for dir, (dy, dx) in DIR.items():
         ny = (dy + y) % self.height
         nx = (dx + x) % self.width
@@ -67,6 +65,8 @@ class Board:
           continue
         if self.state[tt][ny][nx] == SPACE:
           q.append((t+1,(nx, ny),  p.copy() + [((x,y), dir)]))
+      if self.state[tt][y][x] == SPACE:
+        q.append((t+1, (x,y), p.copy() + [((x,y), "W")]))
     print ("not found")
 
 def main(path):
@@ -79,7 +79,7 @@ def main(path):
   t = 0
   for s, f in [(v.start, v.finish), (v.finish, v.start), (v.start, v.finish)]:
     r = v.find_path(t, s, f)
-    print(r)
+    print(r[1][:5])
     seg = v.find_path(t, s, f)[0]
     print("segment", t, s, f, "took", seg)
     t += seg
