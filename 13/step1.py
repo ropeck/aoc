@@ -9,13 +9,13 @@ def compare(l, r, d=0):
     r = [r]
   for a,b in zip(l, r):
     if type(a) == int and type(b) == int:
-      rec = a - b
+      rec = b - a
     else:
       rec = compare(a, b)
     print("rec", rec)
     if rec:
       return rec > 0
-  return len(r) < len(l)
+  return len(r) > len(l)
 
 def main(path):
   signals = []
