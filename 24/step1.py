@@ -60,7 +60,7 @@ class Board:
         ny = (dy + y) % self.height
         nx = (dx + x) % self.width
         if (nx, ny) == finish_loc:
-          return t+1, p + [finish_loc]
+          return t+1 - start_time, p + [finish_loc]
         if (0 >= nx or nx >= self.width-1):
           continue
         if (0 >= ny or ny >= self.height-1):
@@ -76,7 +76,7 @@ def main(path):
   print ("time", res[0])
   print("")
   print("part 2")
-  t = 1
+  t = 0
   for s, f in [(v.start, v.finish), (v.finish, v.start), (v.start, v.finish)]:
     r = v.find_path(t, s, f)
     print(r)
