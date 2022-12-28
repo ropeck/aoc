@@ -3,19 +3,19 @@ import sys
 
 def compare(l, r, d=0):
   print(" "*d + "compare",l, r)
-  if type(l) == int and type(r) == int:
-    return l <= r
-  if type(l) == list and type(r) == list:
-    for a,b in zip(l, r):
-      if not compare(a, b, d+2):
-        print(" "*d + "<false>")
-        return False
-    return len(l) <= len(r)
-  if type(l) == int:
+  if not type(l) == list:
     l = [l]
-  else:
+  if not type(r) == list:
     r = [r]
-  return compare(l,r, d+ 2)
+  for a,b in zip(l, r):
+    if type(a) == int and type(b) == int:
+      rec = a - b
+    else:
+      rec = compare(a, b)
+    print("rec", rec)
+    if rec:
+      return rec > 0
+  return len(r) < len(l)
 
 def main(path):
   signals = []
