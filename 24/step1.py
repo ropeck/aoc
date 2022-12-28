@@ -60,7 +60,7 @@ class Board:
         ny = (dy + y) % self.height
         nx = (dx + x) % self.width
         if (nx, ny) == self.finish:
-          return t, p
+          return t+1, p + [self.finish]
         if (0 >= nx or nx >= self.width-1):
           continue
         if (0 >= ny or ny >= self.height-1):
@@ -72,7 +72,8 @@ class Board:
 def main(path):
   v = Board(path)
   res = v.find_path()
-  print ("time", res)
+  print ("time", res[0])
+
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
