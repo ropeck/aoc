@@ -1,18 +1,19 @@
 #!/usr/bin/python3
 import sys
 
-def compare(l, r):
+def compare(l, r, d=0):
+  print(" "*d + "compare",l, r)
   if type(l) == int and type(r) == int:
     return l <= r
   if type(l) == list and type(r) == list:
     for a,b in zip(l, r):
-      if not compare(a, b):
+      if not compare(a, b, d+2):
         return False
     return len(l) <= len(r)
   if type(l) == int:
-    return r and compare(l,r[0])
+    return r and compare(l,r[0], d+2)
   else:
-    return l and compare(l[0],r)
+    return l and compare(l[0],r, d+2)
 
 def main(path):
   signals = []
@@ -29,7 +30,8 @@ def main(path):
   for i, (l, r) in enumerate(signals):
     if compare(l, r):
       sum += (i+1)
-      print(i+1, l, r)
+      print("ok", i+1)
+    print("")
 
   print("")
   print("total", sum)
