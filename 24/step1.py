@@ -45,9 +45,9 @@ class Board:
         b[fy][fx] = v
       self.state.append(b)
 
-  def find_path(self):
+  def find_path(self, start_time, start_loc, finish_loc):
     visited = set()
-    q = deque([(1, self.start, []),])
+    q = deque([(start_time, start_loc, []),])
     while q:
       t, (x, y), p = q.popleft()
       tt = (t+1)%self.lcm
@@ -59,8 +59,8 @@ class Board:
       for dir, (dy, dx) in DIR.items():
         ny = (dy + y) % self.height
         nx = (dx + x) % self.width
-        if (nx, ny) == self.finish:
-          return t+1, p + [self.finish]
+        if (nx, ny) == finish_loc:
+          return t+1, p + [finish_loc]
         if (0 >= nx or nx >= self.width-1):
           continue
         if (0 >= ny or ny >= self.height-1):
@@ -71,9 +71,19 @@ class Board:
 
 def main(path):
   v = Board(path)
-  res = v.find_path()
+  print ("part 1")
+  res = v.find_path(0, v.start, v.finish)
   print ("time", res[0])
-
+  print("")
+  print("part 2")
+  t = 1
+  for s, f in [(v.start, v.finish), (v.finish, v.start), (v.start, v.finish)]:
+    r = v.find_path(t, s, f)
+    print(r)
+    seg = v.find_path(t, s, f)[0]
+    print("segment", t, s, f, "took", seg)
+    t += seg
+  print("time", t)
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
