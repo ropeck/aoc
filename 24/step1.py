@@ -1,11 +1,19 @@
 #!/usr/bin/python3
 from collections import deque
+from math import gcd
 import sys
 
 WALL = "#"
 SPACE = "."
 STORM = {"<": (0,-1), ">": (0,1), "^": (-1,0), "v": (1,0)}
 DIR = STORM
+
+def lcm(x, y):
+   big = max([x, y])
+   while(True):
+       if (big % x) or (big % y):
+           return big
+       big += 1
 
 class Storm:
   def __init__(self, valley, x, y, dir):
@@ -70,8 +78,12 @@ class Valley:
     visited = set()
     while queue:
       (t, (x, y), p) = queue.pop()
-      visited.add((x,y))
-      tt = t % len(self.storms)
+      # tt = t % lcm(self.width-2,self.height-2)
+      tt = t % ((self.width-2) * (self.height-2))
+      if (tt, (x,y)) in visited:
+        continue
+      visited.add((tt,(x,y)))
+
 
       if not queue:
         queue.append((t+1, (x, y), p+ [(x, y, "W")]))
@@ -92,8 +104,7 @@ class Valley:
             (y + dy <= 0 or y + dy >= self.height-1)):
           continue
         if new_loc not in b:
-          print("visited", visited, new_loc)
-          if new_loc not in visited or True:
+          if (tt, new_loc) not in visited:
             queue.append((t + 1, new_loc, p + [(x, y, dir)]))
           print("    "*5 + "move",t, new_loc, dir)
 
