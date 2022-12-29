@@ -69,7 +69,7 @@ class Map:
       f = 0
     if (nx, ny) == self.finish():
       f = 26
-    print(f'({x},{y}) -> ({nx},{ny}) = {f-s}')
+    # print(f'({x},{y}) -> ({nx},{ny}) = {f-s}')
     return f - s
 
   def move_allowed(self, x, y, nx, ny):
@@ -101,7 +101,7 @@ class Map:
 
 
 
-      print(f'check_spot({x},{y}){self.map[y][x]} {len(self.queue)} {len(path)} ')
+      # print(f'check_spot({x},{y}){self.map[y][x]} {len(self.queue)} {len(path)} ')
       for (cx, cy, l) in Map.MOVES:
         nx = x + cx
         ny = y + cy
@@ -112,15 +112,15 @@ class Map:
           v = self.map[ny][nx]
         except IndexError:
           v = "OOB"
-        print(f'  ({nx},{ny}){v} {l} {len(self.queue)}')
+        # print(f'  ({nx},{ny}){v} {l} {len(self.queue)}')
 
         if self.in_bounds(nx, ny) and self.move_allowed(x, y, nx, ny):
           if (nx, ny) == self.finish():
-            print('found')
+            # print('found')
             self.found.append(path + [(x, y, 'F')])
             continue
           self.queue.append((nx, ny, path + [(x, y, l)]))
-          print(f'    added')
+          # print(f'    added')
     return self.found
 
 def main(path):
