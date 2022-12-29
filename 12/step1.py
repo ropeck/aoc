@@ -68,7 +68,7 @@ class Map:
     if (nx, ny) == self.start():
       f = 0
     if (nx, ny) == self.finish():
-      f = 26
+      f = 25
     # print(f'({x},{y}) -> ({nx},{ny}) = {f-s}')
     return f - s
 
@@ -128,7 +128,7 @@ def main(path):
   found.sort(key=lambda p: len(p))
   print(found[0])
   map.draw()
-  print(f'shortest path {len(found[0])-1}')
+  print(f'shortest path {len(found[0])}')
   print(f'total found {len(found)}')
   return len(found[0])
 
