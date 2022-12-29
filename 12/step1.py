@@ -7,6 +7,8 @@ import time
 
 class Map:
   MOVES = [(0, -1, 'U'), (0, 1, 'D'), (1, 0, 'R'), (-1, 0, 'L')]
+  START = ord('S') - ord('a')
+  FINISH = ord('E') - ord('a')
 
   def charmap(char):
     return ord(char) - ord('a')
@@ -55,21 +57,17 @@ class Map:
   def height(self):
     return len(self.map)
 
-  def map_height(self, x, y):
-    if not self.in_bounds(x,y):
-      return None
-    m = self.map[y][x]
-    if m == Map.charmap('S'):
-      m = 0
-    if m == Map.charmap('E'):
-      m = 26
-    return m
-
   def in_bounds(self, x, y):
     return not (x < 0 or y < 0 or x > self.width() - 1 or y > self.height() - 1)
 
   def move_allowed(self, x, y, nx, ny):
-    return self.map_height(nx, ny) - self.map_height(x, y) <= 1
+    s = self.map[y][x]
+    f = self.map[ny][nx]
+    if (x, y) == self.start():
+      s = 0
+    if (nx, ny) == self.finish():
+      f = Map.charmap(FINISH)
+    return f - s <= 1
 
 
 
