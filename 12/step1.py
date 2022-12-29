@@ -131,9 +131,9 @@ def main(path):
   found = map.find_paths()
   found.sort(key=lambda p: len(p))
   print(found[0])
+  map.draw(found[0])
   print(f'shortest path {len(found[0])}')
   print(f'total found {len(found)}')
-  map.draw(found[0])
   return len(found[0])
 
 if __name__ == '__main__':
