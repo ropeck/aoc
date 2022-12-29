@@ -65,8 +65,7 @@ class Map:
     f = self.map[ny][nx]
     if (x, y) == self.start():
       s = 0
-    if (nx, ny) == self.s:
-      tart():
+    if (nx, ny) == self.start():
       f = 0
     if (nx, ny) == self.finish():
       f = Map.charmap(Map.FINISH)
