@@ -1,11 +1,12 @@
 #!/usr/bin/python3
 from collections import deque
 import os
+import random
 import sys
 import time
 
 class Map:
-  MOVES = [(1, 0, 'R'), (0, -1, 'U'), (0, 1, 'D'), (-1, 0, 'L')]
+  MOVES = [(0, -1, 'U'), (0, 1, 'D'), (1, 0, 'R'), (-1, 0, 'L')]
 
   def charmap(char):
     return ord(char) - ord('a')
@@ -75,7 +76,7 @@ class Map:
   def draw(self, path):
     os.system('clear')
     m = [l.copy() for l in self.map]
-    for (x, y, p, v) in self.queue:
+    for (x, y, p) in self.queue:
       m[y][x] = ord(' ')-ord('a')
     for (x, y) in path:
       m[y][x] = ord('*')-ord('a')
@@ -84,15 +85,18 @@ class Map:
       print ("".join([chr(ord('a') + i) for i in l]))
     time.sleep(0.1)
 
-  def check_spot(self, x, y, path=None, visited=None):
+  def check_spot(self, x, y, path=None):
     if not path:
       path = []
+    visited = self.visited
+    visited.append((x, y))
     if self.map[y][x] == Map.charmap('E'):
       print('found')
       self.found.append(path+[(x,y)])
       return
 
     print(f'check_spot({x},{y}){self.map[y][x]} {path} {len(self.queue)} {len(path)} ')
+    random.shuffle(Map.MOVES)
     for (cx, cy, l) in Map.MOVES:
       nx = x + cx
       ny = y + cy
@@ -101,19 +105,19 @@ class Map:
           self.move_allowed(x,y, nx, ny) and
   #            (nx, ny) not in q,
           (nx, ny) not in visited + path):
-        visited.append((nx, ny))
         print(f'    added')
-        self.queue.append((nx, ny, path + [(x, y)], visited.copy()))
+        self.queue.append((nx, ny, path + [(x, y)]))
 
   def find_paths(self):
     self.found = []
+    self.visited = []
     sx, sy = self.start()
-    self.queue = deque([(sx, sy, [], [])])
+    self.queue = deque([(sx, sy, [])])
     while self.queue:
       q = self.queue
-      (cx, cy, path, visited) = self.queue.pop()
+      (cx, cy, path) = self.queue.pop()
       self.draw(path)
-      self.check_spot(cx, cy, path, visited)
+      self.check_spot(cx, cy, path)
       print('')
       if self.found:
         break
