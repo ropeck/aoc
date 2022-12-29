@@ -106,7 +106,8 @@ class Map:
           self.move_allowed(x,y, nx, ny) and
           (nx, ny) not in visited + path):
         print(f'    added')
-        self.queue.append((nx, ny, path + [(x, y)]))
+        if (nx, ny) not in [(x,y) for (x,y,p) in list(self.queue)]:
+          self.queue.append((nx, ny, path + [(x, y)]))
 
   def find_paths(self):
     self.found = []
