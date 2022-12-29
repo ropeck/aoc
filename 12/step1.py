@@ -78,10 +78,9 @@ class Map:
       m[y][x] = ord(' ')-ord('a')
     for (x, y) in path:
       m[y][x] = ord('*')-ord('a')
-    print(path)
+    # print(path)
     for l in m:
       print ("".join([chr(ord('a') + i) for i in l]))
-    time.sleep(0.1)
 
   def check_spot(self, x, y, path=None):
     if not path:
@@ -101,8 +100,8 @@ class Map:
       print(f'  ({nx},{ny}){l} {len(self.queue)}')
       if (self.in_bounds(nx, ny) and
           self.move_allowed(x,y, nx, ny) and
-  #            (nx, ny) not in q,
-          (nx, ny) not in visited + path):
+          (nx, ny) not in path):
+          # (nx, ny) not in visited + path):
         print(f'    added')
         self.queue.append((nx, ny, path + [(x, y)]))
 
@@ -113,7 +112,7 @@ class Map:
     self.queue = deque([(sx, sy, [])])
     while self.queue:
       q = self.queue
-      (cx, cy, path) = self.queue.pop()
+      (cx, cy, path) = self.queue.popleft()
       self.draw(path)
       self.check_spot(cx, cy, path)
       print('')
