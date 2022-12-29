@@ -65,7 +65,7 @@ class Map:
     f = self.map[ny][nx]
     if (x, y) == self.start():
       s = 0
-    if (nx, ny) == self.s
+    if (nx, ny) == self.s:
       tart():
       f = 0
     if (nx, ny) == self.finish():
