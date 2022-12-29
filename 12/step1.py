@@ -76,11 +76,11 @@ class Map:
     return self.move_diff(x, y, nx, ny) <= 1
 
   def draw(self, path):
-    os.system('clear')
+    #os.system('clear')
     m = [l.copy() for l in self.map]
     for (x, y, p) in self.queue:
       m[y][x] = ord(' ')-ord('a')
-    for (x, y) in path:
+    for (x, y, l) in path:
       m[y][x] = ord('*')-ord('a')
     # print(path)
     for l in m:
@@ -89,12 +89,11 @@ class Map:
   def check_spot(self, x, y, path=None):
     if not path:
       path = []
-    self.visited.append((x, y))
+    #self.visited.append((x, y))
     visited = self.visited
     if (x,y) == self.finish():
       print('found')
-      self.found.append(path+[(x,y)])
-      return
+      self.found.append(path+[(x,y,'F')])
 
     print(f'check_spot({x},{y}){self.map[y][x]} {len(self.queue)} {len(path)} ')
     # random.shuffle(Map.MOVES)
@@ -107,7 +106,7 @@ class Map:
           (nx, ny) not in visited + path):
         print(f'    added')
         if (nx, ny) not in [(x,y) for (x,y,p) in list(self.queue)]:
-          self.queue.append((nx, ny, path + [(x, y)]))
+          self.queue.append((nx, ny, path + [(x, y, l)]))
 
   def find_paths(self):
     self.found = []
@@ -117,7 +116,7 @@ class Map:
     while self.queue:
       q = self.queue
       (cx, cy, path) = self.queue.popleft()
-      self.draw(path)
+      #self.draw(path)
       self.check_spot(cx, cy, path)
       print('')
       if self.found:
