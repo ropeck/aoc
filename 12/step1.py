@@ -68,8 +68,8 @@ class Map:
     if (nx, ny) == self.start():
       f = 0
     if (nx, ny) == self.finish():
-      f =Map.FINISH
-    print(f'({x},{y}) -> ({nx},{ny}) = {f}')
+      f = 26
+    print(f'({x},{y}) -> ({nx},{ny}) = {f-s}')
     return f - s
 
   def move_allowed(self, x, y, nx, ny):
@@ -94,30 +94,31 @@ class Map:
     while self.queue:
       q = self.queue
       (x, y, path) = self.queue.popleft()
-      # self.draw(path)
 
-      if (x, y) == self.finish():
-        print('found')
-        self.found.append(path + [(x, y, 'F')])
-        continue
+      self.draw(path)
+
+
 
       print(f'check_spot({x},{y}){self.map[y][x]} {len(self.queue)} {len(path)} ')
-      # random.shuffle(Map.MOVES)
       for (cx, cy, l) in Map.MOVES:
         nx = x + cx
         ny = y + cy
-        print(f'  ({nx},{ny}){l} {len(self.queue)}')
-        if (self.in_bounds(nx, ny) and
-                self.move_allowed(x, y, nx, ny) and
-                (nx, ny) not in self.visited):
-          self.visited.append((x, y))
+        if (nx, ny) in self.visited:
+          continue
+        self.visited.append((nx, ny))
+        try:
+          v = self.map[ny][nx]
+        except IndexError:
+          v = "OOB"
+        print(f'  ({nx},{ny}){v} {l} {len(self.queue)}')
+
+        if self.in_bounds(nx, ny) and self.move_allowed(x, y, nx, ny):
+          if (nx, ny) == self.finish():
+            print('found')
+            self.found.append(path + [(x, y, 'F')])
+            continue
+          self.queue.append((nx, ny, path + [(x, y, l)]))
           print(f'    added')
-          if (nx, ny) not in [(x, y) for (x, y, p) in list(self.queue)]:
-            self.queue.append((nx, ny, path + [(x, y, l)]))
-      print('')
-      if self.found:
-        break
-  #  print(self.found)
     return self.found
 
 def main(path):
@@ -127,7 +128,7 @@ def main(path):
   found.sort(key=lambda p: len(p))
   print(found[0])
   map.draw(found[0])
-  print(f'shortest path {len(found[0])+1}')
+  print(f'shortest path {len(found[0])-1}')
   print(f'total found {len(found)}')
   return len(found[0])
 
