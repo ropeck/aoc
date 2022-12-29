@@ -60,19 +60,21 @@ class Map:
   def in_bounds(self, x, y):
     return not (x < 0 or y < 0 or x > self.width() - 1 or y > self.height() - 1)
 
-  def move_allowed(self, x, y, nx, ny):
+  def move_diff(self, x, y, nx, ny):
     s = self.map[y][x]
     f = self.map[ny][nx]
     if (x, y) == self.start():
       s = 0
-    if (nx, ny) == self.start():
+    if (nx, ny) == self.s
+      tart():
       f = 0
     if (nx, ny) == self.finish():
       f = Map.charmap(FINISH)
     print(f'({x},{y}) -> ({nx},{ny}) = {f}')
-    return f - s <= 1
+    return f - s
 
-
+  def move_allowed(self, x, y, nx, ny):
+    return self.move_diff(x, y, nx, ny) <= 1
 
   def draw(self, path):
     os.system('clear')
@@ -95,7 +97,7 @@ class Map:
       self.found.append(path+[(x,y)])
       return
 
-    print(f'check_spot({x},{y}){self.map[y][x]} {path} {len(self.queue)} {len(path)} ')
+    print(f'check_spot({x},{y}){self.map[y][x]} {len(self.queue)} {len(path)} ')
     random.shuffle(Map.MOVES)
     for (cx, cy, l) in Map.MOVES:
       nx = x + cx
