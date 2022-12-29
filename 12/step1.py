@@ -69,7 +69,7 @@ class Map:
       tart():
       f = 0
     if (nx, ny) == self.finish():
-      f = Map.charmap(FINISH)
+      f = Map.charmap(Map.FINISH)
     print(f'({x},{y}) -> ({nx},{ny}) = {f}')
     return f - s
 
