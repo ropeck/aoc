@@ -129,7 +129,7 @@ def main(path):
   found = map.find_paths()
   found.sort(key=lambda p: len(p))
   print(found[0])
-  map.draw(found[0])
+  map.draw()
   print(f'shortest path {len(found[0])-1}')
   print(f'total found {len(found)}')
   return len(found[0])
