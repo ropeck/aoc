@@ -85,8 +85,8 @@ class Map:
   def check_spot(self, x, y, path=None):
     if not path:
       path = []
+    self.visited.append((x, y))
     visited = self.visited
-    visited.append((x, y))
     if self.map[y][x] == Map.charmap('E'):
       print('found')
       self.found.append(path+[(x,y)])
