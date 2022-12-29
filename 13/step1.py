@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import functools
 import sys
 
 def compare(l, r):
@@ -33,6 +34,7 @@ def main(path):
 
   print("part1 total", sum)
 
+  sorted(signals, key=functools.cmp_to_key(compare))
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
