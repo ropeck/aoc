@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import functools
 import sys
 
 def compare(l, r):
@@ -30,12 +31,10 @@ def main(path):
   for i, (l, r) in enumerate(signals):
     if compare(l, r) > 0:
       sum += (i+1)
+
   print("part1 total", sum)
 
-  all_signals = []
-  for l, r in signals:
-    all_signals.append(l)
-    all_signals.append(r)
+  sorted(signals, key=functools.cmp_to_key(compare))
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
