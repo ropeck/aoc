@@ -75,7 +75,7 @@ class Map:
   def draw(self, path):
     os.system('clear')
     m = [l.copy() for l in self.map]
-    for (x, y, p) in self.queue:
+    for (x, y, p, v) in self.queue:
       m[y][x] = ord(' ')-ord('a')
     for (x, y) in path:
       m[y][x] = ord('*')-ord('a')
@@ -91,10 +91,6 @@ class Map:
       print('found')
       self.found.append(path+[(x,y)])
       return
-    q = []
-    for i in self.queue:
-      (a,b,p) = i
-      q.append((a,b))
 
     print(f'check_spot({x},{y}){self.map[y][x]} {path} {len(self.queue)} {len(path)} ')
     for (cx, cy, l) in Map.MOVES:
@@ -107,18 +103,17 @@ class Map:
           (nx, ny) not in visited + path):
         visited.append((nx, ny))
         print(f'    added')
-        self.queue.append((nx, ny, path + [(x, y)], ))
+        self.queue.append((nx, ny, path + [(x, y)], visited.copy()))
 
   def find_paths(self):
     self.found = []
-    self.queue = deque([self.start() + ([], )])
-    visited = []
+    sx, sy = self.start()
+    self.queue = deque([(sx, sy, [], [])])
     while self.queue:
       q = self.queue
-      (cx, cy, path) = self.queue.popleft()
+      (cx, cy, path, visited) = self.queue.pop()
       self.draw(path)
       self.check_spot(cx, cy, path, visited)
-      visited.append((cx, cy))
       print('')
       if self.found:
         break
