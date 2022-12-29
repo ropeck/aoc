@@ -65,15 +65,17 @@ class Map:
     f = self.map[ny][nx]
     if (x, y) == self.start():
       s = 0
+    if (x, y) == self.finish():
+      s = 26
     if (nx, ny) == self.start():
       f = 0
     if (nx, ny) == self.finish():
-      f =Map.FINISH
+      f = 26
     print(f'({x},{y}) -> ({nx},{ny}) = {f}')
     return f - s
 
   def move_allowed(self, x, y, nx, ny):
-    return self.move_diff(x, y, nx, ny) <= 1
+    return abs(self.move_diff(x, y, nx, ny)) <= 1
 
   def draw(self, path):
     os.system('clear')
@@ -115,7 +117,7 @@ class Map:
     while self.queue:
       q = self.queue
       (cx, cy, path) = self.queue.popleft()
-      self.draw(path)
+      # self.draw(path)
       self.check_spot(cx, cy, path)
       print('')
       if self.found:
