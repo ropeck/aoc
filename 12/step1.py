@@ -68,10 +68,8 @@ class Map:
     return not (x < 0 or y < 0 or x > self.width() - 1 or y > self.height() - 1)
 
   def move_allowed(self, x, y, nx, ny):
-    try:
-      return self.map_height(nx, ny) - self.map_height(x, y) <= 1
-    except TypeError:
-      return False
+    return self.map_height(nx, ny) - self.map_height(x, y) <= 1
+
   def check_spot_dfs(self, x, y, path=None):
     if not path:
       path = []
@@ -120,12 +118,12 @@ class Map:
       ny = y + cy
       if (nx, ny) in visited + path:
         continue
-
+      visited.append((nx,ny))
       print(f'  ({nx},{ny}){l} {len(self.queue)}')
-      if all([self.in_bounds(nx, ny),
-              self.move_allowed(x,y, nx, ny),
+      if (self.in_bounds(nx, ny) and
+          self.move_allowed(x,y, nx, ny) and
   #            (nx, ny) not in q,
-              (nx, ny) not in path]):
+          (nx, ny) not in path):
         print(f'    added')
         self.queue.append((nx, ny, path + [(x, y)], ))
 
