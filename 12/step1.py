@@ -102,8 +102,6 @@ class Map:
         self.draw()
         drawn = len(path)
 
-
-
       # print(f'check_spot({x},{y}){self.map[y][x]} {len(self.queue)} {len(path)} ')
       for (cx, cy, l) in Map.MOVES:
         nx = x + cx
