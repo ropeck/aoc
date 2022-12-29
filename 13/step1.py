@@ -1,22 +1,18 @@
 #!/usr/bin/python3
 import sys
 
-def compare(l, r, d=0):
-  print(" "*d + "compare",l, r)
+def compare(l, r):
   if not type(l) == list:
     l = [l]
   if not type(r) == list:
     r = [r]
   for a,b in zip(l, r):
     if type(a) == int and type(b) == int:
-      print(" " * (d+2), a, b, b-a)
       rec = b - a
     else:
-      rec = compare(a, b, d+2)
-    print(" "*d + "rec", rec)
+      rec = compare(a, b)
     if rec:
       return rec
-  print("equal", len(r) - len(l))
   return len(r) - len(l)
 
 def main(path):
@@ -34,11 +30,8 @@ def main(path):
   for i, (l, r) in enumerate(signals):
     if compare(l, r) > 0:
       sum += (i+1)
-      print("ok", i+1)
-    print("")
 
-  print("")
-  print("total", sum)
+  print("part1 total", sum)
 
 
 if __name__ == '__main__':
