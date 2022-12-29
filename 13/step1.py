@@ -9,12 +9,12 @@ def compare(l, r):
     r = [r]
   for a,b in zip(l, r):
     if type(a) == int and type(b) == int:
-      rec = b - a
+      rec = a - b
     else:
       rec = compare(a, b)
     if rec:
       return rec
-  return len(r) - len(l)
+  return len(l) - len(r) 
 
 def main(path):
   signals = []
