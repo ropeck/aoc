@@ -65,8 +65,11 @@ class Map:
     f = self.map[ny][nx]
     if (x, y) == self.start():
       s = 0
+    if (nx, ny) == self.start():
+      f = 0
     if (nx, ny) == self.finish():
       f = Map.charmap(FINISH)
+    print(f'({x},{y}) -> ({nx},{ny}) = {f}')
     return f - s <= 1
 
 
