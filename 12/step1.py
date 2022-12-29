@@ -89,8 +89,6 @@ class Map:
   def check_spot(self, x, y, path=None):
     if not path:
       path = []
-    self.visited.append((x, y))
-    visited = self.visited
     if (x,y) == self.finish():
       print('found')
       self.found.append(path+[(x,y)])
@@ -104,7 +102,8 @@ class Map:
       print(f'  ({nx},{ny}){l} {len(self.queue)}')
       if (self.in_bounds(nx, ny) and
           self.move_allowed(x,y, nx, ny) and
-          (nx, ny) not in visited + path):
+          (nx, ny) not in self.visited):
+        self.visited.append((x, y))
         print(f'    added')
         if (nx, ny) not in [(x,y) for (x,y,p) in list(self.queue)]:
           self.queue.append((nx, ny, path + [(x, y)]))
