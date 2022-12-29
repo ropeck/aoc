@@ -86,27 +86,6 @@ class Map:
     for l in m:
       print ("".join([chr(ord('a') + i) for i in l]))
 
-  def check_spot(self, x, y, path=None):
-    if not path:
-      path = []
-    if (x,y) == self.finish():
-      print('found')
-      self.found.append(path+[(x,y,'F')])
-
-    print(f'check_spot({x},{y}){self.map[y][x]} {len(self.queue)} {len(path)} ')
-    # random.shuffle(Map.MOVES)
-    for (cx, cy, l) in Map.MOVES:
-      nx = x + cx
-      ny = y + cy
-      print(f'  ({nx},{ny}){l} {len(self.queue)}')
-      if (self.in_bounds(nx, ny) and
-          self.move_allowed(x,y, nx, ny) and
-          (nx, ny) not in self.visited):
-        self.visited.append((x, y))
-        print(f'    added')
-        if (nx, ny) not in [(x,y) for (x,y,p) in list(self.queue)]:
-          self.queue.append((nx, ny, path + [(x, y, l)]))
-
   def find_paths(self):
     self.found = []
     self.visited = []
@@ -114,9 +93,27 @@ class Map:
     self.queue = deque([(sx, sy, [])])
     while self.queue:
       q = self.queue
-      (cx, cy, path) = self.queue.popleft()
-      self.draw(path)
-      self.check_spot(cx, cy, path)
+      (x, y, path) = self.queue.popleft()
+      # self.draw(path)
+
+      if (x, y) == self.finish():
+        print('found')
+        self.found.append(path + [(x, y, 'F')])
+        continue
+
+      print(f'check_spot({x},{y}){self.map[y][x]} {len(self.queue)} {len(path)} ')
+      # random.shuffle(Map.MOVES)
+      for (cx, cy, l) in Map.MOVES:
+        nx = x + cx
+        ny = y + cy
+        print(f'  ({nx},{ny}){l} {len(self.queue)}')
+        if (self.in_bounds(nx, ny) and
+                self.move_allowed(x, y, nx, ny) and
+                (nx, ny) not in self.visited):
+          self.visited.append((x, y))
+          print(f'    added')
+          if (nx, ny) not in [(x, y) for (x, y, p) in list(self.queue)]:
+            self.queue.append((nx, ny, path + [(x, y, l)]))
       print('')
       if self.found:
         break
