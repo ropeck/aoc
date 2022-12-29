@@ -91,7 +91,7 @@ class Map:
       path = []
     self.visited.append((x, y))
     visited = self.visited
-    if (x,y) = self.finish():
+    if (x,y) == self.finish():
       print('found')
       self.found.append(path+[(x,y)])
       return
