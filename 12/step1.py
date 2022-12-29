@@ -76,7 +76,7 @@ class Map:
     return self.move_diff(x, y, nx, ny) <= 1
 
   def draw(self, path):
-    #os.system('clear')
+    os.system('clear')
     m = [l.copy() for l in self.map]
     for (x, y, p) in self.queue:
       m[y][x] = ord(' ')-ord('a')
@@ -115,7 +115,7 @@ class Map:
     while self.queue:
       q = self.queue
       (cx, cy, path) = self.queue.popleft()
-      #self.draw(path)
+      self.draw(path)
       self.check_spot(cx, cy, path)
       print('')
       if self.found:
@@ -130,7 +130,7 @@ def main(path):
   found.sort(key=lambda p: len(p))
   print(found[0])
   map.draw(found[0])
-  print(f'shortest path {len(found[0])}')
+  print(f'shortest path {len(found[0])+1}')
   print(f'total found {len(found)}')
   return len(found[0])
 
