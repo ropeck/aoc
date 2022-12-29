@@ -82,7 +82,6 @@ class Map:
       m[y][x] = ord(' ')-ord('a')
       for (px, py, l) in p:
         m[py][px] = ord('+')-ord('a')
-    # print(path)
     for l in m:
       print ("".join([chr(ord('a') + i) for i in l]))
 
@@ -98,6 +97,7 @@ class Map:
 
       if len(path) > drawn:
         self.draw()
+        drawn = len(path)
 
 
 
