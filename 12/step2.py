@@ -79,10 +79,10 @@ class Map:
 
   def draw(self, path=None):
     os.system('clear')
+    m = [l.copy() for l in self.map]
     if path:
       for (px, py, l) in path:
         m[py][px] = ord('*') - ord('a')
-    m = [l.copy() for l in self.map]
     for (x, y, p) in self.queue:
       m[y][x] = ord(' ')-ord('a')
       for (px, py, l) in p:
