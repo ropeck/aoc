@@ -34,7 +34,15 @@ def main(path):
 
   print("part1 total", sum)
 
-  sorted(signals, key=functools.cmp_to_key(compare))
+  all_signals = []
+  for l, r in signals:
+    all_signals.append(l)
+    all_signals.append(r)
+  sorted(all_signals, key=functools.cmp_to_key(compare))
+
+  for s in all_signals:
+    print(s)
+
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
