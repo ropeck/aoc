@@ -94,6 +94,7 @@ class Map:
     while self.queue:
       q = self.queue
       (x, y, path) = self.queue.popleft()
+      self.visited.append((x, y))
 
       if len(path) > drawn:
         self.draw()
@@ -107,7 +108,6 @@ class Map:
         ny = y + cy
         if (nx, ny) in self.visited:
           continue
-        self.visited.append((nx, ny))
         try:
           v = self.map[ny][nx]
         except IndexError:
