@@ -77,8 +77,11 @@ class Map:
   def move_allowed(self, x, y, nx, ny):
     return self.move_diff(nx, ny, x, y) <= 1  # backwards going down
 
-  def draw(self):
+  def draw(self, path=None):
     os.system('clear')
+    if path:
+      for (px, py, l) in path:
+        m[py][px] = ord('*') - ord('a')
     m = [l.copy() for l in self.map]
     for (x, y, p) in self.queue:
       m[y][x] = ord(' ')-ord('a')
@@ -129,7 +132,7 @@ def main(path):
   found = map.find_paths()
   found.sort(key=lambda p: len(p))
   print(found[0])
-  map.draw()
+  map.draw(found[0])
   print(f'shortest path {len(found[0])}')
   print(f'total found {len(found)}')
   return len(found[0])
