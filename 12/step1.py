@@ -75,13 +75,13 @@ class Map:
   def move_allowed(self, x, y, nx, ny):
     return self.move_diff(x, y, nx, ny) <= 1
 
-  def draw(self, path):
+  def draw(self):
     os.system('clear')
     m = [l.copy() for l in self.map]
     for (x, y, p) in self.queue:
       m[y][x] = ord(' ')-ord('a')
-    for (x, y, l) in path:
-      m[y][x] = ord('*')-ord('a')
+      for (x, y, l) in p:
+        m[y][x] = ord('+')-ord('a')
     # print(path)
     for l in m:
       print ("".join([chr(ord('a') + i) for i in l]))
@@ -89,13 +89,15 @@ class Map:
   def find_paths(self):
     self.found = []
     self.visited = []
+    drawn = 0
     sx, sy = self.start()
     self.queue = deque([(sx, sy, [])])
     while self.queue:
       q = self.queue
       (x, y, path) = self.queue.popleft()
 
-      self.draw(path)
+      if len(path) > drawn:
+        self.draw()
 
 
 
