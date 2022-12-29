@@ -100,8 +100,7 @@ class Map:
       print(f'  ({nx},{ny}){l} {len(self.queue)}')
       if (self.in_bounds(nx, ny) and
           self.move_allowed(x,y, nx, ny) and
-          (nx, ny) not in path):
-          # (nx, ny) not in visited + path):
+          (nx, ny) not in visited + path):
         print(f'    added')
         self.queue.append((nx, ny, path + [(x, y)]))
 
