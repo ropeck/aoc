@@ -70,22 +70,6 @@ class Map:
   def move_allowed(self, x, y, nx, ny):
     return self.map_height(nx, ny) - self.map_height(x, y) <= 1
 
-  def check_spot_dfs(self, x, y, path=None):
-    if not path:
-      path = []
-    visited = []
-    if self.map[y][x] == Map.charmap('E'):
-      print('found')
-      self.found.append(path)
-      return
-    print(f'check_spot({x},{y}){self.map[y][x]} {len(path)} {len(self.found)}')
-    for (cx, cy) in Map.MOVES:
-      if (cx, cy) in visited:
-        continue
-      nx = x + cx
-      ny = y + cy
-      if in_bounds(nx, ny) and move_allowed(x, y, nx, ny):
-        self.check_spot(x + cx, y + cy, (path + [(nx, ny)]).copy(), (visited + [(nx, ny)]).copy() )
 
 
   def draw(self, path):
@@ -116,14 +100,12 @@ class Map:
     for (cx, cy, l) in Map.MOVES:
       nx = x + cx
       ny = y + cy
-      if (nx, ny) in visited + path:
-        continue
-      visited.append((nx,ny))
       print(f'  ({nx},{ny}){l} {len(self.queue)}')
       if (self.in_bounds(nx, ny) and
           self.move_allowed(x,y, nx, ny) and
   #            (nx, ny) not in q,
-          (nx, ny) not in path):
+          (nx, ny) not in visited + path):
+        visited.append((nx, ny))
         print(f'    added')
         self.queue.append((nx, ny, path + [(x, y)], ))
 
@@ -133,7 +115,7 @@ class Map:
     visited = []
     while self.queue:
       q = self.queue
-      (cx, cy, path) = self.queue.pop()
+      (cx, cy, path) = self.queue.popleft()
       self.draw(path)
       self.check_spot(cx, cy, path, visited)
       visited.append((cx, cy))
