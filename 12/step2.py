@@ -66,63 +66,61 @@ class Map:
     if (x, y) == self.start():
       s = 0
     if (x, y) == self.finish():
-      s = 26
+      s = 25
     if (nx, ny) == self.start():
       f = 0
     if (nx, ny) == self.finish():
-      f = 26
-    print(f'({x},{y}) -> ({nx},{ny}) = {f}')
+      f = 25
+    # print(f'({x},{y}) -> ({nx},{ny}) = {f-s}')
     return f - s
 
   def move_allowed(self, x, y, nx, ny):
-    return abs(self.move_diff(x, y, nx, ny)) <= 1
+    return self.move_diff(nx, ny, x, y) <= 1  # backwards going down
 
-  def draw(self, path):
+  def draw(self):
     os.system('clear')
     m = [l.copy() for l in self.map]
     for (x, y, p) in self.queue:
       m[y][x] = ord(' ')-ord('a')
-    for (x, y, l) in path:
-      m[y][x] = ord('*')-ord('a')
-    # print(path)
+      for (px, py, l) in p:
+        m[py][px] = ord('+')-ord('a')
     for l in m:
       print ("".join([chr(ord('a') + i) for i in l]))
-
-  def check_spot(self, x, y, path=None):
-    if not path:
-      path = []
-    if self.map[y][x] == 0:
-      print('found')
-      self.found.append(path+[(x,y,'F')])
-
-    print(f'check_spot({x},{y}){self.map[y][x]} {len(self.queue)} {len(path)} ')
-    # random.shuffle(Map.MOVES)
-    for (cx, cy, l) in Map.MOVES:
-      nx = x + cx
-      ny = y + cy
-      print(f'  ({nx},{ny}){l} {len(self.queue)}')
-      if (self.in_bounds(nx, ny) and
-          self.move_allowed(x,y, nx, ny) and
-          (nx, ny) not in self.visited):
-        self.visited.append((x, y))
-        print(f'    added')
-        if (nx, ny) not in [(x,y) for (x,y,p) in list(self.queue)]:
-          self.queue.append((nx, ny, path + [(x, y, l)]))
 
   def find_paths(self):
     self.found = []
     self.visited = []
+    drawn = 0
     sx, sy = self.finish()
     self.queue = deque([(sx, sy, [])])
     while self.queue:
       q = self.queue
-      (cx, cy, path) = self.queue.popleft()
-      # self.draw(path)
-      self.check_spot(cx, cy, path)
-      print('')
-      if self.found:
-        break
-  #  print(self.found)
+      (x, y, path) = self.queue.popleft()
+      if (x, y) in self.visited:
+        continue
+      self.visited.append((x, y))
+
+      if len(path) > drawn:
+        self.draw()
+        drawn = len(path)
+
+      # print(f'check_spot({x},{y}){self.map[y][x]} {len(self.queue)} {len(path)} ')
+      for (cx, cy, l) in Map.MOVES:
+        nx = x + cx
+        ny = y + cy
+        try:
+          v = self.map[ny][nx]
+        except IndexError:
+          v = "OOB"
+        # print(f'  ({nx},{ny}){v} {l} {len(self.queue)}')
+
+        if self.in_bounds(nx, ny) and self.move_allowed(x, y, nx, ny):
+          if nx == 0:
+            # print('found')
+            self.found.append(path + [(x, y, 'F')])
+            continue
+          self.queue.append((nx, ny, path + [(x, y, l)]))
+          # print(f'    added')
     return self.found
 
 def main(path):
@@ -131,8 +129,8 @@ def main(path):
   found = map.find_paths()
   found.sort(key=lambda p: len(p))
   print(found[0])
-  map.draw(found[0])
-  print(f'shortest path {len(found[0])+1}')
+  map.draw()
+  print(f'shortest path {len(found[0])}')
   print(f'total found {len(found)}')
   return len(found[0])
 
