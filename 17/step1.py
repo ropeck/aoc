@@ -4,7 +4,7 @@ import sys
 
 class Tower:
   def __init__(self):
-    self.t = [255]   # each row is a byte
+    self.t = []   # each row is a byte
     self.rocks = self.read_rocks()
     self.pending_rocks = self.rocks.copy()
 
@@ -69,8 +69,13 @@ class Tower:
   #   return False
   # #
     for j, rr in enumerate(rock):
-      tr = i + 2 - len(rock) + j
-      if tower[tr] & rock[j]:
+      tr = i + j + 1
+      # print(f'overlap tr={tr} len(rock)={len(rock)} i={i}')
+      if tr > len(tower) - 1:
+        return True
+      o = tower[tr] & rock[j]
+      # print(f'o:{o} tower[tr] {tower[tr]} tr {tr}  rock[j] {rock[j]}  j {j}')
+      if o:
         return True
     return False
 
@@ -93,33 +98,34 @@ class Tower:
     tower = [0 for i in current_rock] + [0, 0, 0] + self.t
     # print(list(enumerate(tower)))
     # self.draw_rock(current_rock)
-    for i in range(len(current_rock)-1, len(tower)):
+    place = 0
+    for i in range(len(current_rock)-2, len(tower)):
       #d=tower.copy()
       #self.draw(d, i, current_rock)
       # apply jet to current_rock position
-      print("row",i)
-      self.draw(tower, i, current_rock)
+      # print("row",i)
       jet = self.next_jet()
       if jet == 1:
-        print("jet right")
+        # print("jet right")
         if not self.rock_side(current_rock, 0):
           new_rock = [r >> 1 for r in current_rock]
           # check if it would overlap
           if not self.overlap(new_rock, i, tower):
             current_rock = new_rock
       else:
-        print("jet left")
-        if not self.rock_side(current_rock, 7):
+        # print("jet left")
+        if not self.rock_side(current_rock, 6):
           new_rock = [r << 1 for r in current_rock]
           if not self.overlap(new_rock, i, tower):
             current_rock = new_rock
-      # self.draw_rock(current_rock)
-      with snoop:
-        if self.overlap(new_rock, i+1, tower):
-            break
-
+      # self.draw(tower, i, current_rock)
+      if self.overlap(current_rock, i+1, tower):
+        # print("overlap row", i+1)
+        break
+      place = i
+    # print(f'i={i} place={place} pos={1+i-len(current_rock)}')
     for n, rock_row in enumerate(current_rock):
-      pos = 1+i+n-len(current_rock)
+      pos = place + n + 2
       tower[pos] = tower[pos] | rock_row
     self.t = [row for row in tower if row]
     # self.draw()
@@ -146,7 +152,7 @@ def main(path, max_count):
   t = Tower()
   n=0
   while n <= max_count:
-    print(n)
+    # print(n)
     t.drop()
     n += 1
   # t.draw()
