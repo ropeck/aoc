@@ -62,9 +62,15 @@ class Tower:
     print('+-------+')
     print('')
 
-  def overlap(self, new_rock, i, tower):
-    for n, rock_row in enumerate(new_rock):
-      if tower[i-n] & rock_row:
+  def overlap(self, rock, i, tower):
+  #   for n, rock_row in enumerate(new_rock):
+  #     if tower[i-n] & rock_row:
+  #       return True
+  #   return False
+  # #
+    for j, rr in enumerate(rock):
+      tr = i + 2 - len(rock) + j
+      if tower[tr] & rock[j]:
         return True
     return False
 
@@ -73,7 +79,7 @@ class Tower:
     for r in rock:
       print(bin(128|r))
     print("")
-  @snoop
+
   def drop(self):
     # start at top + 3, then apply jets and move down until stopped
     # self.t + [0, 0, 0]
@@ -91,8 +97,8 @@ class Tower:
       #d=tower.copy()
       #self.draw(d, i, current_rock)
       # apply jet to current_rock position
-      print("row",len(tower)-i)
-      #self.draw(tower, i, current_rock)
+      print("row",i)
+      self.draw(tower, i, current_rock)
       jet = self.next_jet()
       if jet == 1:
         print("jet right")
@@ -107,18 +113,11 @@ class Tower:
           new_rock = [r << 1 for r in current_rock]
           if not self.overlap(new_rock, i, tower):
             current_rock = new_rock
-      self.draw_rock(current_rock)
+      # self.draw_rock(current_rock)
+      with snoop:
+        if self.overlap(new_rock, i+1, tower):
+            break
 
-      ## this should check for all the parts of the rock overlapping if it's moved down one row.
-      ## the L shape can catch something before the bottom touches, for example
-
-      if tower[i+1] & current_rock[-1]:
-        print("overlap",i, tower[i+1], current_rock[-1], tower[i+1]&current_rock[-1]);
-        # proint('rock: ' + str(current_rock))
-        # print(f' {tower[i+1]} {current_rock[0]} {tower[i+1] & current_rock[0]}')
-        # print('overlap next')
-        #i -= 1
-        break
     for n, rock_row in enumerate(current_rock):
       pos = 1+i+n-len(current_rock)
       tower[pos] = tower[pos] | rock_row
