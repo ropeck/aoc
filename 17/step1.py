@@ -71,7 +71,7 @@ class Tower:
     current_rock = [row << (5 - r[0]) for row in r[1]]
     # print(f'centered {current_rock}')
     tower = [0 for i in current_rock] + [0, 0, 0] + self.t
-    self.draw()
+    # self.draw()
     # print(list(enumerate(tower)))
     for i in range(len(current_rock), len(tower)):
       #d=tower.copy()
@@ -121,8 +121,8 @@ def main(path, max_count):
   n=0
   while n <= max_count:
     t.drop()
-    t.draw()
     n += 1
+  t.draw()
   print(f'height: {t.height()}')
 
 if __name__ == '__main__':
