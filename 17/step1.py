@@ -41,13 +41,12 @@ class Tower:
     return False
 
   def draw(self, t=None, i=None, r=None):
-    return
 
     if not t:
       t=self.t
    # print(f'{r} {i} {t}')
     row_num = 0
-    for row in t:
+    for row in t[:9]:
       if row == 255:
         continue
       s=""
@@ -62,6 +61,8 @@ class Tower:
           s += "."
       print(f'|{s}|')
       row_num += 1
+    if len(t) > 9:
+      print("|v^v^v^v|")
     print('+-------+')
     print('')
 
@@ -100,7 +101,7 @@ class Tower:
     current_rock = [row << (5 - r[0]) for row in r[1]]
     tower = [0 for i in current_rock] + [0, 0, 0] + self.t
     # print(list(enumerate(tower)))
-    # self.draw_rock(current_rock)
+    #self.draw_rock(current_rock)
     place = 0
     i = 0 
     self.draw(tower, i, current_rock)
@@ -126,9 +127,9 @@ class Tower:
       if self.overlap(current_rock, i, tower):
         print("Rock falls 1 unit, causing it to come to rest")
         break
-      i += 1
       print("Rock falls 1 unit")
     #  self.draw(tower, i, current_rock)
+      i += 1
       place = i
     # print(f'i={i} place={place} pos={1+i-len(current_rock)}')
     for n, rock_row in enumerate(current_rock):
@@ -161,8 +162,8 @@ def main(path, max_count):
   while n < max_count:
     print(n)
     t.drop()
-    #t.draw()
     n += 1
+  t.draw()
   print(f'height: {t.height()}')
 
 if __name__ == '__main__':
