@@ -73,7 +73,7 @@ class Tower:
     tower = [0 for i in current_rock] + [0, 0, 0] + self.t
     self.draw()
     # print(list(enumerate(tower)))
-    for i in range(len(tower)):
+    for i in range(len(current_rock), len(tower)):
       #d=tower.copy()
       #self.draw(d, i, current_rock)
       # apply jet to current_rock position
@@ -87,7 +87,7 @@ class Tower:
         if not self.rock_side(current_rock, 7):
           current_rock = [r << 1 for r in current_rock]
       print(f'current: {i} {current_rock}  t:{tower}')
-      import pdb; pdb.set_trace()
+      # import pdb; pdb.set_trace()
       if tower[i+1] & current_rock[0]:
         # print('rock: ' + str(current_rock))
         # print(f' {tower[i+1]} {current_rock[0]} {tower[i+1] & current_rock[0]}')
