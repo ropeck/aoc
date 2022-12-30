@@ -86,7 +86,7 @@ class Tower:
         # print("jet left")
         if not self.rock_side(current_rock, 7):
           current_rock = [r << 1 for r in current_rock]
-      print(f'current: {i} {current_rock}  t:{tower}')
+      # print(f'current: {i} {current_rock}  t:{tower}')
       # import pdb; pdb.set_trace()
       if tower[i+1] & current_rock[0]:
         # print('rock: ' + str(current_rock))
@@ -118,8 +118,9 @@ class Tower:
 
 def main(path, max_count):
   t = Tower()
-  n=0
+  n=1
   while n <= max_count:
+    print(n)
     t.drop()
     n += 1
   t.draw()
