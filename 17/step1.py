@@ -49,10 +49,8 @@ class Tower:
         continue
       s=""
       for n in range(7):
-        nn = 7-n
+        nn = 6-n
         m=2**nn
-        #import pdb; pdb.set_trace()
-        #print(f'  {i} {nn} {i-nn}')
         if (r and (row_num-i<=0) and (row_num >= i-len(r) and row_num <= i) and m & r[i-n]):
           s += "@"
         elif (m & row):
@@ -70,9 +68,10 @@ class Tower:
     # loop from top down, check to see if the rock overlaps
     # use binary AND of the tower with the rock - if (rock & tower top ) != 0 then it's colliding
     r = self.next_rock()
-    current_rock = [row << int((7 - r[0]) / 2) for row in r[1]]
+    current_rock = [row << (5 - r[0]) for row in r[1]]
     # print(f'centered {current_rock}')
-    tower = [0, 0, 0, 0] + self.t
+    tower = [0 for i in current_rock] + [0, 0, 0] + self.t
+    self.draw()
     # print(list(enumerate(tower)))
     for i in range(len(tower)):
       #d=tower.copy()
@@ -87,12 +86,13 @@ class Tower:
         # print("jet left")
         if not self.rock_side(current_rock, 7):
           current_rock = [r << 1 for r in current_rock]
-      # print(f'current: {i} {current_rock}  t:{tower}')
+      print(f'current: {i} {current_rock}  t:{tower}')
+      import pdb; pdb.set_trace()
       if tower[i+1] & current_rock[0]:
         # print('rock: ' + str(current_rock))
         # print(f' {tower[i+1]} {current_rock[0]} {tower[i+1] & current_rock[0]}')
         # print('overlap next')
-        # i -= 1
+        #i -= 1
         break
     for n, rock_row in enumerate(current_rock):
       tower[i-n] = tower[i-n] | rock_row
