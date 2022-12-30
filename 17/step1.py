@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import pysnooper
+import snoop
 import sys
 
 class Tower:
@@ -73,7 +73,7 @@ class Tower:
     for r in rock:
       print(bin(128|r))
     print("")
-  # @pysnooper.snoop()
+  @snoop
   def drop(self):
     # start at top + 3, then apply jets and move down until stopped
     # self.t + [0, 0, 0]
@@ -108,11 +108,13 @@ class Tower:
           if not self.overlap(new_rock, i, tower):
             current_rock = new_rock
       self.draw_rock(current_rock)
-      # print(f'current: {i} {current_rock}  t:{tower}')
-      # import pdb; pdb.set_trace()
+
+      ## this should check for all the parts of the rock overlapping if it's moved down one row.
+      ## the L shape can catch something before the bottom touches, for example
+
       if tower[i+1] & current_rock[-1]:
         print("overlap",i, tower[i+1], current_rock[-1], tower[i+1]&current_rock[-1]);
-        # print('rock: ' + str(current_rock))
+        # proint('rock: ' + str(current_rock))
         # print(f' {tower[i+1]} {current_rock[0]} {tower[i+1] & current_rock[0]}')
         # print('overlap next')
         #i -= 1
