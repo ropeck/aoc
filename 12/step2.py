@@ -4,6 +4,7 @@ import os
 import random
 import sys
 import time
+import pysnooper
 
 class Map:
   MOVES = [(0, -1, 'U'), (0, 1, 'D'), (1, 0, 'R'), (-1, 0, 'L')]
@@ -89,7 +90,9 @@ class Map:
         m[py][px] = ord('+')-ord('a')
     for l in m:
       print ("".join([chr(ord('a') + i) for i in l]))
+    print("")
 
+  #@pysnooper.snoop()
   def find_paths(self):
     self.found = []
     self.visited = []
@@ -99,31 +102,22 @@ class Map:
     while self.queue:
       q = self.queue
       (x, y, path) = self.queue.popleft()
-      if (x, y) in self.visited:
-        continue
-      self.visited.append((x, y))
 
       if len(path) > drawn:
         self.draw()
         drawn = len(path)
 
-      # print(f'check_spot({x},{y}){self.map[y][x]} {len(self.queue)} {len(path)} ')
       for (cx, cy, l) in Map.MOVES:
         nx = x + cx
         ny = y + cy
-        try:
-          v = self.map[ny][nx]
-        except IndexError:
-          v = "OOB"
-        # print(f'  ({nx},{ny}){v} {l} {len(self.queue)}')
-
+        if (nx, ny) in self.visited + [(x,y) for (x,y,_) in list(self.queue)]:
+          continue
         if self.in_bounds(nx, ny) and self.move_allowed(x, y, nx, ny):
           if nx == 0:
-            # print('found')
             self.found.append(path + [(x, y, 'F')])
             continue
           self.queue.append((nx, ny, path + [(x, y, l)]))
-          # print(f'    added')
+          self.visited.append((nx, ny))
     return self.found
 
 def main(path):
