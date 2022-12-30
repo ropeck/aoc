@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import pysnooper
 import sys
 
 class Tower:
@@ -62,36 +63,36 @@ class Tower:
     print('+-------+')
     print('')
 
+  # @pysnooper.snoop()
   def drop(self):
     # start at top + 3, then apply jets and move down until stopped
     # self.t + [0, 0, 0]
     # loop from top down, check to see if the rock overlaps
     # use binary AND of the tower with the rock - if (rock & tower top ) != 0 then it's colliding
     r = self.next_rock()
-    print(f'rock: {r}')
     current_rock = [row << int((7 - r[0]) / 2) for row in r[1]]
-    print(f'centered {current_rock}')
+    # print(f'centered {current_rock}')
     tower = [0, 0, 0, 0] + self.t
-    print(list(enumerate(tower)))
+    # print(list(enumerate(tower)))
     for i in range(len(tower)):
       #d=tower.copy()
       #self.draw(d, i, current_rock)
       # apply jet to current_rock position
       jet = self.next_jet()
       if jet == 1:
-        print("jet right")
+        # print("jet right")
         if not self.rock_side(current_rock, 0):
           current_rock = [r >> 1 for r in current_rock]
       else:
-        print("jet left")
+        # print("jet left")
         if not self.rock_side(current_rock, 7):
           current_rock = [r << 1 for r in current_rock]
-      print(f'current: {i} {current_rock}  t:{tower}')
+      # print(f'current: {i} {current_rock}  t:{tower}')
       if tower[i+1] & current_rock[0]:
-        print('rock: ' + str(current_rock))
-        print(f' {tower[i+1]} {current_rock[0]} {tower[i+1] & current_rock[0]}')
-        print('overlap next')
-        i -= 1
+        # print('rock: ' + str(current_rock))
+        # print(f' {tower[i+1]} {current_rock[0]} {tower[i+1] & current_rock[0]}')
+        # print('overlap next')
+        # i -= 1
         break
     for n, rock_row in enumerate(current_rock):
       tower[i-n] = tower[i-n] | rock_row
@@ -115,7 +116,6 @@ class Tower:
         r.reverse()
         rock_list.append((w, r))
 
-
 def main(path, max_count):
   t = Tower()
   n=0
@@ -124,7 +124,6 @@ def main(path, max_count):
     t.draw()
     n += 1
   print(f'height: {t.height()}')
-
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
