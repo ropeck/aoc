@@ -43,7 +43,6 @@ class Tower:
   def draw(self, t=None, i=None, r=None):
     return
 
-
     if not t:
       t=self.t
    # print(f'{r} {i} {t}')
@@ -94,7 +93,8 @@ class Tower:
     # self.t + [0, 0, 0]
     # loop from top down, check to see if the rock overlaps
     # use binary AND of the tower with the rock - if (rock & tower top ) != 0 then it's colliding
-    l, m = self.next_rock()
+    l, mm = self.next_rock()
+    m = mm.copy()
     m.reverse()
     r = (l, m)
     current_rock = [row << (5 - r[0]) for row in r[1]]
@@ -103,11 +103,12 @@ class Tower:
     # self.draw_rock(current_rock)
     place = 0
     i = 0 
+    self.draw(tower, i, current_rock)
     while True:
       if i > len(tower)+1:
         break
       # apply jet to current_rock position
-      print("row",i)
+      print("row",len(tower)-i)
       jet = self.next_jet()
       if jet == 1:
         print("jet right")
@@ -121,13 +122,13 @@ class Tower:
           new_rock = [r << 1 for r in current_rock]
           if not self.overlap(new_rock, i-1, tower):
             current_rock = new_rock
-      self.draw(tower, i, current_rock)
+      #self.draw(tower, i, current_rock)
       if self.overlap(current_rock, i, tower):
         print("Rock falls 1 unit, causing it to come to rest")
         break
       i += 1
       print("Rock falls 1 unit")
-      self.draw(tower, i, current_rock)
+    #  self.draw(tower, i, current_rock)
       place = i
     # print(f'i={i} place={place} pos={1+i-len(current_rock)}')
     for n, rock_row in enumerate(current_rock):
@@ -160,7 +161,7 @@ def main(path, max_count):
   while n <= max_count:
     print(n)
     t.drop()
-    t.draw()
+    #t.draw()
     n += 1
   print(f'height: {t.height()}')
 
