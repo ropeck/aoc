@@ -158,7 +158,7 @@ class Tower:
 def main(path, max_count):
   t = Tower()
   n=0
-  while n <= max_count:
+  while n < max_count:
     print(n)
     t.drop()
     #t.draw()
