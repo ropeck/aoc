@@ -41,12 +41,12 @@ class Tower:
     return False
 
   def draw(self, t=None, i=None, r=None):
-
+    ROWS=15
     if not t:
       t=self.t
    # print(f'{r} {i} {t}')
     row_num = 0
-    for row in t[:9]:
+    for row in t[:ROWS]:
       if row == 255:
         continue
       s=""
@@ -61,7 +61,7 @@ class Tower:
           s += "."
       print(f'|{s}|')
       row_num += 1
-    if len(t) > 9:
+    if len(t) > ROWS:
       print("|v^v^v^v|")
     print('+-------+')
     print('')
@@ -123,19 +123,26 @@ class Tower:
           new_rock = [r << 1 for r in current_rock]
           if not self.overlap(new_rock, i-1, tower):
             current_rock = new_rock
-      #self.draw(tower, i, current_rock)
       if self.overlap(current_rock, i, tower):
+        self.draw(tower, i, current_rock)
         print("Rock falls 1 unit, causing it to come to rest")
         break
       print("Rock falls 1 unit")
-    #  self.draw(tower, i, current_rock)
+      self.draw(tower, i, current_rock)
       i += 1
       place = i
     # print(f'i={i} place={place} pos={1+i-len(current_rock)}')
     for n, rock_row in enumerate(current_rock):
       pos = place + n 
       tower[pos] = tower[pos] | rock_row
-    self.t = [row for row in tower if row]
+    orig_tower = tower
+    other = [row for row in tower if row]
+    for i, v in enumerate(tower):
+      if v:
+        break
+    self.t = tower[i:]
+    if self.t != other:
+      import pdb; pdb.set_trace()
     print("---")
 
   def read_rocks(self):
