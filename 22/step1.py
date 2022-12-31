@@ -9,6 +9,25 @@ TURN={'L': -1, 'R': 1}
 MOVEDIR = {'>': (0,1), '<': (0,-1), '^': (-1,0), 'v': (1,0)}
 
 
+class Grid:
+  def __init__(self, grid_data):
+    self.grid = []
+    for line in grid_data.splitlines():
+        line = (line + " "*150)[:150]
+        print(line+"|")
+        self.grid.append(list(line))
+
+  def get(self, x, y):
+    return self.grid[y][x]
+
+  def set(self, x, y, v):
+    self.grid[y][x] = v
+
+  def move_forward(self, x, y, dx, dy):
+    ny = (y + dy) % len(self.grid)
+    nx = (x + dx) % len(self.grid[ny])
+    return nx, ny
+
 def draw(b, y=None):
   b = [["{:3d}".format(i)] + s for i,s in enumerate(b)]
   if y:
@@ -18,19 +37,13 @@ def draw(b, y=None):
   print("")
 
 def main(path):
-  grid = []
-  with open(path,"r") as fh:
-    while True:
-      line = fh.readline().rstrip()
-      if not line:
-        break
-      line = (line + " "*150)[:150]
-      print(line+"|")
-      grid.append(list(line))
-    follow = deque(re.findall("(\d+|[LR])",fh.read().strip()))
+  with open(path, "r") as fh:
+    (griddata, followdata) = fh.read().split("\n\n")
+  grid = Grid(griddata)
+  follow = deque(re.findall("(\d+|[LR])", followdata))
 
   (x,y) = (0,0)
-  while grid[y][x] != ".":
+  while grid.get(x,y) != ".":
     x += 1
   dir = 0  # face right
 
@@ -45,11 +58,11 @@ def main(path):
     #print(f'grid[{x},{y}]={grid[ny][nx]}')
 
     for n in range(int(move)):
-      nx, ny = move_forward(grid, x, y, dy, dx)
-      while grid[ny][nx] == " ":
-        nx, ny = move_forward(grid, nx, ny, dy, dx)
-      grid[y][x] = FACE[dir]
-      if grid[ny][nx] == "#":
+      nx, ny = grid.move_forward(x, y, dx, dy)
+      while grid.get(nx,ny) == " ":
+        nx, ny = grid.move_forward(nx, ny, dx, dy)
+      grid.set(x,y, FACE[dir])
+      if grid.get(x,y) == "#":
         break
       x = nx
       y = ny
@@ -61,11 +74,6 @@ def main(path):
   print(f'password: {pw}')
   return pw
 
-
-def move_forward(grid, x, y, dy, dx):
-  ny = (y + dy) % len(grid)
-  nx = (x + dx) % len(grid[ny])
-  return nx, ny
 
 
 if __name__ == '__main__':
