@@ -43,12 +43,11 @@ def main(path):
       continue
     (dy, dx) = MOVEDIR[FACE[dir]]
     #print(f'grid[{x},{y}]={grid[ny][nx]}')
+
     for n in range(int(move)):
-      ny = (y + dy) % len(grid)
-      nx = (x + dx) % len(grid[ny])
+      nx, ny = move_forward(grid, x, y, dy, dx)
       while grid[ny][nx] == " ":
-        ny = (ny + dy) % len(grid)
-        nx = (nx + dx) % len(grid[ny])
+        nx, ny = move_forward(grid, nx, ny, dy, dx)
       grid[y][x] = FACE[dir]
       if grid[ny][nx] == "#":
         break
@@ -61,6 +60,13 @@ def main(path):
   pw = (y+1)*1000 + (x+1)*4 + dir
   print(f'password: {pw}')
   return pw
+
+
+def move_forward(grid, x, y, dy, dx):
+  ny = (y + dy) % len(grid)
+  nx = (x + dx) % len(grid[ny])
+  return nx, ny
+
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
