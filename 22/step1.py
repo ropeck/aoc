@@ -23,9 +23,19 @@ class Grid:
   def set(self, x, y, v):
     self.grid[y][x] = v
 
+  def find_start(self):
+    x = 0
+    y = 0
+    while self.get(x, y) != ".":
+      x += 1
+    return x, y
+
   def move_forward(self, x, y, dx, dy):
     ny = (y + dy) % len(self.grid)
     nx = (x + dx) % len(self.grid[ny])
+    while self.get(nx,ny) == " ":
+      ny = (ny + dy) % len(self.grid)
+      nx = (nx + dx) % len(self.grid[ny])
     return nx, ny
 
 def draw(b, y=None):
@@ -42,9 +52,7 @@ def main(path):
   grid = Grid(griddata)
   follow = deque(re.findall("(\d+|[LR])", followdata))
 
-  (x,y) = (0,0)
-  while grid.get(x,y) != ".":
-    x += 1
+  (x,y) =grid.find_start()
   dir = 0  # face right
 
   while follow:
@@ -59,10 +67,8 @@ def main(path):
 
     for n in range(int(move)):
       nx, ny = grid.move_forward(x, y, dx, dy)
-      while grid.get(nx,ny) == " ":
-        nx, ny = grid.move_forward(nx, ny, dx, dy)
       grid.set(x,y, FACE[dir])
-      if grid.get(x,y) == "#":
+      if grid.get(nx, ny) == "#":
         break
       x = nx
       y = ny
