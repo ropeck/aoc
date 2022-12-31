@@ -128,10 +128,9 @@ class Tower:
       i += 1
       print("Rock falls 1 unit")
       self.draw(tower, i, current_rock)
-      place = i
     # print(f'i={i} place={place} pos={1+i-len(current_rock)}')
     for n, rock_row in enumerate(current_rock):
-      pos = place + n 
+      pos = i + n
       tower[pos] = tower[pos] | rock_row
     self.t = [row for row in tower if row]
     print("---")
