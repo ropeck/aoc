@@ -98,6 +98,8 @@ class Grid:
         self.turn(rot)
         ny %= WIDTH
         nx %= HEIGHT
+        # rotate the current position on the face here?
+        # use complex numbers and multiply by 1j to rotate?
       if self.get(nx, ny, next_face) == "#":
         print(f'wall {self.get_pos()}')
         return False
