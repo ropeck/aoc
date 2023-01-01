@@ -95,6 +95,7 @@ class Grid:
         updated = True
         next_face, rot = self.cubemap('v')
       if updated:
+        self.turn(rot)
         ny %= WIDTH
         nx %= HEIGHT
       if self.get(nx, ny, next_face) == "#":
@@ -115,7 +116,7 @@ class Grid:
       x, y = self.get_pos()
       print(f'{x},{y} move {move}')
       if move in ["L","R"]:
-        self.set_dir((self.dir + TURN[move]) % len(DIR_NUMBER))
+        self.turn(TURN[move])
         print(f'turn {move} dir {DIR_NUMBER[self.dir]} {MOVEDIR[DIR_NUMBER[self.dir]]}')
         continue
       #print(f'grid[{x},{y}]={grid[ny][nx]}')
@@ -125,8 +126,11 @@ class Grid:
     print(x, y, DIR_NUMBER[self.dir])
     #  The final password is the sum of 1000 times the row, 4 times the column, and the facing.
     pw = (y+1)*1000 + (x+1)*4 + self.dir
-    print(f'part1 password: {pw}')
     return pw
+
+  def turn(self, quarters):
+    self.set_dir((self.dir + quarters) % len(DIR_NUMBER))
+
 
 def draw(b, y=None):
   b = [["{:3d}".format(i)] + s for i,s in enumerate(b)]
@@ -141,21 +145,22 @@ class Grid3d(Grid):
   def __init__(self, data):
     super(Grid3d, self).__init__(data)
                    #      R       D       L       U
-    self.facemap = {1: [(2, 0), (3, 0), (2, 0), (5, 0)],
-                    2: [(1, 0), (2, 0), (1, 0), (2, 0)],
-                    3: [(3, 0), (5, 0), (3, 0), (1, 0)],
-                    4: [(5, 0), (6, 0), (5, 0), (6, 0)],
-                    5: [(4, 0), (1, 0), (4, 0), (3, 0)],
-                    6: [(6, 0), (4, 0), (6, 0), (4, 0)]
+    self.facemap = {1: [(2, 0), (3, 0), (3, 0), (6, 1)],
+                    2: [(5, 2), (2, 0), (3, 1), (6, 0)],
+                    3: [(2, -1), (3, 1), (5, 0), (1, 0)],
+                    4: [(5, 0), (6, 0), (6, 0), (3, 1)],
+                    5: [(2, 2), (6, 1), (6, 1), (3, 0)],
+                    6: [(5, -1), (2, 0), (2, 0), (4, 0)]
                     }
 
 def main(path):
   grid = Grid(path)
-  pw = grid.process_follow()
-  print(f'part1 password: {pw}')
+  pw1 = grid.process_follow()
+  print(f'part1 password: {pw1}')
 
   grid3d = Grid3d(path)
   pw = grid3d.process_follow()
+  print(f'part1 password: {pw1}')
   print(f'part2 password: {pw}')
 
   return pw
