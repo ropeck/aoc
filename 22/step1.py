@@ -51,12 +51,15 @@ def main(path):
     (griddata, followdata) = fh.read().split("\n\n")
   grid = Grid(griddata)
   follow = deque(re.findall("(\d+|[LR])", followdata))
+  s = 0
 
   (x,y) =grid.find_start()
   dir = 0  # face right
 
   while follow:
     move = follow.popleft()
+    s += 1
+    print(f'[{s}]')
     print(f'{x},{y} move {move}')
     if move in ["L","R"]:
       dir = (dir + TURN[move]) % len(FACE)
@@ -69,6 +72,7 @@ def main(path):
       nx, ny = grid.move_forward(x, y, dx, dy)
       grid.set(x,y, FACE[dir])
       if grid.get(nx, ny) == "#":
+        print (f'wall {(x,y)}')
         break
       x = nx
       y = ny

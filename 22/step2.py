@@ -27,8 +27,10 @@ class Grid:
     self.cur_face = 0
 
 
-  def get(self, x, y):
-    return self.face[self.cur_face][y][x]
+  def get(self, x, y, f=None):
+    if not f:
+      f = self.cur_face
+    return self.face[f][y][x]
 
   def set(self, x, y, v):
     self.face[self.cur_face][y][x] = v
@@ -37,9 +39,13 @@ class Grid:
     self.x = x
     self.y = y
 
-  def get_pos(self):
+  def get_pos(self, x=None, y=None):
+    if x == None:
+      x = self.x
+    if y == None:
+      y = self.y
     ox, oy = FACE_ORIGINS[self.cur_face]
-    return self.x + ox, self.y + oy
+    return x + ox, y + oy
 
   def set_dir(self, dir):
     self.dir = dir
@@ -53,43 +59,45 @@ class Grid:
 
   def cubemap(self, dir):
     self.set_dir(DIR_NUMBER.index(dir))
-    facemap = {1: [(2,0), (3, 0), (5, 0), (2, 0)],
-               2: [(1,0), (2, 0), (2,0), (1, 0)],
-               3: [(3, 0), (5, 0), (1, 0), (3, 0)],
-               4: [(5, 0), (6, 0), (6, 0), (5, 0)],
-               5: [(4, 0), (1, 0), (3, 0), (4, 0)],
-               6: [(6, 0), (4, 0), (4, 0), (6, 0)]
+                #     R       D       L       U
+    facemap = {1: [(2, 0), (3, 0), (2, 0), (5, 0)],
+               2: [(1, 0), (2, 0), (1, 0), (2, 0)],
+               3: [(3, 0), (5, 0), (3, 0), (1, 0)],
+               4: [(5, 0), (6, 0), (5, 0), (6, 0)],
+               5: [(4, 0), (1, 0), (4, 0), (3, 0)],
+               6: [(6, 0), (4, 0), (6, 0), (4, 0)]
               }
-    try:
-      face, rot = facemap[(self.cur_face+1, self.dir)]
-      return face-1, rot
-    except KeyError:
-      return self.cur_face, 0
+    face, rot = facemap[self.cur_face+1][self.dir]
+    return face-1, rot
 
   def move_forward(self):
     (dy, dx) = MOVEDIR[DIR_NUMBER[self.dir]]
     ny = self.y + dy
     nx = self.x + dx
     updated = False
+    next_face = self.cur_face
     if nx < 0:
       updated = True
-      new_face, rot = self.cubemap('<')
-    elif nx > WIDTH-1:
+      next_face, rot = self.cubemap('<')
+    elif nx >= WIDTH:
       updated = True
-      new_face, rot = self.cubemap('>')
+      next_face, rot = self.cubemap('>')
     if ny < 0:
       updated = True
-      new_face, rot = self.cubemap('v')
-    elif ny > HEIGHT-1:
+      next_face, rot = self.cubemap('^')
+    elif ny >= HEIGHT:
       updated = True
-      new_face, rot = self.cubemap('^')
+      next_face, rot = self.cubemap('v')
     if updated:
       ny %= WIDTH
       nx %= HEIGHT
-      self.cur_face = new_face
+    if self.get(nx, ny, next_face) == "#":
+      print(f'wall {self.get_pos()}')
+      return False
     self.x = nx
     self.y = ny
-    return nx, ny
+    self.cur_face = next_face
+    return True
 
 def draw(b, y=None):
   b = [["{:3d}".format(i)] + s for i,s in enumerate(b)]
@@ -104,12 +112,15 @@ def main(path):
     (griddata, followdata) = fh.read().split("\n\n")
   grid = Grid(griddata)
   follow = deque(re.findall("(\d+|[LR])", followdata))
+  s = 0
 
   grid.set_pos(*grid.find_start())
   grid.set_dir(0)
 
   while follow:
     move = follow.popleft()
+    s += 1
+    print(f'[{s}]')
     x, y = grid.get_pos()
     print(f'{x},{y} move {move}')
     if move in ["L","R"]:
@@ -119,10 +130,7 @@ def main(path):
     #print(f'grid[{x},{y}]={grid[ny][nx]}')
 
     for n in range(int(move)):
-      nx, ny = grid.move_forward()
-      # grid.set(x, y, DIR_NUMBER.index(grid.dir))
-      # ic(grid.get(nx, ny), nx, ny)
-      if grid.get(nx, ny) == "#":
+      if not grid.move_forward():
         break
     #draw(grid, y)
 
