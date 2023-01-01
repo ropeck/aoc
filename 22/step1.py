@@ -7,6 +7,7 @@ import sys
 FACE = '>v<^'
 TURN={'L': -1, 'R': 1}
 MOVEDIR = {'>': (0,1), '<': (0,-1), '^': (-1,0), 'v': (1,0)}
+HEIGHT = WIDTH = 50
 
 
 class Grid:
@@ -70,6 +71,8 @@ def main(path):
 
     for n in range(int(move)):
       nx, ny = grid.move_forward(x, y, dx, dy)
+      x_mod = nx % WIDTH
+      y_mod = ny % HEIGHT
       grid.set(x,y, FACE[dir])
       if grid.get(nx, ny) == "#":
         print (f'wall {(x,y)}')

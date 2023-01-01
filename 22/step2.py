@@ -28,7 +28,7 @@ class Grid:
 
 
   def get(self, x, y, f=None):
-    if not f:
+    if f == None:
       f = self.cur_face
     return self.face[f][y][x]
 
