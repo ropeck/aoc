@@ -96,6 +96,13 @@ class Grid:
         next_face, rot = self.cubemap('v')
       if updated:
         self.turn(rot)
+        p = complex(nx, ny)
+        if rot in [1, -1]:
+          p = p * (rot * 1j)
+        if rot == 2:
+          p = p * (1j**2)
+        nx = int(p.real)
+        ny = int(p.imag)
         ny %= WIDTH
         nx %= HEIGHT
         # rotate the current position on the face here?
