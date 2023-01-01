@@ -97,17 +97,19 @@ class Grid:
         next_face, rot = self.cubemap('v')
       if updated:
         self.turn(rot)
+        if not rot:
+          np = np - complex(int(WIDTH/2), int(HEIGHT/2))
         if rot in [1, -1]:
           np = np * (rot * 1j)
         if rot == 2:
           np = np * (1j**2)
+        if not rot:
+          np = np + complex(int(WIDTH/2), int(HEIGHT/2))
         nx = int(np.real)
         ny = int(np.imag)
         ny %= WIDTH
         nx %= HEIGHT
         np = complex(nx, ny)
-        # rotate the current position on the face here?
-        # use complex numbers and multiply by 1j to rotate?
       if self.get(np, next_face) == "#":
         print(f'wall {self.get_pos()}')
         return False
