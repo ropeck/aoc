@@ -49,9 +49,9 @@ class Grid:
     return x, y
 
   def cubemap(self, dir):
-    facemap = {(0, 'L'): (4, 2)}
+    facemap = {(1, 'L'): (4, 2)}
     try:
-      face, rot = facemap[(self.cur_face, self.dir)]
+      face, rot = facemap[(self.cur_face-1, self.dir)]
       return face, rot
     except KeyError:
       return self.cur_face, 0
