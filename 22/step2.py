@@ -97,6 +97,8 @@ class Grid:
       if updated:
         self.turn(rot)
         p = complex(nx, ny)
+        if not rot:
+          p = p - complex(int(WIDTH/2), int(HEIGHT/2))
         if rot in [1, -1]:
           p = p * (rot * 1j)
         if rot == 2:
@@ -104,7 +106,8 @@ class Grid:
           nx = int(p.real)
           ny = int(p.imag)
           p = complex(WIDTH - nx, HEIGHT - ny)
-
+        if not rot:
+          p = p + complex(int(WIDTH/2), int(HEIGHT/2))
         nx = int(p.real)
         ny = int(p.imag)
         ny %= WIDTH

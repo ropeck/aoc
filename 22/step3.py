@@ -97,14 +97,14 @@ class Grid:
         next_face, rot = self.cubemap('v')
       if updated:
         self.turn(rot)
-        if not rot:
-          np = np - complex(int(WIDTH/2), int(HEIGHT/2))
-        if rot in [1, -1]:
-          np = np * (rot * 1j)
-        if rot == 2:
-          np = np * (1j**2)
-        if not rot:
-          np = np + complex(int(WIDTH/2), int(HEIGHT/2))
+        # if not rot:
+        #   np = np - complex(int(WIDTH/2), int(HEIGHT/2))
+        # if rot in [1, -1]:
+        #   np = np * (rot * 1j)
+        # if rot == 2:
+        #   np = np * (1j**2)
+        # if not rot:
+        #   np = np + complex(int(WIDTH/2), int(HEIGHT/2))
         nx = int(np.real)
         ny = int(np.imag)
         ny %= WIDTH
