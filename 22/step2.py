@@ -101,6 +101,10 @@ class Grid:
           p = p * (rot * 1j)
         if rot == 2:
           p = p * (1j**2)
+          nx = int(p.real)
+          ny = int(p.imag)
+          p = complex(WIDTH - nx, HEIGHT - ny)
+
         nx = int(p.real)
         ny = int(p.imag)
         ny %= WIDTH
