@@ -9,6 +9,7 @@ DIR_NUMBER = '>v<^'
 TURN={'L': -1, 'R': 1}
 MOVEDIR = {'>': (0,1), '<': (0,-1), '^': (-1,0), 'v': (1,0)}
 HEIGHT = WIDTH = 50
+FACE_ORIGINS = [(50,0), (100,0), (50, 50), (0, 100), (50, 100), (0, 150)]
 
 class Grid:
   def __init__(self, grid_data):
@@ -18,7 +19,7 @@ class Grid:
         print(line+"|")
         self.grid_source.append(list(line))
     self.face = []
-    for cx, cy in [(50,0), (100,0), (50, 50), (0, 100), (50, 100), (0, 150)]:
+    for cx, cy in FACE_ORIGINS:
       f = []
       for y in range(50):
         f.append(self.grid_source[cy+y][cx:cx+50+1])
@@ -37,7 +38,8 @@ class Grid:
     self.y = y
 
   def get_pos(self):
-    return self.x, self.y
+    ox, oy = FACE_ORIGINS[self.cur_face]
+    return self.x + ox, self.y + oy
 
   def set_dir(self, dir):
     self.dir = dir
