@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 from icecream import ic
 import re
+import snoop
 import sys
 from collections import deque
 
@@ -76,9 +77,10 @@ class Grid:
     face, rot = self.facemap[self.cur_face+1][self.dir]
     return face-1, rot
 
+  # @snoop
   def move_forward(self, n=1):
-    (dy, dx) = MOVEDIR[DIR_NUMBER[self.dir]]
     for i in range(n):
+      (dy, dx) = MOVEDIR[DIR_NUMBER[self.dir]]
       ny = self.y + dy
       nx = self.x + dx
       updated = False
@@ -104,16 +106,14 @@ class Grid:
         updated = True
         next_face, rot = self.cubemap('^')
         if rot:
-          z = ny
           ny = nx
-          nx = z
+          nx = 0
       elif ny >= HEIGHT:
         updated = True
         next_face, rot = self.cubemap('v')
         if rot:
-          z = ny
           ny = nx
-          nx = z
+          nx = WIDTH
       new_dir = self.dir
       if updated:
         new_dir = self.turn(rot)
@@ -136,7 +136,8 @@ class Grid:
       s += 1
       print(f'[{s}]')
       x, y = self.get_pos()
-      print(f'{x},{y} move {move}')
+      print(f''
+            f'{self.cur_face+1} {self.x},{self.y} move {move}')
       if move in ["L","R"]:
         self.set_dir(self.turn(TURN[move]))
         print(f'turn {move} dir {DIR_NUMBER[self.dir]} {MOVEDIR[DIR_NUMBER[self.dir]]}')
@@ -176,13 +177,13 @@ class Grid3d(Grid):
                     }
 
 def main(path):
-  grid = Grid(path)
-  pw1 = grid.process_follow()
-  print(f'part1 password: {pw1}')
+  # grid = Grid(path)
+  # pw1 = grid.process_follow()
+  # print(f'part1 password: {pw1}')
 
   grid3d = Grid3d(path)
   pw = grid3d.process_follow()
-  print(f'part1 password: {pw1}')
+  # print(f'part1 password: {pw1}')
   print(f'part2 password: {pw}')
 
   return pw
