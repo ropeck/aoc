@@ -87,34 +87,41 @@ class Grid:
       if nx < 0:
         updated = True
         next_face, rot = self.cubemap('<')
-
+        # U and D can have rot==1 or 0
+        # L and R can have rot==2 or -1 or 0
+        if rot == -1:
+          z = ny
+          ny = nx
+          nx = z
       elif nx >= WIDTH:
         updated = True
         next_face, rot = self.cubemap('>')
+        if rot == -1:
+          z = ny
+          ny = nx
+          nx = z
       if ny < 0:
         updated = True
         next_face, rot = self.cubemap('^')
+        if rot:
+          z = ny
+          ny = nx
+          nx = z
       elif ny >= HEIGHT:
         updated = True
         next_face, rot = self.cubemap('v')
+        if rot:
+          z = ny
+          ny = nx
+          nx = z
       new_dir = self.dir
       if updated:
         new_dir = self.turn(rot)
-        if rot in [1, -1]:
-          z = nx
-          nx = WIDTH + ny
-          ny = z
         ny %= WIDTH
         nx %= HEIGHT
-        # rotate the current position on the face here?
-        # use complex numbers and multiply by 1j to rotate?
-      # ic((new_dir, self.x, self.y, dx, dy, nx, ny, self.cur_face, next_face, rot))
       if self.get(nx, ny, next_face) == "#":
         print(f'wall {(next_face+1,ny,nx)}')
         return False
-      if self.cur_face != next_face and rot:
-        print("ROTATE FACE")
-        print(f'{self.cur_face+1} ({self.x},{self.y}) -> {next_face+1} ({nx},{ny}) rot={rot}')
       self.x = nx
       self.y = ny
       self.set_dir(new_dir)
