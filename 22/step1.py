@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 from collections import deque
+from icecream import ic
 import re
 import sys
 

@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+from icecream import ic
 import re
 import sys
 from collections import deque
@@ -82,9 +83,11 @@ class Grid:
       nx = self.x + dx
       updated = False
       next_face = self.cur_face
+      rot = 0
       if nx < 0:
         updated = True
         next_face, rot = self.cubemap('<')
+
       elif nx >= WIDTH:
         updated = True
         next_face, rot = self.cubemap('>')
@@ -105,9 +108,13 @@ class Grid:
         nx %= HEIGHT
         # rotate the current position on the face here?
         # use complex numbers and multiply by 1j to rotate?
+      # ic((new_dir, self.x, self.y, dx, dy, nx, ny, self.cur_face, next_face, rot))
       if self.get(nx, ny, next_face) == "#":
-        print(f'wall {self.get_pos()}')
+        print(f'wall {(next_face+1,ny,nx)}')
         return False
+      if self.cur_face != next_face and rot:
+        print("ROTATE FACE")
+        print(f'{self.cur_face+1} ({self.x},{self.y}) -> {next_face+1} ({nx},{ny}) rot={rot}')
       self.x = nx
       self.y = ny
       self.set_dir(new_dir)
