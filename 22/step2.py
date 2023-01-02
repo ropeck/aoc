@@ -20,7 +20,7 @@ class Grid:
     self.grid_source = []
     for line in griddata.splitlines():
         line = (line + " "*150)[:150]
-        print(line+"|")
+        # print(line+"|")
         self.grid_source.append(list(line))
     self.face = []
     for cx, cy in FACE_ORIGINS:
@@ -40,7 +40,6 @@ class Grid:
                     5: [(4, 0), (1, 0), (4, 0), (3, 0)],
                     6: [(6, 0), (4, 0), (6, 0), (4, 0)]
                     }
-
 
   def get(self, x, y, f=None):
     if f == None:
@@ -78,7 +77,7 @@ class Grid:
     return face-1, rot
 
   #@snoop
-  def move_forward(self, n=1):
+  def move_forward(self, n=1, check_wall=True):
     for i in range(n):
       (dy, dx) = MOVEDIR[DIR_NUMBER[self.dir]]
       ny = self.y + dy
@@ -125,7 +124,7 @@ class Grid:
         new_dir = self.turn(rot)
         ny %= WIDTH
         nx %= HEIGHT
-      if self.get(nx, ny, next_face) == "#":
+      if self.get(nx, ny, next_face) == "#" and check_wall:
         print(f'wall {next_face+1} {(ny,nx)}')
         return False
       self.x = nx
@@ -188,6 +187,7 @@ def main(path):
   # print(f'part1 password: {pw1}')
 
   grid3d = Grid3d(path)
+  # grid3d.move_forward(401, check_wall=False)
   pw = grid3d.process_follow()
   # print(f'part1 password: {pw1}')
   print(f'part2 password: {pw}')
