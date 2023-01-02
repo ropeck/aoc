@@ -77,7 +77,7 @@ class Grid:
     face, rot = self.facemap[self.cur_face+1][self.dir]
     return face-1, rot
 
-  # @snoop
+  #@snoop
   def move_forward(self, n=1):
     for i in range(n):
       (dy, dx) = MOVEDIR[DIR_NUMBER[self.dir]]
@@ -95,6 +95,8 @@ class Grid:
           z = ny
           ny = nx
           nx = z
+        if rot == 2:
+          nx = WIDTH - nx
       elif nx >= WIDTH:
         updated = True
         next_face, rot = self.cubemap('>')
@@ -102,6 +104,8 @@ class Grid:
           z = ny
           ny = nx
           nx = z
+        if rot == 2:
+          nx = WIDTH - nx
       if ny < 0:
         updated = True
         next_face, rot = self.cubemap('^')
