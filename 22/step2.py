@@ -94,22 +94,13 @@ class Grid:
       elif ny >= HEIGHT:
         updated = True
         next_face, rot = self.cubemap('v')
+      new_dir = self.dir
       if updated:
-        self.turn(rot)
-        p = complex(nx, ny)
-        if not rot:
-          p = p - complex(int(WIDTH/2), int(HEIGHT/2))
+        new_dir = self.turn(rot)
         if rot in [1, -1]:
-          p = p * (rot * 1j)
-        if rot == 2:
-          p = p * (1j**2)
-          nx = int(p.real)
-          ny = int(p.imag)
-          p = complex(WIDTH - nx, HEIGHT - ny)
-        if not rot:
-          p = p + complex(int(WIDTH/2), int(HEIGHT/2))
-        nx = int(p.real)
-        ny = int(p.imag)
+          z = nx
+          nx = WIDTH + ny
+          ny = z
         ny %= WIDTH
         nx %= HEIGHT
         # rotate the current position on the face here?
@@ -119,6 +110,7 @@ class Grid:
         return False
       self.x = nx
       self.y = ny
+      self.set_dir(new_dir)
       self.cur_face = next_face
     return True
 
@@ -132,7 +124,7 @@ class Grid:
       x, y = self.get_pos()
       print(f'{x},{y} move {move}')
       if move in ["L","R"]:
-        self.turn(TURN[move])
+        self.set_dir(self.turn(TURN[move]))
         print(f'turn {move} dir {DIR_NUMBER[self.dir]} {MOVEDIR[DIR_NUMBER[self.dir]]}')
         continue
       #print(f'grid[{x},{y}]={grid[ny][nx]}')
@@ -145,7 +137,7 @@ class Grid:
     return pw
 
   def turn(self, quarters):
-    self.set_dir((self.dir + quarters) % len(DIR_NUMBER))
+    return (self.dir + quarters) % len(DIR_NUMBER)
 
 
 def draw(b, y=None):
@@ -161,12 +153,12 @@ class Grid3d(Grid):
   def __init__(self, data):
     super(Grid3d, self).__init__(data)
                    #      R       D       L       U
-    self.facemap = {1: [(2, 0), (3, 0), (3, 0), (6, 1)],
-                    2: [(5, 2), (2, 0), (3, 1), (6, 0)],
-                    3: [(2, -1), (3, 1), (5, 0), (1, 0)],
-                    4: [(5, 0), (6, 0), (6, 0), (3, 1)],
-                    5: [(2, 2), (6, 1), (6, 1), (3, 0)],
-                    6: [(5, -1), (2, 0), (2, 0), (4, 0)]
+    self.facemap = {1: [(2, 0), (3, 0), (4, 2), (6, 1)],
+                    2: [(5, 2), (3, 1), (1, 0), (6, 0)],
+                    3: [(2, -1), (5, 0), (4, -1), (1, 0)],
+                    4: [(5, 0), (6, 0), (1, 2), (3, 1)],
+                    5: [(2, 2), (6, 1), (4, 0), (3, 0)],
+                    6: [(5, -1), (2, 0), (1, -1), (4, 0)]
                     }
 
 def main(path):
