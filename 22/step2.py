@@ -151,6 +151,7 @@ class Grid:
       else:
         self.move_forward(int(move))
 
+    x, y = self.get_pos()
     print(x, y, DIR_NUMBER[self.dir])
     #  The final password is the sum of 1000 times the row, 4 times the column, and the facing.
     pw = (y+1)*1000 + (x+1)*4 + self.dir
