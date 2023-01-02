@@ -75,8 +75,7 @@ class Grid:
     return x, y
 
   def cubemap(self, dir):
-    self.set_dir(DIR_NUMBER.index(dir))
-    face, rot = self.facemap[self.cur_face+1][self.dir]
+    face, rot = self.facemap[self.cur_face+1][DIR_NUMBER.index(dir)]
     return face-1, rot
 
   #@snoop
@@ -163,6 +162,10 @@ class Grid:
   def turn(self, quarters):
     return (self.dir + quarters) % len(DIR_NUMBER)
 
+# use pygame or graphics library to draw a visualization of the movement around the board
+# the whole board might fit on the screen or just show the current cube face
+# mark the # spaces with an X or color, and show the cursor as it moves around the faces
+# ... should be able to see it move around the map as expected
 
 def draw(b, y=None):
   b = [["{:3d}".format(i)] + s for i,s in enumerate(b)]
