@@ -10,11 +10,12 @@ MOVEDIR = {'>': (0, 1), '<': (0, -1), '^': (-1, 0), 'v': (1, 0)}
 HEIGHT = WIDTH = 50
 FACE_ORIGINS = [(50, 0), (100, 0), (50, 50), (0, 100), (50, 100), (0, 150)]
 
+
 class Grid:
   def __init__(self, path):
     with open(path, "r") as fh:
-    (griddata, followdata) = fh.read().split("\n\n")
-    self.follow = deque(re.findall("(\d+|[LR])", followdata))
+      (griddata, followdata) = fh.read().split("\n\n")
+    self.follow = deque(re.findall('(\d+|[LR])', followdata))
     self.grid_source = []
     for line in griddata.splitlines():
         line = (line + " "*150)[:150]
@@ -52,15 +53,15 @@ class Grid:
     self.y = y
 
   def get_pos(self, x=None, y=None):
-    if x == None:
+    if x is None:
       x = self.x
-    if y == None:
+    if y is None:
       y = self.y
     ox, oy = FACE_ORIGINS[self.cur_face]
     return x + ox, y + oy
 
-  def set_dir(self, dir):
-    self.dir = dir
+  def set_dir(self, direction):
+    self.dir = direction
 
   def find_start(self):
     x = 0
