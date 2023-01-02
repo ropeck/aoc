@@ -86,6 +86,7 @@ class Grid:
       updated = False
       next_face = self.cur_face
       rot = 0
+      print(f'{self.cur_face+1} {(self.x, self.y)} {dx},{dy} {DIR_NUMBER[self.dir]}')
       if nx < 0:
         updated = True
         next_face, rot = self.cubemap('<')
@@ -124,7 +125,7 @@ class Grid:
         ny %= WIDTH
         nx %= HEIGHT
       if self.get(nx, ny, next_face) == "#":
-        print(f'wall {(next_face+1,ny,nx)}')
+        print(f'wall {next_face+1} {(ny,nx)}')
         return False
       self.x = nx
       self.y = ny
