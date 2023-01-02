@@ -187,12 +187,14 @@ def main(path):
   # print(f'part1 password: {pw1}')
 
   grid3d = Grid3d(path)
-  # grid3d.move_forward(401, check_wall=False)
+  # grid3d.set_dir(2)
+  # grid3d.cur_face = 5
+  # grid3d.move_forward(50*4+5, check_wall=False)
   pw = grid3d.process_follow()
   # print(f'part1 password: {pw1}')
   print(f'part2 password: {pw}')
-
-  return pw
+  #
+  # return pw
 
 
 
