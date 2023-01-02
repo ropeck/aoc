@@ -1,21 +1,19 @@
 #!/usr/bin/python3
-from icecream import ic
 import re
-import snoop
 import sys
 from collections import deque
 
 # Facing is 0 for right (>), 1 for down (v), 2 for left (<), and 3 for up (^)
 DIR_NUMBER = '>v<^'
-TURN={'L': -1, 'R': 1}
-MOVEDIR = {'>': (0,1), '<': (0,-1), '^': (-1,0), 'v': (1,0)}
+TURN = {'L': -1, 'R': 1}
+MOVEDIR = {'>': (0, 1), '<': (0, -1), '^': (-1, 0), 'v': (1, 0)}
 HEIGHT = WIDTH = 50
-FACE_ORIGINS = [(50,0), (100,0), (50, 50), (0, 100), (50, 100), (0, 150)]
+FACE_ORIGINS = [(50, 0), (100, 0), (50, 50), (0, 100), (50, 100), (0, 150)]
 
 class Grid:
   def __init__(self, path):
     with open(path, "r") as fh:
-      (griddata, followdata) = fh.read().split("\n\n")
+    (griddata, followdata) = fh.read().split("\n\n")
     self.follow = deque(re.findall("(\d+|[LR])", followdata))
     self.grid_source = []
     for line in griddata.splitlines():
@@ -30,7 +28,7 @@ class Grid:
       self.face.append(f)
     self.cur_face = 0
 
-    self.set_pos(*self.find_start())
+    self.x, self.y = self.find_start()
     self.set_dir(0)
                    #      R       D       L       U
     self.facemap = {1: [(2, 0), (3, 0), (2, 0), (5, 0)],
