@@ -97,16 +97,16 @@ class Grid:
           ny = nx
           nx = z
         if rot == 2:
-          nx = WIDTH - nx
+          nx = WIDTH - nx - 1
       elif nx >= WIDTH:
         updated = True
         next_face, rot = self.cubemap('>')
         if rot == -1:
-          z = ny
           ny = nx
-          nx = z
+          nx = ny
+          ny = HEIGHT -1
         if rot == 2:
-          nx = WIDTH - nx
+          nx = WIDTH - nx - 1
       if ny < 0:
         updated = True
         next_face, rot = self.cubemap('^')
@@ -118,7 +118,7 @@ class Grid:
         next_face, rot = self.cubemap('v')
         if rot:
           ny = nx
-          nx = WIDTH
+          nx = WIDTH - 1
       new_dir = self.dir
       if updated:
         new_dir = self.turn(rot)
