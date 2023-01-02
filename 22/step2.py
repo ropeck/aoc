@@ -7,12 +7,11 @@ from collections import deque
 DIR_NUMBER = '>v<^'
 TURN = {'L': -1, 'R': 1}
 MOVEDIR = {'>': (0, 1), '<': (0, -1), '^': (-1, 0), 'v': (1, 0)}
-HEIGHT = WIDTH = 50
-FACE_ORIGINS = [(50, 0), (100, 0), (50, 50), (0, 100), (50, 100), (0, 150)]
+FACE_ORIGINS = [(1, 0), (2, 0), (1, 1), (0, 2), (1, 2), (0, 3)]
 
 
 class Grid:
-  def __init__(self, path):
+  def __init__(self, path, size=50):
     with open(path, "r") as fh:
       (griddata, followdata) = fh.read().split("\n\n")
     self.follow = deque(re.findall('(\d+|[LR])', followdata))
@@ -22,13 +21,16 @@ class Grid:
         # print(line+"|")
         self.grid_source.append(list(line))
     self.face = []
+    self.width = size
+    self.height = size
     for cx, cy in FACE_ORIGINS:
+      cx *= self.width
+      cy *= self.height
       f = []
       for y in range(50):
         f.append(self.grid_source[cy+y][cx:cx+50+1])
       self.face.append(f)
     self.cur_face = 0
-
     self.x, self.y = self.find_start()
     self.set_dir(0)
                    #      R       D       L       U
@@ -58,6 +60,8 @@ class Grid:
     if y is None:
       y = self.y
     ox, oy = FACE_ORIGINS[self.cur_face]
+    ox *= self.width
+    oy *= self.height
     return x + ox, y + oy
 
   def set_dir(self, direction):
@@ -95,34 +99,34 @@ class Grid:
           ny = nx
           nx = z
         if rot == 2:
-          nx = WIDTH - nx - 1
-          ny = HEIGHT - ny - 1
-      elif nx >= WIDTH:
+          nx = self.width - nx - 1
+          ny = self.height - ny - 1
+      elif nx >= self.width:
         updated = True
         next_face, rot = self.cubemap('>')
         if rot == -1:
           nx = ny
-          ny = HEIGHT -1
+          ny = self.height -1
         if rot == 2:
-          nx = WIDTH - nx - 1
-          ny = HEIGHT - ny - 1
+          nx = self.width - nx - 1
+          ny = self.height - ny - 1
       if ny < 0:
         updated = True
         next_face, rot = self.cubemap('^')
         if rot:
           ny = nx
           nx = 0
-      elif ny >= HEIGHT:
+      elif ny >= self.height:
         updated = True
         next_face, rot = self.cubemap('v')
         if rot:
           ny = nx
-          nx = WIDTH - 1
+          nx = self.width - 1
       new_dir = self.dir
       if updated:
         new_dir = self.turn(rot)
-        ny %= WIDTH
-        nx %= HEIGHT
+        ny %= self.width
+        nx %= self.height
       if self.get(nx, ny, next_face) == "#" and check_wall:
         print(f'wall {next_face+1} {(ny,nx)}')
         return False
@@ -170,8 +174,8 @@ def draw(b, y=None):
 
 class Grid3d(Grid):
 
-  def __init__(self, data):
-    super(Grid3d, self).__init__(data)
+  def __init__(self, data, size=50):
+    super(Grid3d, self).__init__(data, size)
                    #      R       D       L       U
     self.facemap = {1: [(2, 0), (3, 0), (4, 2), (6, 1)],
                     2: [(5, 2), (3, 1), (1, 0), (6, 0)],
@@ -189,12 +193,12 @@ def main(path):
   grid3d = Grid3d(path)
   # grid3d.set_dir(2)
   # grid3d.cur_face = 5
-  # grid3d.move_forward(50*4+5, check_wall=False)
+  # grid3d.move_forward(grid3d.width*4+5, check_wall=False)
   pw = grid3d.process_follow()
   # print(f'part1 password: {pw1}')
   print(f'part2 password: {pw}')
-  #
-  # return pw
+
+  return pw
 
 
 
