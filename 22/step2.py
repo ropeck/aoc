@@ -98,15 +98,16 @@ class Grid:
           nx = z
         if rot == 2:
           nx = WIDTH - nx - 1
+          ny = HEIGHT - ny - 1
       elif nx >= WIDTH:
         updated = True
         next_face, rot = self.cubemap('>')
         if rot == -1:
-          ny = nx
           nx = ny
           ny = HEIGHT -1
         if rot == 2:
           nx = WIDTH - nx - 1
+          ny = HEIGHT - ny - 1
       if ny < 0:
         updated = True
         next_face, rot = self.cubemap('^')
