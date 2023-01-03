@@ -230,7 +230,7 @@ def main(path):
   # print(f'part1 password: {pw1}')
 
   grid3d = Grid3d(path)
-  grid3d.set_dir(1)
+  # grid3d.set_dir(1)
   # grid3d.cur_face = 5
   # grid3d.move_forward(grid3d.width*4+10, check_wall=False)
   pw = grid3d.process_follow()
