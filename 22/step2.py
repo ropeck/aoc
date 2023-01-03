@@ -1,8 +1,8 @@
 #!/usr/bin/python3
-import pygame
+from collections import deque
 import re
 import sys
-from collections import deque
+import tkinter
 
 # Facing is 0 for right (>), 1 for down (v), 2 for left (<), and 3 for up (^)
 DIR_NUMBER = '>v<^'
@@ -42,13 +42,15 @@ class Grid:
                     5: [(4, 0), (1, 0), (4, 0), (3, 0)],
                     6: [(6, 0), (4, 0), (6, 0), (4, 0)]
                     }
-    self.screen = pygame.display.set_mode((len(self.grid_source[0])*5+20, len(self.grid_source)*5+20))
-    self.screen.fill((0,0,0))
-    pygame.display.flip()
+    self.screen = tkinter.Tk()
+    self.screen.geometry("200x250")
+    self.canvas = tkinter.Canvas(self.screen, width=170, height=220)
+    self.canvas.create_line(15, 25, 100, 25, width=5)
+    self.canvas.pack()
 
-  def check_pygame(self):
-    pass
-  # something here
+    self.screen.update_idletasks()
+    self.screen.update()
+
 
   def get(self, x, y, f=None):
     if f == None:
@@ -87,7 +89,6 @@ class Grid:
     return face-1, rot
 
   def draw_circle(self, x, y):
-    # pygame.draw.circle(self.)
     pass
 
   def draw_triangle(self, x, y):
@@ -101,8 +102,6 @@ class Grid:
       ny = self.y + dy
       nx = self.x + dx
       self.draw_triangle(ny, nx)
-      pygame.display.flip()
-      pygame.event.pump()
       updated = False
       next_face = self.cur_face
       rot = 0
@@ -145,8 +144,6 @@ class Grid:
         new_dir = self.turn(rot)
         ny %= self.width
         nx %= self.height
-
-      pygame.event.pump()
 
       if self.get(nx, ny, next_face) == "#" and check_wall:
         print(f'wall {next_face+1} {(ny,nx)}')
@@ -222,7 +219,7 @@ def main(path):
   pw = grid3d.process_follow()
   # print(f'part1 password: {pw1}')
   print(f'part2 password: {pw}')
-
+  grid3d.screen.mainloop()
   return pw
 
 
@@ -234,9 +231,4 @@ if __name__ == '__main__':
     path = "input"
   main(path)
 
-  running = True
-  while running:
-    for event in pygame.event.get():
-      if event.type == pygame.QUIT:
-        running = False
 
