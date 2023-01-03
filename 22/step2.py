@@ -107,11 +107,9 @@ class Grid:
   #@snoop
   def move_forward(self, n=1, check_wall=True):
     for i in range(n):
-      self.draw_circle(self.x, self.y)
       (dy, dx) = MOVEDIR[DIR_NUMBER[self.dir]]
       ny = self.y + dy
       nx = self.x + dx
-      self.draw_triangle(ny, nx)
       updated = False
       next_face = self.cur_face
       rot = 0
@@ -137,7 +135,7 @@ class Grid:
         if rot == 2:
           nx = self.width - nx - 1
           ny = self.height - ny - 1
-      if ny < 0:
+      elif ny < 0:
         updated = True
         next_face, rot = self.cubemap('^')
         if rot:
@@ -234,10 +232,10 @@ def main(path):
   grid3d = Grid3d(path)
   grid3d.set_dir(1)
   # grid3d.cur_face = 5
-  grid3d.move_forward(grid3d.width*4+5, check_wall=False)
-  # pw = grid3d.process_follow()
-  # # print(f'part1 password: {pw1}')
-  # print(f'part2 password: {pw}')
+  # grid3d.move_forward(grid3d.width*4+10, check_wall=False)
+  pw = grid3d.process_follow()
+  # print(f'part1 password: {pw1}')
+  print(f'part2 password: {pw}')
   grid3d.screen.mainloop()
   return pw
 
