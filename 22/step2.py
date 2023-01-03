@@ -154,6 +154,15 @@ class Grid:
         new_dir = self.turn(rot)
         ny %= self.width
         nx %= self.height
+      ox, oy = FACE_ORIGINS[next_face]
+      gx = 10 + 5*(nx+ox*self.width)
+      gy = 10 + 5*(ny+oy*self.height)
+      color="yellow"
+      if self.get(nx, ny, next_face) == "#":
+        color="red"
+      self.canvas.create_rectangle(gx, gy, gx + 5, gy + 5, fill=color, outline="light yellow", width=1)
+      self.screen.update_idletasks()
+      self.screen.update()
 
       if self.get(nx, ny, next_face) == "#" and check_wall:
         print(f'wall {next_face+1} {(ny,nx)}')
@@ -223,12 +232,12 @@ def main(path):
   # print(f'part1 password: {pw1}')
 
   grid3d = Grid3d(path)
-  # grid3d.set_dir(2)
+  grid3d.set_dir(1)
   # grid3d.cur_face = 5
-  # grid3d.move_forward(grid3d.width*4+5, check_wall=False)
-  pw = grid3d.process_follow()
-  # print(f'part1 password: {pw1}')
-  print(f'part2 password: {pw}')
+  grid3d.move_forward(grid3d.width*4+5, check_wall=False)
+  # pw = grid3d.process_follow()
+  # # print(f'part1 password: {pw1}')
+  # print(f'part2 password: {pw}')
   grid3d.screen.mainloop()
   return pw
 
