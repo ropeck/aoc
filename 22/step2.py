@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 from collections import deque
+from icecream import ic
 import re
 import sys
 import tkinter
@@ -24,12 +25,25 @@ class Grid:
     self.face = []
     self.width = size
     self.height = size
+    self.screen = tkinter.Tk()
+    self.screen.geometry("1200x1250")
+    self.canvas = tkinter.Canvas(self.screen, width=170*5, height=220*5)
     for cx, cy in FACE_ORIGINS:
       cx *= self.width
       cy *= self.height
+      gx = cx * 5 + 10
+      gy = cy * 5 + 10
+      self.canvas.create_rectangle(gx, gy, gx + self.width * 5, gy + self.height * 5,
+                                   outline="black", fill="light gray")
       f = []
       for y in range(50):
-        f.append(self.grid_source[cy+y][cx:cx+50+1])
+        row = self.grid_source[cy + y][cx:cx + 50 + 1]
+        f.append(row)
+        for x, v in enumerate(row):
+          if v == "#":
+            gy = 10+(cy + y)*5
+            gx = 10+(cx + x)*5
+            self.canvas.create_rectangle(gx, gy, gx+5, gy+5, fill="black")
       self.face.append(f)
     self.cur_face = 0
     self.x, self.y = self.find_start()
@@ -42,13 +56,6 @@ class Grid:
                     5: [(4, 0), (1, 0), (4, 0), (3, 0)],
                     6: [(6, 0), (4, 0), (6, 0), (4, 0)]
                     }
-    self.screen = tkinter.Tk()
-    self.screen.geometry("1200x1250")
-    self.canvas = tkinter.Canvas(self.screen, width=170*5, height=220*5)
-    for fx, fy in FACE_ORIGINS:
-      x = fx*self.width*5 + 10
-      y = fy*self.height*5 + 10
-      self.canvas.create_rectangle(x, y, x+self.width*5, y+self.height*5)
     self.canvas.pack()
 
     self.screen.update_idletasks()
