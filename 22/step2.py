@@ -126,9 +126,8 @@ class Grid:
         # U and D can have rot==1 or 0
         # L and R can have rot==2 or -1 or 0
         if rot == -1:
-          z = ny
-          ny = nx
-          nx = z
+          nx = ny
+          ny = 0
         if rot == 2:
           nx = self.width - nx - 1
           ny = self.height - ny - 1
