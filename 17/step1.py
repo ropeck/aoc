@@ -73,7 +73,7 @@ class Tower:
   #   return False
   # #
     for j, rr in enumerate(rock):
-      tr = i + j + 1
+      tr = i + j
       # print(f'overlap tr={tr} len(rock)={len(rock)} i={i}')
       if tr > len(tower) - 1:
         return True
@@ -113,16 +113,16 @@ class Tower:
         print("jet right")
         if not self.rock_side(current_rock, 0):
           new_rock = [r >> 1 for r in current_rock]
-          if not self.overlap(new_rock, i-1, tower):
+          if not self.overlap(new_rock, i, tower):
             current_rock = new_rock
       else:
         print("jet left")
         if not self.rock_side(current_rock, 6):
           new_rock = [r << 1 for r in current_rock]
-          if not self.overlap(new_rock, i-1, tower):
+          if not self.overlap(new_rock, i, tower):
             current_rock = new_rock
       self.draw(tower, i, current_rock)
-      if self.overlap(current_rock, i, tower):
+      if self.overlap(current_rock, i+1, tower):
         print("Rock falls 1 unit, causing it to come to rest")
         break
       i += 1
