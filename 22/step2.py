@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import pygame
 import re
 import sys
 from collections import deque
@@ -41,6 +42,13 @@ class Grid:
                     5: [(4, 0), (1, 0), (4, 0), (3, 0)],
                     6: [(6, 0), (4, 0), (6, 0), (4, 0)]
                     }
+    self.screen = pygame.display.set_mode((len(self.grid_source[0])*5+20, len(self.grid_source)*5+20))
+    self.screen.fill((0,0,0))
+    pygame.display.flip()
+
+  def check_pygame(self):
+    pass
+  # something here
 
   def get(self, x, y, f=None):
     if f == None:
@@ -78,12 +86,23 @@ class Grid:
     face, rot = self.facemap[self.cur_face+1][DIR_NUMBER.index(dir)]
     return face-1, rot
 
+  def draw_circle(self, x, y):
+    # pygame.draw.circle(self.)
+    pass
+
+  def draw_triangle(self, x, y):
+    pass
+
   #@snoop
   def move_forward(self, n=1, check_wall=True):
     for i in range(n):
+      self.draw_circle(self.x, self.y)
       (dy, dx) = MOVEDIR[DIR_NUMBER[self.dir]]
       ny = self.y + dy
       nx = self.x + dx
+      self.draw_triangle(ny, nx)
+      pygame.display.flip()
+      pygame.event.pump()
       updated = False
       next_face = self.cur_face
       rot = 0
@@ -126,6 +145,9 @@ class Grid:
         new_dir = self.turn(rot)
         ny %= self.width
         nx %= self.height
+
+      pygame.event.pump()
+
       if self.get(nx, ny, next_face) == "#" and check_wall:
         print(f'wall {next_face+1} {(ny,nx)}')
         return False
@@ -211,3 +233,10 @@ if __name__ == '__main__':
   else:
     path = "input"
   main(path)
+
+  running = True
+  while running:
+    for event in pygame.event.get():
+      if event.type == pygame.QUIT:
+        running = False
+
