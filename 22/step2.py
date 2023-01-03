@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 from collections import deque
 from icecream import ic
+import os
 import re
 import sys
 import tkinter
@@ -14,6 +15,8 @@ FACE_ORIGINS = [(1, 0), (2, 0), (1, 1), (0, 2), (1, 2), (0, 3)]
 
 class Grid:
   def __init__(self, path, size=50):
+    self.has_graphics = os.getenv('DISPLAY')
+
     with open(path, "r") as fh:
       (griddata, followdata) = fh.read().split("\n\n")
     self.follow = deque(re.findall('(\d+|[LR])', followdata))
@@ -25,16 +28,18 @@ class Grid:
     self.face = []
     self.width = size
     self.height = size
-    self.screen = tkinter.Tk()
-    self.screen.geometry("1200x1250")
-    self.canvas = tkinter.Canvas(self.screen, width=170*5, height=220*5)
+    if self.has_graphics:
+      self.screen = tkinter.Tk()
+      self.screen.geometry("1200x1250")
+      self.canvas = tkinter.Canvas(self.screen, width=170*5, height=220*5)
     for cx, cy in FACE_ORIGINS:
       cx *= self.width
       cy *= self.height
       gx = cx * 5 + 10
       gy = cy * 5 + 10
-      self.canvas.create_rectangle(gx, gy, gx + self.width * 5, gy + self.height * 5,
-                                   outline="black", fill="light gray")
+      if self.has_graphics:
+        self.canvas.create_rectangle(gx, gy, gx + self.width * 5, gy + self.height * 5,
+                                     outline="black", fill="light gray")
       f = []
       for y in range(50):
         row = self.grid_source[cy + y][cx:cx + 50 + 1]
@@ -43,7 +48,8 @@ class Grid:
           if v == "#":
             gy = 10+(cy + y)*5
             gx = 10+(cx + x)*5
-            self.canvas.create_rectangle(gx, gy, gx+5, gy+5, fill="black")
+            if self.has_graphics:
+              self.canvas.create_rectangle(gx, gy, gx+5, gy+5, fill="black")
       self.face.append(f)
     self.cur_face = 0
     self.x, self.y = self.find_start()
@@ -56,10 +62,10 @@ class Grid:
                     5: [(4, 0), (1, 0), (4, 0), (3, 0)],
                     6: [(6, 0), (4, 0), (6, 0), (4, 0)]
                     }
-    self.canvas.pack()
-
-    self.screen.update_idletasks()
-    self.screen.update()
+    if self.has_graphics:
+      self.canvas.pack()
+      self.screen.update_idletasks()
+      self.screen.update()
 
 
   def get(self, x, y, f=None):
@@ -158,9 +164,10 @@ class Grid:
       color="yellow"
       if self.get(nx, ny, next_face) == "#":
         color="red"
-      self.canvas.create_rectangle(gx, gy, gx + 5, gy + 5, fill=color, outline="light yellow", width=1)
-      self.screen.update_idletasks()
-      self.screen.update()
+      if self.has_graphics:
+        self.canvas.create_rectangle(gx, gy, gx + 5, gy + 5, fill=color, outline="light yellow", width=1)
+        self.screen.update_idletasks()
+        self.screen.update()
 
       if self.get(nx, ny, next_face) == "#" and check_wall:
         print(f'wall {next_face+1} {(ny,nx)}')
@@ -230,13 +237,14 @@ def main(path):
   # print(f'part1 password: {pw1}')
 
   grid3d = Grid3d(path)
-  # grid3d.set_dir(1)
+  #grid3d.set_dir(1)
   # grid3d.cur_face = 5
   # grid3d.move_forward(grid3d.width*4+10, check_wall=False)
   pw = grid3d.process_follow()
   # print(f'part1 password: {pw1}')
   print(f'part2 password: {pw}')
-  grid3d.screen.mainloop()
+  if grid3d.has_graphics:
+    grid3d.screen.mainloop()
   return pw
 
 
