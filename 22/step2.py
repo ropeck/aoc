@@ -43,12 +43,12 @@ class Grid:
                     6: [(6, 0), (4, 0), (6, 0), (4, 0)]
                     }
     self.screen = tkinter.Tk()
-    self.screen.geometry("200x250")
-    self.canvas = tkinter.Canvas(self.screen, width=170, height=220)
+    self.screen.geometry("1200x1250")
+    self.canvas = tkinter.Canvas(self.screen, width=170*5, height=220*5)
     for fx, fy in FACE_ORIGINS:
-      x = fx*self.width + 10
-      y = fy*self.height + 10
-      self.canvas.create_rectangle(x, y, x+self.width, y+self.height)
+      x = fx*self.width*5 + 10
+      y = fy*self.height*5 + 10
+      self.canvas.create_rectangle(x, y, x+self.width*5, y+self.height*5)
     self.canvas.pack()
 
     self.screen.update_idletasks()
