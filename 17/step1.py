@@ -178,7 +178,7 @@ def main(path, max_count):
     # t.draw()
     n += 1
   print(f'height: {t.height()}')
-  if self.has_graphics:
+  if t.has_graphics:
     t.screen.mainloop()
 
 if __name__ == '__main__':
