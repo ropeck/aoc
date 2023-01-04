@@ -41,7 +41,7 @@ class Tower:
 
   def next_jet(self):
     if not self._next_jet:
-      self._next_jet = list(self.jet)
+      self._next_jet = list(self.jet).copy()
       self._next_jet.reverse()
     r = self._next_jet.pop()
     return {'<': -1, '>': 1}[r]
