@@ -62,6 +62,7 @@ class Tower:
     w = b * 2 + 7 * dy
     c = self.canvas
 
+    c.create_rectangle(0, 0, 100, 1150, fill="white")
     c.create_rectangle(b, h - b - (n * dy), w - dy, h - b,
                                    outline="black", fill="light gray")
 
@@ -73,16 +74,13 @@ class Tower:
           x = b + dx*nn
           y = b + dy*row_num
           c.create_rectangle(x, y, x + dx, y + dy, outline="black", fill="blue")
-# draw the overlapping rock
-        # if (r and (row_num>=i) and (row_num<=i+len(r)-1) and m & r[row_num-i]):
-
     if r:
       ic(i, r)
       for j, rock_row in enumerate(r):
         for nn in range(7):
-          if rock_row & 2**nn:
-            x = b + dx * nn
-            y = b + dy * rock_row + i
+          x = b + dx * nn
+          y = b + dy * rock_row + i
+          if rock_row&2**nn:
             c.create_rectangle(x, y, x + dx, y + dy, outline="black", fill="green")
 
     c.create_rectangle(b, h - b - (n * dy), w - dy, h - b,
