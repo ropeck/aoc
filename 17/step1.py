@@ -94,7 +94,7 @@ class Tower:
     # rock.reverse()
     for j, rr in enumerate(rock):
       tr = i + j
-      if tr > len(tower) - 1:
+      if tr >= len(tower):
         return True
       o = tower[tr] & rock[j]
       if o:
@@ -119,7 +119,7 @@ class Tower:
     tower = [0 for i in current_rock] + [0, 0, 0] + self.t
     i = 0
     while True:
-      if i > len(tower)+1:
+      if i > len(tower):
         break
       self.draw(tower, i, current_rock)
       # apply jet to current_rock position
@@ -166,11 +166,11 @@ class Tower:
         if not r:
           rock_list.reverse()
           return rock_list
-       # r.reverse()
+        r.reverse()
         rock_list.append((w, r))
 
 def main(path, max_count):
-  t = Tower(False)
+  t = Tower(True)
   n=0
   while n <= max_count:
     print(n)
