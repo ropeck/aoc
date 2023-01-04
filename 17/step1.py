@@ -9,7 +9,7 @@ class Tower:
   def __init__(self, has_graphics=True):
     self.t = []   # each row is a byte
     self.rocks = self.read_rocks()
-    self.pending_rocks = self.rocks.copy()
+    self.pending_rocks = []
 
     self.rock_n = 0
     self.jet = self.read_jets()
@@ -39,7 +39,7 @@ class Tower:
 
   def next_rock(self):
     if not self.pending_rocks:
-      self.pending_rocks = self.rocks.copy()
+      self.pending_rocks = [(n, r.copy()) for n, r in self.rocks]
     r = self.pending_rocks.pop()
     # print(f'{r} pending: {self.pending_rocks}')
     return r
@@ -161,24 +161,25 @@ class Tower:
           if not l:
             break
           w = len(l)
-          byte = sum(2 ** i for i, v in enumerate(reversed([ch == "#" for ch in l])) if v)
+          byte = sum(2 ** i for i, v in enumerate([ch == "#" for ch in l]) if v)
           r.append(byte)
         if not r:
           rock_list.reverse()
           return rock_list
-        r.reverse()
+       # r.reverse()
         rock_list.append((w, r))
 
 def main(path, max_count):
   t = Tower(False)
   n=0
   while n <= max_count:
-    #print(n)
+    print(n)
     t.drop()
     # t.draw()
     n += 1
   print(f'height: {t.height()}')
-  t.screen.mainloop()
+  if self.has_graphics:
+    t.screen.mainloop()
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
