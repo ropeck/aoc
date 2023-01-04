@@ -2,9 +2,10 @@
 import os
 #import snoop
 import sys
+import tkinter
 
 class Tower:
-  def __init__(self):
+  def __init__(self, has_graphics=True):
     self.t = []   # each row is a byte
     self.rocks = self.read_rocks()
     self.pending_rocks = self.rocks.copy()
@@ -12,6 +13,16 @@ class Tower:
     self.rock_n = 0
     self.jet = self.read_jets()
     self._next_jet = []
+    self.has_graphics = has_graphics
+    if self.has_graphics:
+      self.screen = tkinter.Tk()
+      self.screen.geometry("1200x1250")
+      self.canvas = tkinter.Canvas(self.screen, width=70 * 5, height=220 * 5)
+      # self.canvas.create_rectangle(gx, gy, gx + self.width * 5, gy + self.height * 5,
+      #                              outline="black", fill="light gray")
+    self.canvas.pack()
+    self.screen.update_idletasks()
+    self.screen.update()
 
   def read_jets(self):
     with open(path, "r") as fh:
@@ -162,6 +173,7 @@ def main(path, max_count):
     t.draw()
     n += 1
   print(f'height: {t.height()}')
+  t.screen.mainloop()
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
