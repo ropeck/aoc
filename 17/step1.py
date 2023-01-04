@@ -16,8 +16,8 @@ class Tower:
     self.has_graphics = has_graphics
     if self.has_graphics:
       self.screen = tkinter.Tk()
-      self.screen.geometry("1200x1250")
-      self.canvas = tkinter.Canvas(self.screen, width=70 * 5, height=220 * 5)
+      self.screen.geometry("200x600")
+      self.canvas = tkinter.Canvas(self.screen, width=70, height=220)
       # self.canvas.create_rectangle(gx, gy, gx + self.width * 5, gy + self.height * 5,
       #                              outline="black", fill="light gray")
     self.canvas.pack()
