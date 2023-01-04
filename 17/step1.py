@@ -17,13 +17,11 @@ class Tower:
     self.has_graphics = has_graphics
     if self.has_graphics:
       self.screen = tkinter.Tk()
-      self.screen.geometry("200x600")
-      self.canvas = tkinter.Canvas(self.screen, width=100, height=450)
-      # self.canvas.create_rectangle(gx, gy, gx + self.width * 5, gy + self.height * 5,
-      #                              outline="black", fill="light gray")
-    self.canvas.pack()
-    self.screen.update_idletasks()
-    self.screen.update()
+      self.screen.geometry("200x1200")
+      self.canvas = tkinter.Canvas(self.screen, width=100, height=1150)
+      self.canvas.pack()
+      self.screen.update_idletasks()
+      self.screen.update()
 
   def read_jets(self):
     with open(path, "r") as fh:
@@ -58,7 +56,7 @@ class Tower:
     # draw the top 10 rows of the tower.
     # indicate the bottom and next rock position
     dx = dy = 10
-    n = 25
+    n = min([len(t), 100])
     b = 15
     h = n * dy + b*2
     w = b * 2 + 7 * dy
@@ -67,7 +65,7 @@ class Tower:
     c.create_rectangle(b, h - b - (n * dy), w - dy, h - b,
                                    outline="black", fill="light gray")
 
-    for row_num, row in list(enumerate(t))[-20:]:
+    for row_num, row in list(enumerate(t)):
       if row == 255:
         continue
       for nn in range(6,-1,-1):
@@ -92,18 +90,11 @@ class Tower:
     self.screen.update_idletasks()
     self.screen.update()
   def overlap(self, rock, i, tower):
-  #   for n, rock_row in enumerate(new_rock):
-  #     if tower[i-n] & rock_row:
-  #       return True
-  #   return False
-  # #
     for j, rr in enumerate(rock):
       tr = i + j
-      # print(f'overlap tr={tr} len(rock)={len(rock)} i={i}')
       if tr > len(tower) - 1:
         return True
       o = tower[tr] & rock[j]
-      # print(f'o:{o} tower[tr] {tower[tr]} tr {tr}  rock[j] {rock[j]}  j {j}')
       if o:
         return True
     return False
@@ -124,10 +115,7 @@ class Tower:
     r = (l, m)
     current_rock = [row << (5 - r[0]) for row in r[1]]
     tower = [0 for i in current_rock] + [0, 0, 0] + self.t
-    # print(list(enumerate(tower)))
-    # self.draw_rock(current_rock)
-    place = 0
-    i = 0 
+    i = 0
     while True:
       if i > len(tower)+1:
         break
@@ -154,7 +142,6 @@ class Tower:
       i += 1
       print("Rock falls 1 unit")
     self.draw(tower, i, current_rock)
-    # print(f'i={i} place={place} pos={1+i-len(current_rock)}')
     for n, rock_row in enumerate(current_rock):
       pos = i + n
       tower[pos] = tower[pos] | rock_row
