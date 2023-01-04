@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import os
 #import snoop
+from icecream import ic
 import sys
 import tkinter
 
@@ -63,8 +64,10 @@ class Tower:
     w = b * 2 + 7 * dy
     c = self.canvas
 
+    c.create_rectangle(b, h - b - (n * dy), w - dy, h - b,
+                                   outline="black", fill="light gray")
 
-    for row_num, row in enumerate(t):
+    for row_num, row in list(enumerate(t))[-20:]:
       if row == 255:
         continue
       for nn in range(6,-1,-1):
@@ -74,18 +77,18 @@ class Tower:
           c.create_rectangle(x, y, x + dx, y + dy, outline="black", fill="blue")
 # draw the overlapping rock
         # if (r and (row_num>=i) and (row_num<=i+len(r)-1) and m & r[row_num-i]):
-        #   s += "@"
-        # elif (m & row):
-        #   s += "#"
-        # else:
-        #   s += "."
-    #   print(f'|{s}|')
-    #   row_num += 1
-    # print('+-------+')
-    # print('')
+
+    if r:
+      ic(i, r)
+      for j, rock_row in enumerate(r):
+        for nn in range(7):
+          if rock_row & 2**nn:
+            x = b + dx * nn
+            y = b + dy * rock_row + i
+            c.create_rectangle(x, y, x + dx, y + dy, outline="black", fill="green")
 
     c.create_rectangle(b, h - b - (n * dy), w - dy, h - b,
-                                   outline="black", fill="light gray")
+                                   outline="black", fill=None)
     self.screen.update_idletasks()
     self.screen.update()
   def overlap(self, rock, i, tower):
@@ -128,6 +131,7 @@ class Tower:
     while True:
       if i > len(tower)+1:
         break
+      self.draw(tower, i, current_rock)
       # apply jet to current_rock position
       print("row",i)
       jet = self.next_jet()
@@ -149,11 +153,12 @@ class Tower:
         break
       i += 1
       print("Rock falls 1 unit")
-      self.draw(tower, i, current_rock)
+    self.draw(tower, i, current_rock)
     # print(f'i={i} place={place} pos={1+i-len(current_rock)}')
     for n, rock_row in enumerate(current_rock):
       pos = i + n
       tower[pos] = tower[pos] | rock_row
+    self.draw(tower, i)
     self.t = [row for row in tower if row]
     print("---")
 
