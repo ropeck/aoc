@@ -149,7 +149,7 @@ class Tower:
       tower[pos] = tower[pos] | rock_row
     self.draw(tower, i)
     self.t = [row for row in tower if row]
-    print("---")
+    #print("---")
 
   def read_rocks(self):
     rock_list = []
@@ -173,7 +173,7 @@ def main(path, max_count):
   t = Tower(False)
   n=0
   while n <= max_count:
-    print(n)
+    #print(n)
     t.drop()
     # t.draw()
     n += 1
