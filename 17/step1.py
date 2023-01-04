@@ -3,7 +3,16 @@ import os
 #import snoop
 from icecream import ic
 import sys
+import time
 import tkinter
+
+running = True
+
+def keypress(event):
+  if event.char == " ":
+    running = False
+  else:
+    running = True
 
 class Tower:
   def __init__(self, has_graphics=True):
@@ -22,6 +31,7 @@ class Tower:
       self.screen = tkinter.Tk()
       self.screen.geometry("200x1200")
       self.canvas = tkinter.Canvas(self.screen, width=100, height=1150)
+      self.screen.bind("<Key>", keypress)
       self.canvas.pack()
       self.screen.update_idletasks()
       self.screen.update()
@@ -128,13 +138,14 @@ class Tower:
     tower = [0 for i in current_rock] + [0, 0, 0] + self.t
     i = 0
     while True:
+      time.sleep(1)
       if i > len(tower):
         break
       self.draw(tower, i, current_rock)
       # apply jet to current_rock position
       # print("row",i)
       jet = self.next_jet()
-      if jet == 1:
+      if jet == -1:
         # print("jet right")
         if not self.rock_side(current_rock, 0):
           new_rock = [r >> 1 for r in current_rock]
@@ -182,10 +193,15 @@ def main(path, max_count):
   t = Tower(True)
   n=0
   while n <= max_count:
-    print(n)
-    t.drop()
+    if running:
+      print(n)
+      t.drop()
+      time.sleep(1)
     # t.draw()
-    n += 1
+      n += 1
+    t.screen.update_idletasks()
+    t.screen.update()
+
   print(f'height: {t.height()}')
   if t.has_graphics:
     t.screen.mainloop()
@@ -195,4 +211,4 @@ if __name__ == '__main__':
     path = sys.argv[1]
   else:
     path = "input"
-  main(path, 2022)
+  main(path, 11)
