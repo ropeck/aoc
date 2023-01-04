@@ -6,13 +6,12 @@ import sys
 import time
 import tkinter
 
-running = True
+running = False
 
 def keypress(event):
-  if event.char == " ":
-    running = False
-  else:
-    running = True
+  global running
+
+  running = True
 
 class Tower:
   def __init__(self, has_graphics=True):
@@ -31,7 +30,7 @@ class Tower:
       self.screen = tkinter.Tk()
       self.screen.geometry("200x1200")
       self.canvas = tkinter.Canvas(self.screen, width=100, height=1150)
-      self.screen.bind("<Key>", keypress)
+      self.screen.bind("<space>", keypress)
       self.canvas.pack()
       self.screen.update_idletasks()
       self.screen.update()
@@ -134,7 +133,8 @@ class Tower:
     l, m = self.next_rock()
     m.reverse()
     r = (l, m)
-    current_rock = [row << (5 - r[0]) for row in r[1]]
+    rock = r[1].copy()
+    current_rock = [row << (5 - r[0]) for row in rock]
     tower = [0 for i in current_rock] + [0, 0, 0] + self.t
     i = 0
     while True:
@@ -190,6 +190,8 @@ class Tower:
         rock_list.append((w, r))
 
 def main(path, max_count):
+  global running
+
   t = Tower(True)
   n=0
   while n <= max_count:
@@ -199,6 +201,8 @@ def main(path, max_count):
       time.sleep(1)
     # t.draw()
       n += 1
+      running = False
+
     t.screen.update_idletasks()
     t.screen.update()
 
