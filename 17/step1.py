@@ -14,6 +14,9 @@ class Tower:
     self.rock_n = 0
     self.jet = self.read_jets()
     self._next_jet = []
+
+    self.border = 15
+    self.dx = self.dy = 10
     self.has_graphics = has_graphics
     if self.has_graphics:
       self.screen = tkinter.Tk()
@@ -55,14 +58,14 @@ class Tower:
       t = self.t
     # draw the top 10 rows of the tower.
     # indicate the bottom and next rock position
-    dx = dy = 10
     n = min([len(t), 100])
-    b = 15
-    h = n * dy + b*2
-    w = b * 2 + 7 * dy
+    h = n * self.dy + self.border*2
+    w = self.border * 2 + 7 * self.dy
     if self.has_graphics:
       c = self.canvas
-
+      b = self.border
+      dx = self.dx
+      dy = self.dy
       c.create_rectangle(0, 0, 100, 1150, fill="white")
       c.create_rectangle(b, h - b - (n * dy), w - b, h - b,
                                      outline="black", fill="light gray")
@@ -70,25 +73,31 @@ class Tower:
     for row_num, row in list(enumerate(t)):
       if row == 255:
         continue
-      for nn in range(6,-1,-1):
-        if row & 2**nn:
-          x = b + dx*nn
-          y = b + dy*row_num
-          if self.has_graphics:
-            c.create_rectangle(x, y, x + dx, y + dy, outline="black", fill="blue")
+      self.draw_row(row, row_num, "blue")
     if r and self.has_graphics:
       ic(i, r)
       for j, rock_row in enumerate(r):
-        for nn in range(7):
-          x = b + dx * nn
-          y = b + dy * (j + i)
-          if rock_row&2**nn:
-            c.create_rectangle(x, y, x + dx, y + dy, outline="black", fill="green")
+        self.draw_row(rock_row, j + i, "green")
     if self.has_graphics:
       c.create_rectangle(b, h - b - (n * dy), w - b, h - b,
                                      outline="black", fill=None)
       self.screen.update_idletasks()
       self.screen.update()
+
+  def draw_row(self, row, row_num, color):
+    for nn in range(6, -1, -1):
+      if row & 2 ** nn:
+        self.draw_square(nn, row_num, color)
+
+  def draw_square(self, nn, row_num, color):
+    b = self.border
+    dx = self.dx
+    dy = self.dy
+    x = b + dx * nn
+    y = b + dy * row_num
+    if self.has_graphics:
+      self.canvas.create_rectangle(x, y, x + dx, y + dy, outline="black", fill=color)
+
   def overlap(self, rock, i, tower):
     rock = rock.copy()
     # rock.reverse()
