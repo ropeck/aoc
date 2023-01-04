@@ -17,7 +17,7 @@ class Tower:
     if self.has_graphics:
       self.screen = tkinter.Tk()
       self.screen.geometry("200x600")
-      self.canvas = tkinter.Canvas(self.screen, width=70, height=220)
+      self.canvas = tkinter.Canvas(self.screen, width=100, height=450)
       # self.canvas.create_rectangle(gx, gy, gx + self.width * 5, gy + self.height * 5,
       #                              outline="black", fill="light gray")
     self.canvas.pack()
@@ -52,31 +52,42 @@ class Tower:
     return False
 
   def draw(self, t=None, i=None, r=None):
-    return
-
-
     if not t:
-      t=self.t
-   # print(f'{r} {i} {t}')
-    row_num = 0
-    for row in t:
+      t = self.t
+    # draw the top 10 rows of the tower.
+    # indicate the bottom and next rock position
+    dx = dy = 10
+    n = 25
+    b = 15
+    h = n * dy + b*2
+    w = b * 2 + 7 * dy
+    c = self.canvas
+
+
+    for row_num, row in enumerate(t):
       if row == 255:
         continue
-      s=""
-      for n in range(7):
-        nn = 6-n
-        m=2**nn
-        if (r and (row_num>=i) and (row_num<=i+len(r)-1) and m & r[row_num-i]):
-          s += "@"
-        elif (m & row):
-          s += "#"
-        else:
-          s += "."
-      print(f'|{s}|')
-      row_num += 1
-    print('+-------+')
-    print('')
+      for nn in range(6,-1,-1):
+        if row & 2**nn:
+          x = b + dx*nn
+          y = b + dy*row_num
+          c.create_rectangle(x, y, x + dx, y + dy, outline="black", fill="blue")
+# draw the overlapping rock
+        # if (r and (row_num>=i) and (row_num<=i+len(r)-1) and m & r[row_num-i]):
+        #   s += "@"
+        # elif (m & row):
+        #   s += "#"
+        # else:
+        #   s += "."
+    #   print(f'|{s}|')
+    #   row_num += 1
+    # print('+-------+')
+    # print('')
 
+    c.create_rectangle(b, h - b - (n * dy), w - dy, h - b,
+                                   outline="black", fill="light gray")
+    self.screen.update_idletasks()
+    self.screen.update()
   def overlap(self, rock, i, tower):
   #   for n, rock_row in enumerate(new_rock):
   #     if tower[i-n] & rock_row:
