@@ -60,11 +60,12 @@ class Tower:
     b = 15
     h = n * dy + b*2
     w = b * 2 + 7 * dy
-    c = self.canvas
+    if self.has_graphics:
+      c = self.canvas
 
-    c.create_rectangle(0, 0, 100, 1150, fill="white")
-    c.create_rectangle(b, h - b - (n * dy), w - dy, h - b,
-                                   outline="black", fill="light gray")
+      c.create_rectangle(0, 0, 100, 1150, fill="white")
+      c.create_rectangle(b, h - b - (n * dy), w - b, h - b,
+                                     outline="black", fill="light gray")
 
     for row_num, row in list(enumerate(t)):
       if row == 255:
@@ -73,21 +74,24 @@ class Tower:
         if row & 2**nn:
           x = b + dx*nn
           y = b + dy*row_num
-          c.create_rectangle(x, y, x + dx, y + dy, outline="black", fill="blue")
-    if r:
+          if self.has_graphics:
+            c.create_rectangle(x, y, x + dx, y + dy, outline="black", fill="blue")
+    if r and self.has_graphics:
       ic(i, r)
       for j, rock_row in enumerate(r):
         for nn in range(7):
           x = b + dx * nn
-          y = b + dy * rock_row + i
+          y = b + dy * (j + i)
           if rock_row&2**nn:
             c.create_rectangle(x, y, x + dx, y + dy, outline="black", fill="green")
-
-    c.create_rectangle(b, h - b - (n * dy), w - dy, h - b,
-                                   outline="black", fill=None)
-    self.screen.update_idletasks()
-    self.screen.update()
+    if self.has_graphics:
+      c.create_rectangle(b, h - b - (n * dy), w - b, h - b,
+                                     outline="black", fill=None)
+      self.screen.update_idletasks()
+      self.screen.update()
   def overlap(self, rock, i, tower):
+    rock = rock.copy()
+    # rock.reverse()
     for j, rr in enumerate(rock):
       tr = i + j
       if tr > len(tower) - 1:
@@ -119,26 +123,26 @@ class Tower:
         break
       self.draw(tower, i, current_rock)
       # apply jet to current_rock position
-      print("row",i)
+      # print("row",i)
       jet = self.next_jet()
       if jet == 1:
-        print("jet right")
+        # print("jet right")
         if not self.rock_side(current_rock, 0):
           new_rock = [r >> 1 for r in current_rock]
           if not self.overlap(new_rock, i, tower):
             current_rock = new_rock
       else:
-        print("jet left")
+        # print("jet left")
         if not self.rock_side(current_rock, 6):
           new_rock = [r << 1 for r in current_rock]
           if not self.overlap(new_rock, i, tower):
             current_rock = new_rock
       self.draw(tower, i, current_rock)
       if self.overlap(current_rock, i+1, tower):
-        print("Rock falls 1 unit, causing it to come to rest")
+        # print("Rock falls 1 unit, causing it to come to rest")
         break
       i += 1
-      print("Rock falls 1 unit")
+      # print("Rock falls 1 unit")
     self.draw(tower, i, current_rock)
     for n, rock_row in enumerate(current_rock):
       pos = i + n
@@ -166,12 +170,12 @@ class Tower:
         rock_list.append((w, r))
 
 def main(path, max_count):
-  t = Tower()
+  t = Tower(False)
   n=0
   while n <= max_count:
     print(n)
     t.drop()
-    t.draw()
+    # t.draw()
     n += 1
   print(f'height: {t.height()}')
   t.screen.mainloop()
