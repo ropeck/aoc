@@ -49,6 +49,12 @@ class Tower:
   def height(self):
     return len(self.t)
 
+  def peek_rock(self):
+    if self.pending_rocks:
+      return self.pending_rocks[-1]
+    _, r = self.rocks[-1]
+    return r
+
   def next_rock(self):
     if not self.pending_rocks:
       self.pending_rocks = [(n, r.copy()) for n, r in self.rocks]
@@ -139,13 +145,13 @@ class Tower:
     i = 0
     while True:
       time.sleep(1)
-      if i > len(tower):
+      if i + len(current_rock) > len(tower):
         break
       self.draw(tower, i, current_rock)
       # apply jet to current_rock position
       # print("row",i)
       jet = self.next_jet()
-      if jet == -1:
+      if jet == 1:
         # print("jet right")
         if not self.rock_side(current_rock, 0):
           new_rock = [r >> 1 for r in current_rock]
@@ -201,6 +207,7 @@ def main(path, max_count):
       time.sleep(1)
     # t.draw()
       n += 1
+      t.draw(self.t, 0, t.peek_rock())
       running = False
 
     t.screen.update_idletasks()
