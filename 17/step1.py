@@ -199,13 +199,14 @@ def main(path, max_count):
 
   t = Tower(False)
   n=0
-  while n <= max_count:
+  while n < max_count:
     if running or not t.has_graphics:
       print(n)
       t.drop()
       if t.has_graphics:
         time.sleep(1)
     # t.draw()
+
       n += 1
       running = False
     if t.has_graphics:
