@@ -212,6 +212,10 @@ def main(path, max_count):
       t.screen.update()
 
   print(f'height: {t.height()}')
+  with open("tower-output", "w") as fh:
+    for row in t.t:
+      fh.write(str(row)+"\n")
+
   if t.has_graphics:
     t.screen.mainloop()
 
