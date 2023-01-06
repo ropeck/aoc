@@ -43,8 +43,7 @@ class Tower:
     if not self._next_jet:
       self._next_jet = list(self.jet).copy()
       self._next_jet.reverse()
-    r = self._next_jet.pop()
-    return {'<': -1, '>': 1}[r]
+    return self._next_jet.pop()
 
   def height(self):
     return len(self.t)
@@ -102,7 +101,7 @@ class Tower:
   def draw_row(self, row, row_num, color):
     for nn in range(6, -1, -1):
       if row & 2 ** nn:
-        self.draw_square(nn, row_num, color)
+        self.draw_square(6-nn, row_num, color)
 
   def draw_square(self, nn, row_num, color):
     b = self.border
@@ -144,14 +143,14 @@ class Tower:
     tower = [0 for i in current_rock] + [0, 0, 0] + self.t
     i = 0
     while True:
-      time.sleep(1)
+      if self.has_graphics:
+        time.sleep(1)
       if i + len(current_rock) > len(tower):
         break
       self.draw(tower, i, current_rock)
       # apply jet to current_rock position
       # print("row",i)
-      jet = self.next_jet()
-      if jet == 1:
+      if self.next_jet() == ">":
         # print("jet right")
         if not self.rock_side(current_rock, 0):
           new_rock = [r >> 1 for r in current_rock]
@@ -187,7 +186,7 @@ class Tower:
           if not l:
             break
           w = len(l)
-          byte = sum(2 ** i for i, v in enumerate([ch == "#" for ch in l]) if v)
+          byte = sum(2 ** (w-i-1) for i, v in enumerate([ch == "#" for ch in l]) if v)
           r.append(byte)
         if not r:
           rock_list.reverse()
@@ -198,20 +197,20 @@ class Tower:
 def main(path, max_count):
   global running
 
-  t = Tower(True)
+  t = Tower(False)
   n=0
   while n <= max_count:
-    if running:
+    if running or not t.has_graphics:
       print(n)
       t.drop()
-      time.sleep(1)
+      if t.has_graphics:
+        time.sleep(1)
     # t.draw()
       n += 1
-      t.draw(self.t, 0, t.peek_rock())
       running = False
-
-    t.screen.update_idletasks()
-    t.screen.update()
+    if t.has_graphics:
+      t.screen.update_idletasks()
+      t.screen.update()
 
   print(f'height: {t.height()}')
   if t.has_graphics:
@@ -222,4 +221,4 @@ if __name__ == '__main__':
     path = sys.argv[1]
   else:
     path = "input"
-  main(path, 11)
+  main(path, 2022)
