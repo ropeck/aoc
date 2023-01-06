@@ -9,3 +9,6 @@ https://openai.com/blog/chatgpt/
 
 ## display and visualizing
 can it use pygame? https://www.pygame.org/docs/tut/PygameIntro.html
+
+## fetch input data
+https://github.com/wimglenn/advent-of-code-data
