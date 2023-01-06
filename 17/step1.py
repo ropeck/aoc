@@ -136,7 +136,6 @@ class Tower:
     # loop from top down, check to see if the rock overlaps
     # use binary AND of the tower with the rock - if (rock & tower top ) != 0 then it's colliding
     l, m = self.next_rock()
-    m.reverse()
     r = (l, m)
     rock = r[1].copy()
     current_rock = [row << (5 - r[0]) for row in rock]
@@ -191,7 +190,6 @@ class Tower:
         if not r:
           rock_list.reverse()
           return rock_list
-        r.reverse()
         rock_list.append((w, r))
 
 def main(path, max_count):
