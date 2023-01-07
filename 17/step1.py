@@ -16,6 +16,7 @@ class Tower:
   def __init__(self, path, has_graphics=True):
     self.path = path
     self.t = deque()  # each row is a byte
+    self.rocknum = deque()
     self.rocks = self.read_rocks()
     self.pending_rocks = []
 
@@ -131,7 +132,7 @@ class Tower:
       print(bin(128|r))
     print("")
 
-  def drop(self):
+  def drop(self, rnum):
     # start at top + 3, then apply jets and move down until stopped
     # self.t + [0, 0, 0]
     # loop from top down, check to see if the rock overlaps
@@ -171,15 +172,19 @@ class Tower:
     for n, rock_row in enumerate(current_rock):
       pos = i + n
       tower[pos] = tower[pos] | rock_row
+      while len(self.rocknum) < pos+1:
+        self.rocknum.append(None)
+      self.rocknum[pos] = rnum
     self.draw(tower, i)
 
     while tower[0] == 0:
       tower.popleft()
+      self.rocknum.popleft()
 
     if len(tower) > 50:
       with open("tower-output.new", "a") as fh:
         while len(tower) > 50:
-          fh.write(str(tower.pop()) + "\n")
+          fh.write(f'{tower.pop()} {self.rocknum.pop()}\n')
           self.height_offset += 1
     self.t = tower
 
@@ -204,11 +209,11 @@ def main(path, max_count):
   global running
 
   t = Tower(path, False)
-  n=0
-  while n < max_count:
+  n=1
+  while n <= max_count:
     if running or not t.has_graphics:
       print(n)
-      t.drop()
+      t.drop(n)
       if t.has_graphics:
         time.sleep(1)
     # t.draw()
