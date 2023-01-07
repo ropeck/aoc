@@ -142,7 +142,9 @@ class Tower:
     rock = r[1].copy()
     current_rock = [row << (5 - r[0]) for row in rock]
     tower = self.t
-    tower.extendleft([0 for i in current_rock] + [0, 0, 0])
+    padding = [0 for i in current_rock] + [0, 0, 0]
+    tower.extendleft(padding)
+    self.rocknum.extendleft(padding)
     i = 0
     while True:
       if self.has_graphics:
@@ -179,6 +181,7 @@ class Tower:
 
     while tower[0] == 0:
       tower.popleft()
+    while self.rocknum[0] == 0:
       self.rocknum.popleft()
 
     if len(tower) > 50:
