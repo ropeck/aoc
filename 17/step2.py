@@ -14,6 +14,8 @@ def main(path):
 
   match = None
   for a in range(len(t)):
+    if match and a == match[1]:
+      break
     for b in range(a+1, len(t)):
       if t[a] == t[b]:
         for i in range(len(t) - b):
