@@ -8,13 +8,15 @@ def main(path):
     with open("tower-output.new", "r") as fh:
       t = []
       for l in fh:
-        t.append([int(i) for i in l.strip().split()])
+        r = l.strip.split()
+        t.append((int(r[0]), r[1]))
   except IOError:
     step1.main(path, 10_000_000)
     with open("tower-output.new", "r") as fh:
       t = []
       for l in fh:
-        t.append([int(i) for i in l.strip().split()])
+        r = l.strip.split()
+        t.append((int(r[0]), r[1]))
   print(f'tower is {len(t)} tall')
   match = None
   stop_loop = False

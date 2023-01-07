@@ -144,7 +144,7 @@ class Tower:
     tower = self.t
     padding = [0 for i in current_rock] + [0, 0, 0]
     tower.extendleft(padding)
-    self.rocknum.extendleft(padding)
+    self.rocknum.extendleft([[] for i in range(len(padding))])
     i = 0
     while True:
       if self.has_graphics:
@@ -175,13 +175,13 @@ class Tower:
       pos = i + n
       tower[pos] = tower[pos] | rock_row
       while len(self.rocknum) < pos+1:
-        self.rocknum.append(None)
-      self.rocknum[pos] = rnum
+        self.rocknum.append([])
+      self.rocknum[pos].append(rnum)
     self.draw(tower, i)
 
     while tower[0] == 0:
       tower.popleft()
-    while self.rocknum[0] == 0:
+    while self.rocknum[0] == []:
       self.rocknum.popleft()
 
     if len(tower) > 50:
