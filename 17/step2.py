@@ -15,7 +15,7 @@ def main(path):
     with open("tower-output.new", "r") as fh:
       t = []
       for l in fh:
-        r = l.strip.split()
+        r = l.strip().split()
         t.append((int(r[0]), eval(" ".join(r[1:]))))
   print(f'tower is {len(t)} tall')
   match = None
