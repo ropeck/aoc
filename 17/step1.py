@@ -14,7 +14,8 @@ def keypress(event):
   running = True
 
 class Tower:
-  def __init__(self, has_graphics=True):
+  def __init__(self, path, has_graphics=True):
+    self.path = path
     self.t = []   # each row is a byte
     self.rocks = self.read_rocks()
     self.pending_rocks = []
@@ -22,6 +23,7 @@ class Tower:
     self.rock_n = 0
     self.jet = self.read_jets()
     self._next_jet = []
+    self.height_offset = 0
 
     self.border = 15
     self.dx = self.dy = 10
@@ -36,7 +38,7 @@ class Tower:
       self.screen.update()
 
   def read_jets(self):
-    with open(path, "r") as fh:
+    with open(self.path, "r") as fh:
       return fh.read().strip()
 
   def next_jet(self):
@@ -46,7 +48,7 @@ class Tower:
     return self._next_jet.pop()
 
   def height(self):
-    return len(self.t)
+    return len(self.t) + self.height_offset
 
   def peek_rock(self):
     if self.pending_rocks:
@@ -147,8 +149,6 @@ class Tower:
       if i + len(current_rock) > len(tower):
         break
       self.draw(tower, i, current_rock)
-      # apply jet to current_rock position
-      # print("row",i)
       if self.next_jet() == ">":
         # print("jet right")
         if not self.rock_side(current_rock, 0):
@@ -172,8 +172,17 @@ class Tower:
       pos = i + n
       tower[pos] = tower[pos] | rock_row
     self.draw(tower, i)
-    self.t = [row for row in tower if row]
-    #print("---")
+
+    while tower[0] == 0:
+      del tower[0]
+
+    if len(tower) > 20:
+      with open("tower-output.new", "a") as fh:
+        for l in range(len(tower)-1, 20, -1):
+          fh.write(str(tower[l]) + "\n")
+      self.height_offset += len(tower[20:])-1
+      tower = tower[:20]
+    self.t = tower
 
   def read_rocks(self):
     rock_list = []
@@ -195,7 +204,7 @@ class Tower:
 def main(path, max_count):
   global running
 
-  t = Tower(False)
+  t = Tower(path, False)
   n=0
   while n < max_count:
     if running or not t.has_graphics:
@@ -212,9 +221,6 @@ def main(path, max_count):
       t.screen.update()
 
   print(f'height: {t.height()}')
-  with open("tower-output", "w") as fh:
-    for row in t.t:
-      fh.write(str(row)+"\n")
 
   if t.has_graphics:
     t.screen.mainloop()
