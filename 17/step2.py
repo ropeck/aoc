@@ -11,7 +11,7 @@ def main(path):
         r = l.strip().split()
         t.append((int(r[0]), eval(" ".join(r[1:]))))
   except IOError:
-    step1.main(path, 10_000_000)
+    step1.main(path, 10_000)
     with open("tower-output.new", "r") as fh:
       t = []
       for l in fh:
