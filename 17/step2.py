@@ -47,7 +47,9 @@ def main(path):
   strock = match[3][-1]
   pd = match[2]
   rock = match[4][-1]
-  print(f'after {st} rows (rock {strock}), the pattern repeats every {pd} rows.\nAt {st + pd} is rock {rock}')
+  rockmod = rock - strock
+  print(f'after {st} rows (rock {strock}), the pattern repeats every {pd} rows.')
+  print(f'At {st + pd} is rock {rock} and rock repeats every {rockmod} rocks')
 
   mismatch = 0
   for i in range(st+1,len(t)):
@@ -58,6 +60,16 @@ def main(path):
       ic(t[i][0] != t[off][0])
       mismatch +=1
   print(f'checked {i} rows and found {mismatch} not matching the repeat pattern')
+
+  n = 10**12
+  # find row for a given rock number
+  rem = (n - strock) % rockmod
+  rep = int((n - strock) / rockmod)
+
+  row = st + pd * rep
+  # rk = t[row][1][-1] + rem
+  print(f'for {n} rocks, rem {rem}, {rep} times is {row}')
+
   pass
 if __name__ == '__main__':
   if len(sys.argv) > 1:
