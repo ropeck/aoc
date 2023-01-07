@@ -5,12 +5,12 @@ import sys
 
 def main(path):
   try:
-    with open("tower-output", "r") as fh:
+    with open("tower-output.new", "r") as fh:
       t = [int(l.strip()) for l in fh]
   except:
-    t = step1.main(path, 101000000)
-  with open("tower-output", "w") as fh:
-    fh.write("\n".join(t))
+    step1.main(path, 10_000_000)
+    with open("tower-output.new", "r") as fh:
+      t = [int(l.strip()) for l in fh]
 
   match = None
   for a in range(len(t)):

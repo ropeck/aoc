@@ -1,6 +1,5 @@
 #!/usr/bin/python3
-import os
-#import snoop
+from collections import deque
 from icecream import ic
 import sys
 import time
@@ -16,7 +15,7 @@ def keypress(event):
 class Tower:
   def __init__(self, path, has_graphics=True):
     self.path = path
-    self.t = []   # each row is a byte
+    self.t = deque()  # each row is a byte
     self.rocks = self.read_rocks()
     self.pending_rocks = []
 
@@ -141,7 +140,8 @@ class Tower:
     r = (l, m)
     rock = r[1].copy()
     current_rock = [row << (5 - r[0]) for row in rock]
-    tower = [0 for i in current_rock] + [0, 0, 0] + self.t
+    tower = self.t
+    tower.extendleft([0 for i in current_rock] + [0, 0, 0])
     i = 0
     while True:
       if self.has_graphics:
@@ -174,14 +174,13 @@ class Tower:
     self.draw(tower, i)
 
     while tower[0] == 0:
-      del tower[0]
+      tower.popleft()
 
-    if len(tower) > 20:
+    if len(tower) > 50:
       with open("tower-output.new", "a") as fh:
-        for l in range(len(tower)-1, 20, -1):
-          fh.write(str(tower[l]) + "\n")
-      self.height_offset += len(tower[20:])-1
-      tower = tower[:20]
+        while len(tower) > 50:
+          fh.write(str(tower.pop()) + "\n")
+          self.height_offset += 1
     self.t = tower
 
   def read_rocks(self):
