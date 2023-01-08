@@ -11,7 +11,7 @@ def main(path):
         r = l.strip().split()
         t.append((int(r[0]), eval(" ".join(r[1:]))))
   except IOError:
-    step1.main(path, 10_000)
+    step1.main(path, 30_000)
     with open("tower-output.new", "r") as fh:
       t = []
       for l in fh:
@@ -23,7 +23,7 @@ def main(path):
   for a in range(len(t)):
     if match and a == match[1]:
       print("caught middle")
-      break
+      continue
 
     for b in range(a+1, len(t)):
       if stop_loop:
@@ -57,7 +57,8 @@ def main(path):
     off = st + rep
     if t[i][0] != t[off][0]:
       print(f'mismatch:')
-      ic(t[i][0] != t[off][0])
+      ic(i,off)
+      exit(1)
       mismatch +=1
   print(f'checked {i} rows and found {mismatch} not matching the repeat pattern')
 
