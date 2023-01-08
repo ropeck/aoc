@@ -12,12 +12,58 @@ def keypress(event):
 
   running = True
 
+
+def read_rocks():
+  rock_list = []
+  with open("rocks","r") as fh:
+    while True:
+      r = []
+      while True:
+        l = fh.readline().strip()
+        if not l:
+          break
+        w = len(l)
+        byte = sum(2 ** (w-i-1) for i, v in enumerate([ch == "#" for ch in l]) if v)
+        r.append(byte)
+      if not r:
+        rock_list.reverse()
+        return rock_list
+      rock_list.append((w, r))
+
+
+def draw_rock(rock):
+  print("--",rock,"--")
+  for r in rock:
+    print(bin(128|r))
+  print("")
+
+
+def overlap(rock, i, tower):
+  rock = rock.copy()
+  # rock.reverse()
+  for j, rr in enumerate(rock):
+    tr = i + j
+    if tr >= len(tower):
+      return True
+    o = tower[tr] & rock[j]
+    if o:
+      return True
+  return False
+
+
+def rock_side(r, i):
+  for row in r:
+    if row & 2**i:
+      return True
+  return False
+
+
 class Tower:
-  def __init__(self, path, has_graphics=True):
-    self.path = path
+  def __init__(self, jet_file_path, has_graphics=True):
+    self.path = jet_file_path
     self.t = deque()  # each row is a byte
     self.rocknum = deque()
-    self.rocks = self.read_rocks()
+    self.rocks = read_rocks()
     self.pending_rocks = []
 
     self.rock_n = 0
@@ -63,12 +109,6 @@ class Tower:
     # print(f'{r} pending: {self.pending_rocks}')
     return r
 
-  def rock_side(self, r, i):
-    for row in r:
-      if row & 2**i:
-        return True
-    return False
-
   def draw(self, t=None, i=None, r=None):
     if not t:
       t = self.t
@@ -83,8 +123,7 @@ class Tower:
       dx = self.dx
       dy = self.dy
       c.create_rectangle(0, 0, 100, 1150, fill="white")
-      c.create_rectangle(b, h - b - (n * dy), w - b, h - b,
-                                     outline="black", fill="light gray")
+      c.create_rectangle(b, h - b - (n * dy), w - b, h - b, outline="black", fill="light gray")
 
     for row_num, row in list(enumerate(t)):
       if row == 255:
@@ -114,24 +153,6 @@ class Tower:
     if self.has_graphics:
       self.canvas.create_rectangle(x, y, x + dx, y + dy, outline="black", fill=color)
 
-  def overlap(self, rock, i, tower):
-    rock = rock.copy()
-    # rock.reverse()
-    for j, rr in enumerate(rock):
-      tr = i + j
-      if tr >= len(tower):
-        return True
-      o = tower[tr] & rock[j]
-      if o:
-        return True
-    return False
-
-  def draw_rock(self, rock):
-    print("--",rock,"--")
-    for r in rock:
-      print(bin(128|r))
-    print("")
-
   def drop(self, rnum):
     # start at top + 3, then apply jets and move down until stopped
     # self.t + [0, 0, 0]
@@ -154,18 +175,18 @@ class Tower:
       self.draw(tower, i, current_rock)
       if self.next_jet() == ">":
         # print("jet right")
-        if not self.rock_side(current_rock, 0):
+        if not rock_side(current_rock, 0):
           new_rock = [r >> 1 for r in current_rock]
-          if not self.overlap(new_rock, i, tower):
+          if not overlap(new_rock, i, tower):
             current_rock = new_rock
       else:
         # print("jet left")
-        if not self.rock_side(current_rock, 6):
+        if not rock_side(current_rock, 6):
           new_rock = [r << 1 for r in current_rock]
-          if not self.overlap(new_rock, i, tower):
+          if not overlap(new_rock, i, tower):
             current_rock = new_rock
       self.draw(tower, i, current_rock)
-      if self.overlap(current_rock, i+1, tower):
+      if overlap(current_rock, i+1, tower):
         # print("Rock falls 1 unit, causing it to come to rest")
         break
       i += 1
@@ -191,22 +212,6 @@ class Tower:
           self.height_offset += 1
     self.t = tower
 
-  def read_rocks(self):
-    rock_list = []
-    with open("rocks","r") as fh:
-      while True:
-        r = []
-        while True:
-          l = fh.readline().strip()
-          if not l:
-            break
-          w = len(l)
-          byte = sum(2 ** (w-i-1) for i, v in enumerate([ch == "#" for ch in l]) if v)
-          r.append(byte)
-        if not r:
-          rock_list.reverse()
-          return rock_list
-        rock_list.append((w, r))
 
 def main(path, max_count):
   global running
