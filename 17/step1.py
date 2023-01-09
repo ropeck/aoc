@@ -41,11 +41,15 @@ def read_rocks(path):
       rock_list.append((w, r))
 
 
-def draw_rock(rock):
-  print("--",rock,"--")
-  for r in rock:
-    print(bin(128|r))
-  print("")
+def jet_generator(path):
+  with open(path, "r") as fh:
+    jet_data = list(fh.read().strip())
+    jet_data.reverse()
+  jet = None
+  while True:
+    if not jet:
+      jet = jet_data.copy()
+    yield jet.pop()
 
 
 def overlap(rock, i, tower):
@@ -76,8 +80,7 @@ class Tower:
     self.rocks = rock_generator("rocks")
 
     self.rock_n = 0
-    self.jet = self.read_jets()
-    self._next_jet = []
+    self.jet = jet_generator(jet_file_path)
     self.height_offset = 0
 
     self.border = 15
@@ -92,24 +95,8 @@ class Tower:
       self.screen.update_idletasks()
       self.screen.update()
 
-  def read_jets(self):
-    with open(self.path, "r") as fh:
-      return fh.read().strip()
-
-  def next_jet(self):
-    if not self._next_jet:
-      self._next_jet = list(self.jet).copy()
-      self._next_jet.reverse()
-    return self._next_jet.pop()
-
   def height(self):
     return len(self.t) + self.height_offset
-
-  def peek_rock(self):
-    if self.pending_rocks:
-      return self.pending_rocks[-1]
-    _, r = self.rocks[-1]
-    return r
 
   def draw(self, t=None, i=None, r=None):
     if not t:
@@ -175,7 +162,7 @@ class Tower:
       if i + len(current_rock) > len(tower):
         break
       self.draw(tower, i, current_rock)
-      if self.next_jet() == ">":
+      if next(self.jet) == ">":
         # print("jet right")
         if not rock_side(current_rock, 0):
           new_rock = [r >> 1 for r in current_rock]
