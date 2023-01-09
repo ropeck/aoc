@@ -34,11 +34,8 @@ def main(path):
     raise ValueError
   final_height = t.hoff + t.hlen * rep + delta
 
-  print(f'final height {final_height}')
-  m = [x for x in t.history.values() if x[0] == n]
-  print(m)
-  print(f'for {n} rocks, rem {rem}, {rep} times is {row}')
-
+  print(f'for {n} rocks, rem {rem}, {rep} times is {final_height}')
+  return final_height
   pass
 if __name__ == '__main__':
   if len(sys.argv) > 1:
