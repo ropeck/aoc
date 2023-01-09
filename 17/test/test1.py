@@ -4,4 +4,5 @@ import step1
 
 class TestStep1(unittest.TestCase):
     def runTest(self):
-        self.assertEqual(3068, step1.main("test/input", 2022))
+        tower = step1.main("test/input", 2022)
+        self.assertEqual(3068, tower.height())

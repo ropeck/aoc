@@ -71,6 +71,8 @@ def rock_side(r, i):
       return True
   return False
 
+def state(jet, tower):
+  return jet + "".join([hex(i)[2:] for i in list(tower)[:100]])
 
 class Tower:
   def __init__(self, jet_file_path, has_graphics=True):
@@ -78,6 +80,7 @@ class Tower:
     self.t = deque()  # each row is a byte
     self.rocknum = deque()
     self.rocks = rock_generator("rocks")
+    self.history = {}
 
     self.rock_n = 0
     self.jet = jet_generator(jet_file_path)
@@ -196,15 +199,23 @@ class Tower:
 
     # save the state
     # print("Rock falls 1 unit, causing it to come to rest")
-    print(f'{jetdir} {list(tower)}')
+    st = state(jetdir, tower)
+    r = self.history.get(st, [])
+    r.append((rnum, self.height()))
+    self.history[st] = r
 
     if len(tower) > 50:
-      with open("tower-output.new", "a") as fh:
-        while len(tower) > 50:
-          fh.write(f'{tower.pop()} {self.rocknum.pop()}\n')
-          self.height_offset += 1
+      self.height_offset += 1
+      tower.pop()
+      self.rocknum.pop()
     self.t = tower
 
+  def compute_repeat(self):
+
+    # compute the repeat length and offset from the history
+    (self.roff, self.hoff), (self.rrep, self.hrep) = [t.history[x] for x in t.history if len(t.history[x]) > 1][0][:2]
+    self.rocklen = self.rrep - self.roff
+    self.hlen = self.hrep - self.hoff
 
 def main(path, max_count):
   global running
@@ -229,7 +240,8 @@ def main(path, max_count):
 
   if t.has_graphics:
     t.screen.mainloop()
-  return t.height()
+  t.compute_repeat()
+  return t
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
