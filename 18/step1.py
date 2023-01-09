@@ -1,14 +1,19 @@
 #!/usr/bin/python3
+from aocd import get_data
 from pprint import pprint
 import sys
 
 
 def main(path):
   p = []
-  with open(path, "r") as fh:
-    for l in fh:
-      print(l.strip())
-      p.append(tuple([int(x) for x in l.strip().split(",")]))
+  if not path:
+    data = get_data(year=2022, day=18)
+  else:
+    with open(path, "r") as fh:
+      data = fh.read()
+  for l in data.splitlines():
+    print(l.strip())
+    p.append(tuple([int(x) for x in l.strip().split(",")]))
 
   total = 0
   for (x, y, z) in p:
@@ -27,10 +32,11 @@ def main(path):
     print(f'({x}, {y}, {z}) {s}')
     total += s 
   print(f'total: {total}')
+  return total
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
     path = sys.argv[1]
   else:
-    path = "input"
+    path = None
   main(path)
