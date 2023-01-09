@@ -77,7 +77,7 @@ def rock_side(r, i):
   return False
 
 def state(jet, tower):
-  return jet + "".join([hex(i)[2:] for i in list(tower)[:100]])
+  return jet + "".join([hex(i)[2:] for i in list(tower)[:40]])
 
 class Tower:
   def __init__(self, jet_file_path, has_graphics=True):
