@@ -211,9 +211,9 @@ class Tower:
     self.t = tower
 
   def compute_repeat(self):
-
     # compute the repeat length and offset from the history
-    (self.roff, self.hoff), (self.rrep, self.hrep) = [t.history[x] for x in t.history if len(t.history[x]) > 1][0][:2]
+    hist = self.history
+    (self.roff, self.hoff), (self.rrep, self.hrep) = [hist[x] for x in hist if len(hist[x]) > 1][0][:2]
     self.rocklen = self.rrep - self.roff
     self.hlen = self.hrep - self.hoff
 
