@@ -162,7 +162,8 @@ class Tower:
       if i + len(current_rock) > len(tower):
         break
       self.draw(tower, i, current_rock)
-      if next(self.jet) == ">":
+      jetdir = next(self.jet)
+      if jetdir == ">":
         # print("jet right")
         if not rock_side(current_rock, 0):
           new_rock = [r >> 1 for r in current_rock]
@@ -176,8 +177,6 @@ class Tower:
             current_rock = new_rock
       self.draw(tower, i, current_rock)
       if overlap(current_rock, i+1, tower):
-        # save the state
-        # print("Rock falls 1 unit, causing it to come to rest")
         break
       i += 1
       # print("Rock falls 1 unit")
@@ -194,6 +193,10 @@ class Tower:
       tower.popleft()
     while self.rocknum[0] == []:
       self.rocknum.popleft()
+
+    # save the state
+    # print("Rock falls 1 unit, causing it to come to rest")
+    print(f'{jetdir} {list(tower)}')
 
     if len(tower) > 50:
       with open("tower-output.new", "a") as fh:
