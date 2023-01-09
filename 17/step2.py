@@ -25,7 +25,17 @@ def main(path):
   # how many rows for the remaining rocks?
   # find the history for start + rem and subtract hoff to find the diff
   n = t.roff + rem
-  m = [x for x in t.history if x[0] == n]
+  for h in t.history.values():
+    for r, height in h:
+      if r == n:
+        delta = height - t.hoff
+        break
+  if not delta:
+    raise ValueError
+  final_height = t.hoff + t.hlen * rep + delta
+
+  print(f'final height {final_height}')
+  m = [x for x in t.history.values() if x[0] == n]
   print(m)
   print(f'for {n} rocks, rem {rem}, {rep} times is {row}')
 
