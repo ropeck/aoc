@@ -187,6 +187,7 @@ class Tower:
             current_rock = new_rock
       self.draw(tower, i, current_rock)
       if overlap(current_rock, i+1, tower):
+        # save the state
         # print("Rock falls 1 unit, causing it to come to rest")
         break
       i += 1
@@ -236,6 +237,7 @@ def main(path, max_count):
 
   if t.has_graphics:
     t.screen.mainloop()
+  return t.height()
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
