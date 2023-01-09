@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+from aocd import get_data
 from collections import deque
 from icecream import ic
 import sys
@@ -25,7 +26,7 @@ def rock_generator(path):
 
 def read_rocks(path):
   rock_list = []
-  with open(path,"r") as fh:
+  with open(path, "r") as fh:
     while True:
       r = []
       while True:
@@ -42,9 +43,13 @@ def read_rocks(path):
 
 
 def jet_generator(path):
-  with open(path, "r") as fh:
-    jet_data = list(fh.read().strip())
-    jet_data.reverse()
+  if not path:
+    jet_data = get_data(day=17, year=2022)
+  else:
+    with open(path, "r") as fh:
+      jet_data = fh.read()
+  jet_data = list(jet_data.strip())
+  jet_data.reverse()
   jet = None
   while True:
     if not jet:
@@ -247,5 +252,5 @@ if __name__ == '__main__':
   if len(sys.argv) > 1:
     path = sys.argv[1]
   else:
-    path = "input"
+    path = None
   main(path, 2022)
