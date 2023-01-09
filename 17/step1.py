@@ -13,9 +13,19 @@ def keypress(event):
   running = True
 
 
-def read_rocks():
+def rock_generator(path):
+  rocks = read_rocks(path)
+  pending_rocks = None
+  while True:
+    if not pending_rocks:
+      pending_rocks = [(n, r.copy()) for n, r in rocks]
+    r = pending_rocks.pop()
+    yield r
+
+
+def read_rocks(path):
   rock_list = []
-  with open("rocks","r") as fh:
+  with open(path,"r") as fh:
     while True:
       r = []
       while True:
@@ -63,8 +73,7 @@ class Tower:
     self.path = jet_file_path
     self.t = deque()  # each row is a byte
     self.rocknum = deque()
-    self.rocks = read_rocks()
-    self.pending_rocks = []
+    self.rocks = rock_generator("rocks")
 
     self.rock_n = 0
     self.jet = self.read_jets()
@@ -100,13 +109,6 @@ class Tower:
     if self.pending_rocks:
       return self.pending_rocks[-1]
     _, r = self.rocks[-1]
-    return r
-
-  def next_rock(self):
-    if not self.pending_rocks:
-      self.pending_rocks = [(n, r.copy()) for n, r in self.rocks]
-    r = self.pending_rocks.pop()
-    # print(f'{r} pending: {self.pending_rocks}')
     return r
 
   def draw(self, t=None, i=None, r=None):
@@ -158,7 +160,7 @@ class Tower:
     # self.t + [0, 0, 0]
     # loop from top down, check to see if the rock overlaps
     # use binary AND of the tower with the rock - if (rock & tower top ) != 0 then it's colliding
-    l, m = self.next_rock()
+    l, m = next(self.rocks)
     r = (l, m)
     rock = r[1].copy()
     current_rock = [row << (5 - r[0]) for row in rock]
