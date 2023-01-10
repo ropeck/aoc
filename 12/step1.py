@@ -1,9 +1,8 @@
 #!/usr/bin/python3
+import aocd
 from collections import deque
 import os
-import random
 import sys
-import time
 
 class Map:
   MOVES = [(0, -1, 'U'), (0, 1, 'D'), (1, 0, 'R'), (-1, 0, 'L')]
@@ -13,11 +12,10 @@ class Map:
   def charmap(char):
     return ord(char) - ord('a')
 
-  def __init__(self, path):
+  def __init__(self, data):
     m = []
-    with open(path, "r") as fh:
-      for l in fh:
-        m.append([ord(i)-ord('a') for i in l.strip()])
+    for l in data.splitlines():
+      m.append([ord(i)-ord('a') for i in l.strip()])
     self.map = m
     self.char_cache = {}
 
@@ -121,8 +119,13 @@ class Map:
           # print(f'    added')
     return self.found
 
-def main(path):
-  map = Map(path)
+def main(test=False):
+  m = aocd.models.Puzzle(year=2022, day=12)
+  if test:
+    data = m.example_data
+  else:
+    data = m.input_data
+  map = Map(data)
   map.print()
   found = map.find_paths()
   found.sort(key=lambda p: len(p))
@@ -133,8 +136,4 @@ def main(path):
   return len(found[0])
 
 if __name__ == '__main__':
-  if len(sys.argv) > 1:
-    path = sys.argv[1]
-  else:
-    path = "input"
-  main(path)
+  main(len(sys.argv) > 1)
