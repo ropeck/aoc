@@ -6,6 +6,29 @@ from pprint import pprint
 import re
 import sys
 
+class State:
+  def __init__(self):
+    self.t = 0
+    self.open = []
+    self.cv = None
+    self.p = []
+    self.flow = 0
+
+  def open_valve(self):
+    x = self.copy()
+    x.open.append(x.cv)
+    x.t += 1
+    x.flow += x.flow_rate()
+    return x
+
+  def go(self, tunnel):
+    x = self.copy()
+    x.t += 1
+    x.flow += x.flow_rate()
+    x.p.append(cv)
+    x.cv = tunnel
+    return x
+
 class Valve:
   def __init__(self, line):
     m = re.match("Valve (.*) has flow rate=(.*); tunnels? leads? to valves? (.*)", line)
