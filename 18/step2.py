@@ -51,12 +51,13 @@ def outside_cubes(p):
   bounds = bounding_box(p)
   q = deque([bounds[0]])
   outside = []
+  vol = 0
   while len(q):
     # print(list(q), outside)
     x, y, z = q.popleft()
     if not in_bounds(x, y, z, bounds):
       continue
-    if (x, y, z) in p + outside:
+    if (x, y, z) in outside:
       continue
     outside.append((x, y, z))
     for xd in range(-1, 2):
@@ -67,15 +68,20 @@ def outside_cubes(p):
           nz = z + zd
           if ((sum([abs(n) for n in [xd, yd, zd]]) > 1)):
             continue
+          if (nx, ny, nz) in p:
+            vol += 1
+            continue
+          if (nx, ny, nz) in outside:
+            continue
           q.append((nx, ny, nz))
-  return outside
+  return outside, vol
 
 
 
 def count_faces(p):
   c = {}
   counted = []
-  outside = outside_cubes(p)
+  outside, vol = outside_cubes(p)
   total = 0
   for (x, y, z) in p:
     s = 0
@@ -97,7 +103,7 @@ def count_faces(p):
             print(f'in {nx, ny, nz}')
     print(f'({x}, {y}, {z}) {s}')
     total += s
-  return total, c
+  return total, c, vol
 
 def main(test=False):
   p = []
@@ -110,10 +116,9 @@ def main(test=False):
     print(l.strip())
     p.append(tuple([int(x) for x in l.strip().split(",")]))
 
-  total, c = count_faces(p)
-  x = step1.main(test)
-  print(f'total: {x - total} ')
-  return x - total
+  total, c, x = count_faces(p)
+  print(f'total: {x} outside, {total} inside, {x + total} in total')
+  return x
 
 if __name__ == '__main__':
   main(len(sys.argv) > 1)
