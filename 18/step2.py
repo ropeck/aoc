@@ -1,6 +1,7 @@
 #!/usr/bin/python3
-import numpy as np
+from collections import deque
 import aocd
+import step1
 import sys
 
 def center(p):
@@ -14,9 +15,67 @@ def center(p):
     avg.append(int(sum(v)/l))
   return tuple(avg)
 
+
+def bounding_vol(l):
+  p = [[],[],[]]
+  for b in bounding_box(l):
+    for i, v in enumerate(b):
+      p[i].append(v)
+  r = 1
+  for i in p:
+    r *= abs(i[1] - i[0])
+  return r
+
+def bounding_box(p):
+  d = [[], [], []]
+  for i in p:
+    for n, v in enumerate(i):
+      d[n].append(v)
+  min_v = []
+  max_v = []
+  for dv in d:
+    min_v.append(min(dv)-1)
+    max_v.append(max(dv)+1)
+  return (tuple(min_v), tuple(max_v))
+
+def in_bounds(x, y, z, bounds):
+  bx, by, bz = bounds[0]
+  if ((x < bx) or (y < by) or (z < bz)):
+    return False
+  bx, by, bz = bounds[1]
+  if ((x > bx) or (y > by) or (z > bz)):
+    return False
+  return True
+
+def outside_cubes(p):
+  bounds = bounding_box(p)
+  q = deque([bounds[0]])
+  outside = []
+  while len(q):
+    # print(list(q), outside)
+    x, y, z = q.popleft()
+    if not in_bounds(x, y, z, bounds):
+      continue
+    if (x, y, z) in p + outside:
+      continue
+    outside.append((x, y, z))
+    for xd in range(-1, 2):
+      for yd in range(-1, 2):
+        for zd in range(-1, 2):
+          nx = x + xd
+          ny = y + yd
+          nz = z + zd
+          if ((sum([abs(n) for n in [xd, yd, zd]]) > 1)):
+            continue
+          q.append((nx, ny, nz))
+  return outside
+
+
+
 def count_faces(p):
   c = {}
-  cx, cy, cz = center(p)
+  counted = []
+  outside = outside_cubes(p)
   total = 0
   for (x, y, z) in p:
     s = 0
@@ -28,40 +87,17 @@ def count_faces(p):
           nz = z + zd
           if ((sum([abs(n) for n in [xd, yd, zd]]) > 1)):
             continue
-          print(f'  {xd} {yd} {zd}  ({x + xd}, {y + yd}, {z + zd})')
-          if (nx, ny, nz) not in p:
-            print(f'({x+xd},{y+yd},{z+zd})')
+          # print(f'  {xd} {yd} {zd}  ({x + xd}, {y + yd}, {z + zd})')
+          if (nx, ny, nz) in p + counted:
+            continue
+          if (nx, ny, nz) not in outside:
             s += 1
+            # counted.append((nx, ny, nz))
           else:
-            print(f'({x+xd},{y+yd},{z+zd}) NOT')
-
-
+            print(f'in {nx, ny, nz}')
     print(f'({x}, {y}, {z}) {s}')
     total += s
   return total, c
-
-def is_inside(q, p):
-  (x,y,z) = q
-  xx = [x1 for (x1,y1,z1) in p if z==z1 and y==y1]
-  if len(xx) < 2 or len(xx) % 2:
-    return False
-  xx.sort()
-  if xx[0] > x or xx[-1] < x:
-    return False
-  yy = [y1 for (x1,y1,z1) in p if x==x1 and z==z1]
-  if len(yy) < 2 or len(yy) % 2:
-    return False
-  yy.sort()
-  if yy[0] > y or yy[-1] < y:
-    return False
-  zz = [z1 for (x1,y1,z1) in p if x==x1 and y==y1]
-  zz.sort()
-  if len(zz) < 2 or len(zz) % 2:
-    return False
-  if zz[0] > z or zz[-1] < z:
-    return False
-  print(f'is inside {q}')
-  return True
 
 def main(test=False):
   p = []
@@ -75,8 +111,9 @@ def main(test=False):
     p.append(tuple([int(x) for x in l.strip().split(",")]))
 
   total, c = count_faces(p)
-  print(f'total: {total}')
-  return total
+  x = step1.main(test)
+  print(f'total: {x - total} ')
+  return x - total
 
 if __name__ == '__main__':
   main(len(sys.argv) > 1)
