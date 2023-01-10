@@ -3,27 +3,39 @@ import numpy as np
 import aocd
 import sys
 
+def center(p):
+  d = [[], [], []]
+  for i in p:
+    for n, v in enumerate(i):
+      d[n].append(v)
+  l = len(p)
+  avg = []
+  for n, v in enumerate(d):
+    avg.append(int(sum(v)/l))
+  return tuple(avg)
+
 def count_faces(p):
   c = {}
+  cx, cy, cz = center(p)
   total = 0
   for (x, y, z) in p:
     s = 0
     for xd in range(-1, 2):
       for yd in range(-1, 2):
         for zd in range(-1, 2):
-          if ((sum([abs(n) for n in [xd, yd, zd]]) not in [1, 2])):
-            #print(f'big  {xd} {yd} {zd}  ({x+xd}, {y+yd}, {z+zd})')
+          nx = x + xd
+          ny = y + yd
+          nz = z + zd
+          if ((sum([abs(n) for n in [xd, yd, zd]]) > 1)):
             continue
-#          if is_inside((x, y, z), p):
-#            print(f'{x},{y},{x} inside')
-            continue
+          print(f'  {xd} {yd} {zd}  ({x + xd}, {y + yd}, {z + zd})')
+          if (nx, ny, nz) not in p:
+            print(f'({x+xd},{y+yd},{z+zd})')
+            s += 1
           else:
-            if (x+xd, y+yd, z+zd) not in p:
-              c[(x+xd,y+yd,z+zd)] = -1
-              s += 1
-            else:
-              c[(x+xd,y+yd,z+zd)] = c.get((x+xd,y+yd,z+zd),0) +1
-              print(f'  {xd} {yd} {zd}  ({x+xd}, {y+yd}, {z+zd}) {s}')
+            print(f'({x+xd},{y+yd},{z+zd}) NOT')
+
+
     print(f'({x}, {y}, {z}) {s}')
     total += s
   return total, c

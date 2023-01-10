@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 import aocd
-from pprint import pprint
 import sys
 
 
