@@ -52,14 +52,8 @@ def main(test=False):
       q.append((t+1, v[n], o, copy(p + [v[n].name]), score))
       # print("queue")
       # print(q)
-
-
   return v
 
 
 if __name__ == '__main__':
-  if len(sys.argv) > 1:
-    arg = sys.argv[1]
-  else:
-    arg = None
-  main(arg)
+  main(len(sys.argv) > 1)
