@@ -1,19 +1,20 @@
 #!/usr/bin/python3
 import sys
 
-def main(path):
+def main(test):
   total = 0
   # with open(path, "r") as fh:
   #   line = fh.readline().strip()
   #   while True:
 
-  for line in open(path,"r"):
+  
+  mod = aocd.models.Puzzle(year=2022, day= )
+  if not test:
+    data = mod.input_data
+  else:
+    data = mod.example_data
     pass
-  print(f'total: {total}')
+  
 
 if __name__ == '__main__':
-  if len(sys.argv) > 1:
-    path = sys.argv[1]
-  else:
-    path = "input"
-  main(path)
+  main(len(sys.argv) > 1)
