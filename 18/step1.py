@@ -1,16 +1,16 @@
 #!/usr/bin/python3
-from aocd import get_data
+import aocd
 from pprint import pprint
 import sys
 
 
-def main(path):
+def main(test=False):
   p = []
-  if not path:
-    data = get_data(year=2022, day=18)
+  mod = aocd.models.Puzzle(year=2022, day=18)
+  if not test:
+    data = mod.input_data
   else:
-    with open(path, "r") as fh:
-      data = fh.read()
+    data = mod.example_data
   for l in data.splitlines():
     print(l.strip())
     p.append(tuple([int(x) for x in l.strip().split(",")]))
@@ -36,7 +36,7 @@ def main(path):
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
-    path = sys.argv[1]
+    arg = sys.argv[1]
   else:
-    path = None
-  main(path)
+    arg = None
+  main(arg)
