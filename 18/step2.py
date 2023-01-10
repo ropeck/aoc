@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import numpy as np
-from pprint import pprint
+import aocd
 import sys
 
 def count_faces(p):
@@ -51,19 +51,20 @@ def is_inside(q, p):
   print(f'is inside {q}')
   return True
 
-def main(path):
+def main(test=False):
   p = []
-  with open(path, "r") as fh:
-    for l in fh:
-      print(l.strip())
-      p.append(tuple([int(x) for x in l.strip().split(",")]))
+  mod = aocd.models.Puzzle(year=2022, day=18)
+  if not test:
+    data = mod.input_data
+  else:
+    data = mod.example_data
+  for l in data.splitlines():
+    print(l.strip())
+    p.append(tuple([int(x) for x in l.strip().split(",")]))
 
   total, c = count_faces(p)
   print(f'total: {total}')
+  return total
 
 if __name__ == '__main__':
-  if len(sys.argv) > 1:
-    path = sys.argv[1]
-  else:
-    path = "input"
-  main(path)
+  main(len(sys.argv) > 1)

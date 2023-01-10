@@ -137,6 +137,7 @@ class Diagram:
     return self.screen
 
   def sleep(self, t):
+    return
     if self.screen:
       time.sleep(t)
 
