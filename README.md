@@ -12,3 +12,6 @@ can it use pygame? https://www.pygame.org/docs/tut/PygameIntro.html
 
 ## fetch input data
 https://github.com/wimglenn/advent-of-code-data
+
+## solving puzzles with python
+https://realpython.com/python-advent-of-code/
