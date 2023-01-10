@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import aocd
 from collections import deque
 from copy import copy
 from pprint import pprint
@@ -20,11 +21,17 @@ class Valve:
   def __repr__(self):
     return f'<Valve {self.name} {self.rate}->{",".join(self.v)}>'
 
-def main(path):
+def main(test=False):
+  p = []
+  mod = aocd.models.Puzzle(year=2022, day=16)
+  if not test:
+    data = mod.input_data
+  else:
+    data = mod.example_data
   v = {}
-  with open(path,"r") as fh:
-    for n in [Valve(l) for l in fh]:
-      v[n.name] = n
+  for l in data.splitlines():
+    n = Valve(l)
+    v[n.name] = n
   pprint(v)
 
   p = []
@@ -52,7 +59,7 @@ def main(path):
 
 if __name__ == '__main__':
   if len(sys.argv) > 1:
-    path = sys.argv[1]
+    arg = sys.argv[1]
   else:
-    path = "input"
-  main(path)
+    arg = None
+  main(arg)
