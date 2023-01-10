@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import aocd.models
 from aocd import get_data
 from collections import deque
 from icecream import ic
@@ -42,12 +43,7 @@ def read_rocks(path):
       rock_list.append((w, r))
 
 
-def jet_generator(path):
-  if not path:
-    jet_data = get_data(day=17, year=2022)
-  else:
-    with open(path, "r") as fh:
-      jet_data = fh.read()
+def jet_generator(jet_data):
   jet_data = list(jet_data.strip())
   jet_data.reverse()
   jet = None
@@ -79,22 +75,12 @@ def rock_side(r, i):
 def state(jet, tower):
   return jet + "".join([hex(i)[2:] for i in list(tower)[:40]])
 
-class Tower:
-  def __init__(self, jet_file_path, has_graphics=True):
-    self.path = jet_file_path
-    self.t = deque()  # each row is a byte
-    self.rocknum = deque()
-    self.rocks = rock_generator("rocks")
-    self.history = {}
-
-    self.rock_n = 0
-    self.jet = jet_generator(jet_file_path)
-    self.height_offset = 0
-
+class Diagram:
+  def __init__(self, has_graphics):
+    self.screen = None
     self.border = 15
     self.dx = self.dy = 10
-    self.has_graphics = has_graphics
-    if self.has_graphics:
+    if has_graphics:
       self.screen = tkinter.Tk()
       self.screen.geometry("200x1200")
       self.canvas = tkinter.Canvas(self.screen, width=100, height=1150)
@@ -102,9 +88,6 @@ class Tower:
       self.canvas.pack()
       self.screen.update_idletasks()
       self.screen.update()
-
-  def height(self):
-    return len(self.t) + self.height_offset
 
   def draw(self, t=None, i=None, r=None):
     if not t:
@@ -114,7 +97,7 @@ class Tower:
     n = min([len(t), 100])
     h = n * self.dy + self.border*2
     w = self.border * 2 + 7 * self.dy
-    if self.has_graphics:
+    if self.screen:
       c = self.canvas
       b = self.border
       dx = self.dx
@@ -126,11 +109,11 @@ class Tower:
       if row == 255:
         continue
       self.draw_row(row, row_num, "blue")
-    if r and self.has_graphics:
+    if r and self.has_graphics():
       ic(i, r)
       for j, rock_row in enumerate(r):
         self.draw_row(rock_row, j + i, "green")
-    if self.has_graphics:
+    if self.has_graphics():
       c.create_rectangle(b, h - b - (n * dy), w - b, h - b,
                                      outline="black", fill=None)
       self.screen.update_idletasks()
@@ -147,8 +130,41 @@ class Tower:
     dy = self.dy
     x = b + dx * nn
     y = b + dy * row_num
-    if self.has_graphics:
+    if self.has_graphics():
       self.canvas.create_rectangle(x, y, x + dx, y + dy, outline="black", fill=color)
+
+  def has_graphics(self):
+    return self.screen
+
+  def sleep(self, t):
+    if self.screen:
+      time.sleep(t)
+
+  def update(self):
+    if self.screen:
+      self.screen.update_idletasks()
+      self.screen.update()
+
+  def mainloop(self):
+    if self.screen:
+      self.screen.mainloop()
+
+
+class Tower:
+  def __init__(self, jet_data, has_graphics=True):
+    self.t = deque()  # each row is a byte
+    self.rocknum = deque()
+    self.rocks = rock_generator("rocks")
+    self.history = {}
+    self.jet = jet_generator(jet_data)
+    self.height_offset = 0
+    self.diagram = Diagram(has_graphics)
+
+  def has_graphics(self):
+    return self.diagram.has_graphics()
+
+  def height(self):
+    return len(self.t) + self.height_offset
 
   def drop(self, rnum):
     # start at top + 3, then apply jets and move down until stopped
@@ -165,11 +181,10 @@ class Tower:
     self.rocknum.extendleft([[] for i in range(len(padding))])
     i = 0
     while True:
-      if self.has_graphics:
-        time.sleep(1)
+      self.diagram.sleep(1)
       if i + len(current_rock) > len(tower):
         break
-      self.draw(tower, i, current_rock)
+      self.diagram.draw(tower, i, current_rock)
       jetdir = next(self.jet)
       if jetdir == ">":
         # print("jet right")
@@ -183,19 +198,19 @@ class Tower:
           new_rock = [r << 1 for r in current_rock]
           if not overlap(new_rock, i, tower):
             current_rock = new_rock
-      self.draw(tower, i, current_rock)
+      self.diagram.draw(tower, i, current_rock)
       if overlap(current_rock, i+1, tower):
         break
       i += 1
       # print("Rock falls 1 unit")
-    self.draw(tower, i, current_rock)
+    self.diagram.draw(tower, i, current_rock)
     for n, rock_row in enumerate(current_rock):
       pos = i + n
       tower[pos] = tower[pos] | rock_row
       while len(self.rocknum) < pos+1:
         self.rocknum.append([])
       self.rocknum[pos].append(rnum)
-    self.draw(tower, i)
+    self.diagram.draw(tower, i)
 
     while tower[0] == 0:
       tower.popleft()
@@ -222,29 +237,30 @@ class Tower:
     self.rocklen = self.rrep - self.roff
     self.hlen = self.hrep - self.hoff
 
-def main(path, max_count):
+def main(is_test, max_count):
   global running
 
-  t = Tower(path, False)
+  m = aocd.models.Puzzle(year=2022, day=17)
+  if is_test:
+    # example data shows rock shapes, not the test input, so just use this hardcoded from the instructions
+    data = ">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>"
+  else:
+    data = m.input_data
+  t = Tower(data, False)
   n=1
   while n <= max_count:
-    if running or not t.has_graphics:
+    if running or not t.has_graphics():
       print(n)
       t.drop(n)
-      if t.has_graphics:
-        time.sleep(1)
-    # t.draw()
-
+      t.diagram.sleep(1)
+    # t.diagram.draw()
       n += 1
       running = False
-    if t.has_graphics:
-      t.screen.update_idletasks()
-      t.screen.update()
+    t.diagram.update()
 
   print(f'height: {t.height()}')
 
-  if t.has_graphics:
-    t.screen.mainloop()
+  t.diagram.mainloop()
   t.compute_repeat()
   return t
 
