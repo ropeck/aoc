@@ -59,7 +59,9 @@ def main(test=False):
         maxval = max(maxval, dfs(timeleft, n, opened | b) + flow[n] * timeleft)
     return maxval
 
-  print(dfs(30, "AA", 0))
+  result = dfs(30, "AA", 0)
+  print(result)
+  return result
 
 if __name__ == '__main__':
   main(len(sys.argv) > 1)
