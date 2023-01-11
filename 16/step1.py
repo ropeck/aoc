@@ -59,9 +59,15 @@ def main(test=False):
         maxval = max(maxval, dfs(timeleft, n, opened | b) + flow[n] * timeleft)
     return maxval
 
-  result = dfs(30, "AA", 0)
-  print(result)
-  return result, None
+  # part2
+  part2 = 0
+  maxmask = 2 ** len(active) - 1
+  for o in range(maxmask):
+    part2 = max(part2, dfs(26, "AA", o) + dfs(26, "AA", maxmask - o))
+
+  part1 = dfs(30, "AA", 0)
+  print(part1, part2)
+  return part1, part2
 
 if __name__ == '__main__':
   main(len(sys.argv) > 1)
