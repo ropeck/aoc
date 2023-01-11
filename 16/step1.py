@@ -1,92 +1,65 @@
 #!/usr/bin/python3
 import aocd
 from collections import deque
-from copy import deepcopy
-from pprint import pprint
+import functools
 import re
 import sys
 
-class State:
-  def __init__(self, valves, cv):
-    self.valves = valves
-    self.t = 0
-    self.opened = []
-    self.cv = cv
-    self.p = []
-    self.flow = 0
-
-  def flow_rate(self):
-    return sum([self.valves[v].rate for v in self.opened])
-
-  def open_valve(self):
-    x = deepcopy(self)
-    if self.cv in self.opened:
-      return None
-    x.opened.append(x.cv)
-    x.t += 1
-    x.flow += x.flow_rate()
-    return x
-
-  def go(self, tunnel):
-    x = deepcopy(self)
-    x.t += 1
-    x.flow += x.flow_rate()
-    x.p.append(x.cv)
-    x.cv = tunnel
-    return x
-
-class Valve:
-  def __init__(self, line):
-    m = re.match("Valve (.*) has flow rate=(.*); tunnels? leads? to valves? (.*)", line)
-    if not m:
-      print("Valve (.*) has flow rate=(.*); tunnels? leads? to valves? (.*)")
-      print("line mismatch: " + line)
-      return
-    self.name = m.group(1)
-    self.rate = int(m.group(2))
-    self.v = m.group(3).split(", ")
-    self.open = False
-
-  def __repr__(self):
-    return f'<Valve {self.name} {self.rate}->{",".join(self.v)}>'
-
 def main(test=False):
-  p = []
   mod = aocd.models.Puzzle(year=2022, day=16)
   if not test:
     data = mod.input_data
   else:
     data = mod.example_data
-  v = {}
+  flow = {}
+  tunnels = {}
   for l in data.splitlines():
-    n = Valve(l)
-    v[n.name] = n
+    m = re.match("Valve (.*) has flow rate=(.*); tunnels? leads? to valves? (.*)", l)
+    name = m.group(1)
+    tunnels[name] = m.group(3).split(", ")
+    flow[name] = int(m.group(2))
 
-  q = deque([State(v, "AA")])
-  seen = []
-  while q:
-    print(f'--- {len(q)}')
-    # for i in q:
-    #   print(i)
-    st = q.pop()
-    if st.cv in seen:
-      print(f'seen: {st.cv}')
+  active = []   # valves that are nonzero
+  dist = {}
+  for valve in flow:
+    if valve != "AA" and not flow[valve]:
       continue
-    # seen.append(st.cv)
-    if st.t >= 30:
-      print(f'timed out: {st.p}')
-      continue
-    ov = st.open_valve()
-    if ov:
-      print(f'{st.t} open {st.cv}')
-      q.append(ov)
-    for n in v[st.cv].v:
-      print(f'{st.t} go {n}')
-      q.append(st.go(n))
-      # print("queue")
-      # print(q)
-  return v
+    if valve != "AA":
+      active.append(valve)
+    dist[valve] = {valve: 0, "AA": 0}
+    visited = {valve}
+    q = deque([(0, valve)])
 
+    while q:
+      d, curr = q.popleft()
+      for n in tunnels[curr]:
+        if n in visited:
+          continue
+        visited.add(n)
+        if flow[n]:
+          dist[valve][n] = d + 1
+        q.append((d + 1, n))
+    del dist[valve][valve]
+    if valve != "AA":
+      del dist[valve]["AA"]
+
+  ind = {}
+  for i, v in enumerate(active):
+    ind[v] = i
+
+  @functools.cache
+  def dfs(t, v, opened):
+    maxval = 0
+    for n in dist[v]:
+      b = 2 ** ind[n]
+      if opened & b:
+        continue
+      timeleft = t - (dist[v][n] + 1)
+      if timeleft > 0:
+        maxval = max(maxval, dfs(timeleft, n, opened | b) + flow[n] * timeleft)
+    return maxval
+
+  print(dfs(30, "AA", 0))
 
 if __name__ == '__main__':
   main(len(sys.argv) > 1)
