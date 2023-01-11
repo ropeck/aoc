@@ -3,17 +3,19 @@ import aocd
 import re
 import sys
 
-ORE=0
-CLAY=1
-OBSIDIAN=2
-GEODE=3
+ORE = 0
+CLAY = 1
+OBSIDIAN = 2
+GEODE = 3
+
 
 class Inventory:
-  def __init__(self, type):
-    self.inv = [0 for i in [ORE, CLAY, OBSIDIAN, GEODE]]
-    self.type = type
+  def __init__(self, name):
+    self.inv = [0 for _ in [ORE, CLAY, OBSIDIAN, GEODE]]
+    self.name = name
+
   def __repr__(self):
-    return f'<Inventory {self.type} {self.inv}>'
+    return f'<Inventory {self.name} {self.inv}>'
 
   def get(self, i):
     return self.inv[i]
@@ -32,16 +34,17 @@ class Inventory:
   def ore(self):
     return self.inv[ORE]
 
+
 class Blueprint:
   def __init__(self, line):
-    self._name={'ore': ORE, 'clay': CLAY, 'obsidian': OBSIDIAN, 'geode': GEODE}
-    self._item={}
-    for k,v in self._name.items():
+    self._name = {'ore': ORE, 'clay': CLAY, 'obsidian': OBSIDIAN, 'geode': GEODE}
+    self._item = {}
+    for k, v in self._name.items():
       self._item[v] = k
     line = line.strip()
-    line = line.replace(".","")
+    line = line.replace(".", "")
     p = line.split("Each ")
-    m = re.match("Blueprint (\d+): ", p[0])
+    m = re.match("Blueprint (\\d+): ", p[0])
     self.number = m.group(1)
     self.bp = {}
     for e in p[1:]:
@@ -56,7 +59,6 @@ class Blueprint:
         name = self._name[name]
         cost[name] = int(count)
       self.bp[robot] = cost
-
 
   def __repr__(self):
     return f'<Blueprint {self.number} {self.bp}>'
