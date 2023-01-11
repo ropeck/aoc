@@ -61,7 +61,7 @@ def main(test=False):
 
   result = dfs(30, "AA", 0)
   print(result)
-  return result
+  return result, None
 
 if __name__ == '__main__':
   main(len(sys.argv) > 1)
