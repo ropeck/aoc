@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import aocd
 import re
 import sys
 
@@ -61,11 +62,20 @@ class Blueprint:
     return f'<Blueprint {self.number} {self.bp}>'
 
 
-def main(path):
+def main(test):
+  mod = aocd.models.Puzzle(year=2022, day=19)
+  if not test:
+    data = mod.input_data
+  else:
+    data = ""
+    for line in mod.example_data.splitlines():
+      if not line:
+        data += "\n\n"
+      else:
+        data += line + " "
   bp = []
-  with open(path, "r") as fh:
-    for line in fh:
-      bp.append(Blueprint(line))
+  for line in data.split("\n\n"):
+    bp.append(Blueprint(line))
   print(bp)
   mat = Inventory("material")
   robot = Inventory("robot")
@@ -73,8 +83,4 @@ def main(path):
 
 
 if __name__ == '__main__':
-  if len(sys.argv) > 1:
-    path = sys.argv[1]
-  else:
-    path = "input"
-  main(path)
+  main(len(sys.argv) > 1)
