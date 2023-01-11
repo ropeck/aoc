@@ -1,4 +1,5 @@
---- Day 19: Not Enough Minerals ---
+## --- Day 19: Not Enough Minerals ---
+
 Your scans show that the lava did indeed form obsidian!
 
 The wind has changed direction enough to stop sending lava droplets toward you, so you and the elephants exit the cave. As you do, you notice a collection of geodes around the pond. Perhaps you could use the obsidian to create some geode-cracking robots and break them open?
@@ -14,7 +15,7 @@ Each robot can collect 1 of its resource type per minute. It also takes one minu
 The robot factory has many blueprints (your puzzle input) you can choose from, but once you've configured it with a blueprint, you can't change it. You'll need to work out which blueprint is best.
 
 For example:
-
+```
 Blueprint 1:
   Each ore robot costs 4 ore.
   Each clay robot costs 2 ore.
@@ -27,6 +28,7 @@ Blueprint 2:
   Each obsidian robot costs 3 ore and 8 clay.
   Each geode robot costs 3 ore and 12 obsidian.
 (Blueprints have been line-wrapped here for legibility. The robot factory's actual assortment of blueprints are provided one blueprint per line.)
+```
 
 The elephants are starting to look hungry, so you shouldn't take too long; you need to figure out which blueprint would maximize the number of opened geodes after 24 minutes by figuring out which robots to build and when to build them.
 
