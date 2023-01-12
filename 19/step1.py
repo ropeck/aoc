@@ -99,22 +99,23 @@ def main(test):
         if mat.get(i) < ri[i]:
           build = False
           break
-      if build:
+      if build and robot.get(r) < 2 or min(robot.inv) > 0:
         pos.append(r)
 
     if pos:
+      pos.reverse()
       print(f'possible: {pos}')
-      r = pos[-1]
+      r = pos[0]
       ri = b.bp[r]
       print(f'build {r} robot with {ri}')
       for i in ri:
         mat.sub(i, ri[i])
-        nr.append(r)
-
-      for r in nr:
-        robot.incr(r)
+      nr.append(r)
     for r, c in enumerate(robot.inv):
       mat.incr(r, c)
+    if pos:
+      for r in nr:
+        robot.incr(r)
     print(f'end of {t}: {mat} {robot}')
     t+=1
 
