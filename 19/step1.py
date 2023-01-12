@@ -101,7 +101,7 @@ def main(test):
           build = False
           break
       if build:
-        print(f'build {i} robot with {ri[i]}')
+        print(f'build {r} robot with {ri}')
         for i in ri:
           mat.sub(i, ri[i])
           nr.append(r)
