@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import aocd
+from collections import deque
 import re
 import sys
 
@@ -81,7 +82,35 @@ def main(test):
   print(bp)
   mat = Inventory("material")
   robot = Inventory("robot")
+  robot.incr(ORE)
   print(mat, robot)
+
+  b = bp[0]
+
+  q = deque()
+
+  t = 1
+  while t<=24:
+    nr = []
+    for r, ri in b.bp.items():
+      if robot.get(r):
+        continue
+      build = True
+      for i in ri:
+        if mat.get(i) < ri[i]:
+          build = False
+          break
+      if build:
+        print(f'build {i} robot with {ri[i]}')
+        for i in ri:
+          mat.sub(i, ri[i])
+          nr.append(r)
+    for r, c in enumerate(robot.inv):
+      mat.incr(r, c)
+    for r in nr:
+      robot.incr(r)
+    print(f'end of {t}: {mat} {robot}')
+    t+=1
 
 
 if __name__ == '__main__':
