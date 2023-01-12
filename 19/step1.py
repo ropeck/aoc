@@ -92,23 +92,29 @@ def main(test):
   t = 1
   while t<=24:
     nr = []
+    pos = []
     for r, ri in b.bp.items():
-      if robot.get(r):
-        continue
       build = True
       for i in ri:
         if mat.get(i) < ri[i]:
           build = False
           break
       if build:
-        print(f'build {r} robot with {ri}')
-        for i in ri:
-          mat.sub(i, ri[i])
-          nr.append(r)
+        pos.append(r)
+
+    if pos:
+      print(f'possible: {pos}')
+      r = pos[-1]
+      ri = b.bp[r]
+      print(f'build {r} robot with {ri}')
+      for i in ri:
+        mat.sub(i, ri[i])
+        nr.append(r)
+
+      for r in nr:
+        robot.incr(r)
     for r, c in enumerate(robot.inv):
       mat.incr(r, c)
-    for r in nr:
-      robot.incr(r)
     print(f'end of {t}: {mat} {robot}')
     t+=1
 
