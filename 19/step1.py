@@ -84,6 +84,7 @@ def main(test):
 
   q = deque()
 
+  l = ['ore', 'clay', 'obsidian', 'geode']
   t = 1
   while t<=24:
     nr = []
@@ -91,7 +92,7 @@ def main(test):
     for r, ri in b.bp.items():
       build = True
       for i in ri:
-        if st.inv[i] < ri[i]:
+        if st.inv[l[i]] < ri[i]:
           build = False
           break
       if st.can_build(r) and st.robots[r] < 2 or min(st.robots) > 0:
