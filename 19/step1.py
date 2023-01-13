@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import aocd
 from collections import deque
+from dataclasses import dataclass
 import re
 import sys
 
@@ -8,32 +9,6 @@ ORE = 0
 CLAY = 1
 OBSIDIAN = 2
 GEODE = 3
-
-
-class Inventory:
-  def __init__(self, name):
-    self.inv = [0 for _ in [ORE, CLAY, OBSIDIAN, GEODE]]
-    self.name = name
-
-  def __repr__(self):
-    return f'<Inventory {self.name} {self.inv}>'
-
-  def get(self, i):
-    return self.inv[i]
-
-  def set(self, i, v):
-    self.inv[i] = v
-    return self.inv[i]
-
-  def incr(self, i, v=1):
-    self.inv[i] += v
-    return self.inv[i]
-
-  def sub(self, i, v):
-    return self.incr(i, v * -1)
-
-  def ore(self):
-    return self.inv[ORE]
 
 
 class Blueprint:
@@ -65,6 +40,29 @@ class Blueprint:
     return f'<Blueprint {self.number} {self.bp}>'
 
 
+class State:
+  def __init__(self, blueprint):
+    self.t = 1
+    self.blueprint = blueprint
+    self.inv = {'ore': 0, 'clay': 0, 'obsidian': 0, 'geode': 0}
+    self.robots = {'ore': 1, 'clay': 0, 'obsidian': 0, 'geode': 0}
+    self.next_robot = None
+    self.history = []
+
+  def can_build(self, r):
+    # check if inv has materials listed in blueprint
+    return False
+
+  def collect_robot_work(self):
+    pass
+
+  def build(self, r):
+    if not self.can_build(r):
+      return False
+    # decrease the material count, increase the robot count
+    # return state in t+1
+
+
 def main(test):
   mod = aocd.models.Puzzle(year=2022, day=19)
   if not test:
@@ -80,12 +78,9 @@ def main(test):
   for line in data.split("\n\n"):
     bp.append(Blueprint(line))
   print(bp)
-  mat = Inventory("material")
-  robot = Inventory("robot")
-  robot.incr(ORE)
-  print(mat, robot)
 
   b = bp[0]
+  st = State(b)
 
   q = deque()
 
@@ -96,10 +91,10 @@ def main(test):
     for r, ri in b.bp.items():
       build = True
       for i in ri:
-        if mat.get(i) < ri[i]:
+        if st.inv[i] < ri[i]:
           build = False
           break
-      if build and robot.get(r) < 2 or min(robot.inv) > 0:
+      if st.can_build(r) and st.robots[r] < 2 or min(st.robots) > 0:
         pos.append(r)
 
     if pos:
@@ -108,9 +103,8 @@ def main(test):
       r = pos[0]
       ri = b.bp[r]
       print(f'build {r} robot with {ri}')
-      for i in ri:
-        mat.sub(i, ri[i])
-      nr.append(r)
+      st.build(r)
+
     for r, c in enumerate(robot.inv):
       mat.incr(r, c)
     if pos:
