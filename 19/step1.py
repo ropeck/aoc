@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import aocd
 from collections import deque
-from dataclasses import dataclass
+from copy import deepcopy
 import re
 import sys
 
@@ -28,11 +28,10 @@ class Blueprint:
       if not m:
         print(e)
         exit(1)
-      robot = self._name[m.group(1)]
+      robot = m.group(1)
       cost = {}
       for item in m.group(2).strip().split(" and "):
         (count, name) = item.split(" ")
-        name = self._name[name]
         cost[name] = int(count)
       self.bp[robot] = cost
 
@@ -49,16 +48,30 @@ class State:
     self.next_robot = None
     self.history = []
 
+  @property
+  def names(self):
+    return self.robots.keys()
+
   def can_build(self, r):
     # check if inv has materials listed in blueprint
-    return False
+    for n, v in self.blueprint.bp[r].items():
+      if self.inv[n] < v:
+        return False
+    return True
 
   def collect_robot_work(self):
-    pass
+      for r in self.names:
+        self.inv[r] += self.robots[r]
 
   def build(self, r):
     if not self.can_build(r):
       return False
+    ns = deepcopy(self)
+    for n, v in self.blueprint.bp[r].items():
+      ns.inv[n] -= v
+    ns.robots[r] += 1
+    ns.t += 1
+    return ns
     # decrease the material count, increase the robot count
     # return state in t+1
 
@@ -79,40 +92,28 @@ def main(test):
     bp.append(Blueprint(line))
   print(bp)
 
-  b = bp[0]
-  st = State(b)
+  q = deque([(State(bp[0]))])
 
-  q = deque()
+  max_geode = 0
+  while q:
+    st = q.pop()
+    if st.t > 24:
+      max_geode = max(max_geode, st.inv['geode'])
+      print(f'{st.inv} {max_geode} {st.history}')
+      continue
+    st.collect_robot_work()
+    # estimate the most possible geodes from this point, and skip out if less than max found so far
+    #   (max if time remaining made geodes, or if a new geode robot was made each time remaining?)
+    #   how to calculate geodes made and geode robots over time. it's an integral over each minute stepwise
 
-  l = ['ore', 'clay', 'obsidian', 'geode']
-  t = 1
-  while t<=24:
-    nr = []
-    pos = []
-    for r, ri in b.bp.items():
-      build = True
-      for i in ri:
-        if st.inv[l[i]] < ri[i]:
-          build = False
-          break
-      if st.can_build(r) and st.robots[r] < 2 or min(st.robots) > 0:
-        pos.append(r)
+    for r in st.names:
+      if st.can_build(r):
+        q.append(st.build(r))
+    # or just wait
+    st.t += 1
+    st.history.append(None)
+    q.append(st)
 
-    if pos:
-      pos.reverse()
-      print(f'possible: {pos}')
-      r = pos[0]
-      ri = b.bp[r]
-      print(f'build {r} robot with {ri}')
-      st.build(r)
-
-    for r, c in enumerate(robot.inv):
-      mat.incr(r, c)
-    if pos:
-      for r in nr:
-        robot.incr(r)
-    print(f'end of {t}: {mat} {robot}')
-    t+=1
 
 
 if __name__ == '__main__':
