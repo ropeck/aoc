@@ -74,7 +74,9 @@ class State:
       return False
     key = (self.t, r, str(self.inv), str(self.robots))
     if key in cache:
-      return deepcopy(cache[key])
+      c = deepcopy(cache[key])
+      c.history = self.history + [r]
+      return c
 
     ns = deepcopy(self)
     for n, v in self.blueprint.bp[r].items():
@@ -112,7 +114,7 @@ def main(test):
   while q:
     st = q.pop()
     # if st.t > 24 or st.inv["geode"] + (24 - st.t) < max_geode:
-    if st.t > 24:
+    if len(st.history) >= 24:
       if st.inv['geode'] > max_geode:
         max_geode = st.inv['geode']
         max_st = st
@@ -134,10 +136,11 @@ def main(test):
     #   q.append(nst)
     #   building = True
     for r in reversed(st.names):
-      if st.can_build(r):
+      if st.can_build(r) and (r == 'geode' or
+                              st.inv[r] <= max([i.get(r,0) for i in st.blueprint.bp.values()])):
         q.append(st.build(r))
         building = True
-    if len(q) < 5:
+    if not building:
       q.append(nst)
 
   print("")
