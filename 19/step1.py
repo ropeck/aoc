@@ -50,6 +50,9 @@ class State:
     self.next_robot = None
     self.history = []
 
+  def __repr__(self):
+    return f'<State {self.t} i:{self.inv} r:{self.robots}'
+
   @property
   def names(self):
     return list(self.robots.keys())
@@ -76,10 +79,10 @@ class State:
     ns = deepcopy(self)
     for n, v in self.blueprint.bp[r].items():
       ns.inv[n] -= v
+    ns.collect_robot_work()
     ns.robots[r] += 1
     ns.history.append(r)
     ns.t += 1
-    ns.collect_robot_work()
     cache[key] = ns
     return ns
     # decrease the material count, increase the robot count
@@ -108,7 +111,8 @@ def main(test):
   max_st = q[0]
   while q:
     st = q.pop()
-    if st.t > 24 or st.inv["geode"] + 3 * (24 - st.t) < max_geode:
+    # if st.t > 24 or st.inv["geode"] + (24 - st.t) < max_geode:
+    if st.t > 24:
       if st.inv['geode'] > max_geode:
         max_geode = st.inv['geode']
         max_st = st
@@ -121,16 +125,20 @@ def main(test):
     def avg(s):
       return sum(s) / len(s)
     building = False
+    nst = deepcopy(st)
+    nst.t += 1
+    nst.history.append(None)
+    nst.collect_robot_work()
+    # print(f'{st.t} {list(q)}')
+    # if not q:
+    #   q.append(nst)
+    #   building = True
     for r in reversed(st.names):
-      if st.can_build(r) and st.robots[r] <= avg(st.robots.values())+1.5:
+      if st.can_build(r):
         q.append(st.build(r))
         building = True
-    # or just wait
-    if not building:
-      st.t += 1
-      st.history.append(None)
-      st.collect_robot_work()
-      q.append(st)
+    if len(q) < 5:
+      q.append(nst)
 
   print("")
   print(f'{max_st.history}\n{max_st.inv} {max_st.robots}')
