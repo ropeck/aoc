@@ -10,6 +10,8 @@ CLAY = 1
 OBSIDIAN = 2
 GEODE = 3
 
+cache = {}
+
 
 class Blueprint:
   def __init__(self, line):
@@ -64,8 +66,13 @@ class State:
       self.inv[r] += self.robots[r]
 
   def build(self, r):
+    global cache
     if not self.can_build(r):
       return False
+    key = (self.t, r, str(self.inv), str(self.robots))
+    if key in cache:
+      return deepcopy(cache[key])
+
     ns = deepcopy(self)
     for n, v in self.blueprint.bp[r].items():
       ns.inv[n] -= v
@@ -73,6 +80,7 @@ class State:
     ns.history.append(r)
     ns.t += 1
     ns.collect_robot_work()
+    cache[key] = ns
     return ns
     # decrease the material count, increase the robot count
     # return state in t+1
@@ -104,7 +112,7 @@ def main(test):
       if st.inv['geode'] > max_geode:
         max_geode = st.inv['geode']
         max_st = st
-      print(f'{st.inv} {max_geode} {st.history}')
+      print(f'{st.robots} {st.inv["geode"]} {max_geode} {st.history}')
       continue
     # estimate the most possible geodes from this point, and skip out if less than max found so far
     #   (max if time remaining made geodes, or if a new geode robot was made each time remaining?)
