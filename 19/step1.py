@@ -108,7 +108,7 @@ def main(test):
   max_st = q[0]
   while q:
     st = q.pop()
-    if st.t > 24:
+    if st.t > 24 or st.inv["geode"] + 3 * (24 - st.t) < max_geode:
       if st.inv['geode'] > max_geode:
         max_geode = st.inv['geode']
         max_st = st
@@ -126,7 +126,7 @@ def main(test):
         q.append(st.build(r))
         building = True
     # or just wait
-    if not q or not building:
+    if not building:
       st.t += 1
       st.history.append(None)
       st.collect_robot_work()
