@@ -50,7 +50,7 @@ class State:
 
   @property
   def names(self):
-    return self.robots.keys()
+    return list(self.robots.keys())
 
   def can_build(self, r):
     # check if inv has materials listed in blueprint
@@ -60,8 +60,8 @@ class State:
     return True
 
   def collect_robot_work(self):
-      for r in self.names:
-        self.inv[r] += self.robots[r]
+    for r in self.names:
+      self.inv[r] += self.robots[r]
 
   def build(self, r):
     if not self.can_build(r):
@@ -70,7 +70,9 @@ class State:
     for n, v in self.blueprint.bp[r].items():
       ns.inv[n] -= v
     ns.robots[r] += 1
+    ns.history.append(r)
     ns.t += 1
+    ns.collect_robot_work()
     return ns
     # decrease the material count, increase the robot count
     # return state in t+1
@@ -95,25 +97,35 @@ def main(test):
   q = deque([(State(bp[0]))])
 
   max_geode = 0
+  max_st = q[0]
   while q:
     st = q.pop()
     if st.t > 24:
-      max_geode = max(max_geode, st.inv['geode'])
+      if st.inv['geode'] > max_geode:
+        max_geode = st.inv['geode']
+        max_st = st
       print(f'{st.inv} {max_geode} {st.history}')
       continue
-    st.collect_robot_work()
     # estimate the most possible geodes from this point, and skip out if less than max found so far
     #   (max if time remaining made geodes, or if a new geode robot was made each time remaining?)
     #   how to calculate geodes made and geode robots over time. it's an integral over each minute stepwise
 
-    for r in st.names:
-      if st.can_build(r):
+    def avg(s):
+      return sum(s) / len(s)
+    building = False
+    for r in reversed(st.names):
+      if st.can_build(r) and st.robots[r] <= avg(st.robots.values())+1.5:
         q.append(st.build(r))
+        building = True
     # or just wait
-    st.t += 1
-    st.history.append(None)
-    q.append(st)
+    if not q or not building:
+      st.t += 1
+      st.history.append(None)
+      st.collect_robot_work()
+      q.append(st)
 
+  print("")
+  print(f'{max_st.history}\n{max_st.inv} {max_st.robots}')
 
 
 if __name__ == '__main__':
