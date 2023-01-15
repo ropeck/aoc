@@ -87,7 +87,7 @@ class State:
     if time_left < 1:
       return self
     nxt = self
-    if target and nxt.should_build(target):
+    if target:
       while True:
         self.t -= 1
         if time_left < 1:
@@ -101,7 +101,8 @@ class State:
     next_states = []
     for r in self.names:
       tgt_st = deepcopy(nxt)
-      next_states.append(tgt_st.find_max_nodes(time_left - 1, r))
+      if tgt_st.should_build(r) and tgt_st.can_build(r):
+        next_states.append(tgt_st.find_max_nodes(time_left - 1, r))
     next_states.sort(key=lambda s: s.inv['geode'])
     return next_states[-1]
 
