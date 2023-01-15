@@ -64,12 +64,15 @@ class State:
         return False
     return True
 
+  def should_build(self, r):
+    return self.robots[r] < max([b.get(r, 0) for b in self.blueprint.bp.values()])
+
   def collect_robot_work(self):
     for r in self.names:
       self.inv[r] += self.robots[r]
 
   def build(self, r):
-    if not self.can_build(r):
+    if not self.can_build(r) or not self.should_build(r):
       return False
     ns = deepcopy(self)
     for n, v in self.blueprint.bp[r].items():
@@ -81,8 +84,10 @@ class State:
 
   def find_max_nodes(self, time_left, target=None):
     self.t = time_left
+    if time_left < 1:
+      return self
     nxt = self
-    if target:
+    if target and nxt.should_build(target):
       while True:
         self.t -= 1
         if time_left < 1:
