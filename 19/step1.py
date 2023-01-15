@@ -88,8 +88,13 @@ class State:
     return self
 
   def find_max_nodes(self, time_left, target=None):
+    global cache
+    key = (time_left, target, str(self.inv), str(self.robots))
+    if key in cache:
+      return cache[key]
     self.t = time_left
     if time_left < 1:
+      cache[key] = self
       return self
     next_states = []
     if target:
@@ -101,14 +106,19 @@ class State:
         self.history.append(None)
         self.t -= 1
         if self.t < 1:
+          cache[key] = self
           return self
 
     for r in self.names:
       tgt_st = deepcopy(self)
-      next_states.append(tgt_st.find_max_nodes(time_left - 1, r))
+      max_nodes = tgt_st.find_max_nodes(tgt_st.t - 1, r)
+      print(f'{tgt_st.t} {max_nodes} {r}')
+      next_states.append(max_nodes)
     next_states.sort(key=lambda s: s.inv['geode'])
     if not next_states:
+      cache[key] = self
       return self
+    cache[key] = next_states[-1]
     return next_states[-1]
 
 
