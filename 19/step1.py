@@ -69,26 +69,36 @@ class State:
       self.inv[r] += self.robots[r]
 
   def build(self, r):
-    global cache
     if not self.can_build(r):
       return False
-    key = (self.t, r, str(self.inv), str(self.robots))
-    if key in cache:
-      c = deepcopy(cache[key])
-      c.history = self.history + [r]
-      return c
-
     ns = deepcopy(self)
     for n, v in self.blueprint.bp[r].items():
       ns.inv[n] -= v
     ns.collect_robot_work()
     ns.robots[r] += 1
     ns.history.append(r)
-    ns.t += 1
-    cache[key] = ns
     return ns
-    # decrease the material count, increase the robot count
-    # return state in t+1
+
+  def find_max_nodes(self, time_left, target=None):
+    self.t = time_left
+    nxt = self
+    if target:
+      while True:
+        self.t -= 1
+        if time_left < 1:
+          return self
+        nxt = self.build(target)
+        if nxt:
+          break
+        self.collect_robot_work()
+        self.history.append(None)
+
+    next_states = []
+    for r in self.names:
+      tgt_st = deepcopy(nxt)
+      next_states.append(tgt_st.find_max_nodes(time_left - 1, r))
+    next_states.sort(key=lambda s: s.inv['geode'])
+    return next_states[-1]
 
 
 def main(test):
@@ -107,44 +117,8 @@ def main(test):
     bp.append(Blueprint(line))
   print(bp)
 
-  q = deque([(State(bp[0]))])
-
-  max_geode = 0
-  max_st = q[0]
-  while q:
-    st = q.pop()
-    # if st.t > 24 or st.inv["geode"] + (24 - st.t) < max_geode:
-    if len(st.history) >= 24:
-      if st.inv['geode'] > max_geode:
-        max_geode = st.inv['geode']
-        max_st = st
-      print(f'{st.robots} {st.inv["geode"]} {max_geode} {st.history}')
-      continue
-    # estimate the most possible geodes from this point, and skip out if less than max found so far
-    #   (max if time remaining made geodes, or if a new geode robot was made each time remaining?)
-    #   how to calculate geodes made and geode robots over time. it's an integral over each minute stepwise
-
-    def avg(s):
-      return sum(s) / len(s)
-    building = False
-    nst = deepcopy(st)
-    nst.t += 1
-    nst.history.append(None)
-    nst.collect_robot_work()
-    # print(f'{st.t} {list(q)}')
-    # if not q:
-    #   q.append(nst)
-    #   building = True
-    for r in reversed(st.names):
-      if st.can_build(r) and (r == 'geode' or
-                              st.inv[r] <= max([i.get(r,0) for i in st.blueprint.bp.values()])):
-        q.append(st.build(r))
-        building = True
-    if not building:
-      q.append(nst)
-
-  print("")
-  print(f'{max_st.history}\n{max_st.inv} {max_st.robots}')
+  st = State(bp[0])
+  print(st.find_max_nodes(24))
 
 
 if __name__ == '__main__':
