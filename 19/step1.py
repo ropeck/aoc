@@ -76,7 +76,7 @@ class State:
   def build(self, r):
     if not self.can_build(r) or not self.should_build(r):
       return False
-    print(f'{t: {self.t} build {r} {self.history}}')
+    print(f't: {self.t} build {r} {self.history}')
     ns = deepcopy(self)
     for n, v in self.blueprint.bp[r].items():
       ns.inv[n] -= v
@@ -106,6 +106,7 @@ class State:
       for r in self.names:
         tgt_st = deepcopy(nxt)
         if tgt_st.should_build(r) and tgt_st.can_build(r):
+          tgt_st = tgt_st.build(r)
           next_states.append(tgt_st.find_max_nodes(time_left - 1, r))
       if next_states:
         break
