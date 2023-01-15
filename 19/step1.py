@@ -74,11 +74,16 @@ class State:
       self.inv[r] += self.robots[r]
 
   def build(self, r):
+    for b in self.blueprint.bp[r].keys():
+      if not self.robots[b]:
+        print(f'no {b} robots to build {r}')
+        return self
     if not self.can_build(r) or not self.should_build(r):
       return False
     print(f't: {self.t} build {r} {self.history}')
     ns = deepcopy(self)
     for n, v in self.blueprint.bp[r].items():
+      print(f'{ns.t} {ns.inv} {ns.robots} build {r} {v} {n}')
       ns.inv[n] -= v
     ns.collect_robot_work()
     ns.robots[r] += 1
@@ -90,34 +95,25 @@ class State:
     if time_left < 1:
       return self
     nxt = self
+    next_states = []
     if target:
       while True:
-        self.t -= 1
-        if self.t < 1:
-          return self
-        nxt = self.build(target)
-        if nxt:
+        nxt.t -= 1
+        if nxt.t < 1:
+          return nxt
+        if nxt.can_build(target):
+          b = nxt.build(target)
+          next_states = [b]
           break
         self.collect_robot_work()
         self.history.append(None)
 
-    next_states = []
-    while not next_states:
-      for r in self.names:
-        tgt_st = deepcopy(nxt)
-        if tgt_st.should_build(r) and tgt_st.can_build(r):
-          tgt_st = tgt_st.build(r)
-          next_states.append(tgt_st.find_max_nodes(time_left - 1, r))
-      if next_states:
-        break
-      self.t -= 1
-      if self.t < 1:
-        return self
-      self.collect_robot_work()
-      self.history.append(None)
+    for r in self.names:
+      tgt_st = deepcopy(nxt)
+      next_states.append(tgt_st.find_max_nodes(time_left - 1, r))
     next_states.sort(key=lambda s: s.inv['geode'])
     if not next_states:
-      return []
+      return self
     return next_states[-1]
 
 
