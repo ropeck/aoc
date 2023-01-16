@@ -195,7 +195,10 @@ def main(test):
       else:
         data += line + " "
   bp = []
-  for line in data.split("\n\n"):
+  sp = "\n\n"
+  if not test:
+    sp = "\n"
+  for line in data.split(sp):
     bp.append(Blueprint(line))
   print(bp)
 
@@ -213,7 +216,7 @@ def main(test):
                                     {'ore': 1, 'clay': 0, 'obsidian': 0, 'geode': 0}, target, limit)
       print(target, inv['geode'])
       max_list.append(inv['geode'])
-    print("max for bp", b.number, max(max_list))
+    print("max for bp", b.number, "is", max(max_list))
     total += b.number * max(max_list)
   print("blueprint sum", total)
 
