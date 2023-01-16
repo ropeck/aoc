@@ -136,21 +136,22 @@ class State:
 
 
 def find_max_geodes(d, bp, time_left, inv, robots, target):
-  global max_found
   # print(f'find_max {d} {time_left} {target} {inv} {robots}')
   inv = copy(inv)
   robots = copy(robots)
   if target:
     while any([inv[i] < req for i, req in bp.bp[target].items()]):
+      for i in inv.keys():
+        inv[i] += robots[i]
       time_left -= 1
       if time_left <= 0:
         break
-      for i in inv.keys():
-        inv[i] += robots[i]
     if time_left <= 0:
       return (inv, robots)
+    # print("target", target)
     if target == 'geode' or robots[target] < max(d.get(target, 0) for d in bp.bp.values()):
-      # print(f'{time_left} build {target} {inv}')
+      if target == "geode":
+        print(f'{time_left} build {target} {inv}')
       for i, req in bp.bp[target].items():
         inv[i] -= req
       for i in inv.keys():
@@ -160,10 +161,6 @@ def find_max_geodes(d, bp, time_left, inv, robots, target):
       if time_left <= 0:
         return (inv, robots)
       # print(f'{time_left}       {target} {inv}')
-
-  max_found = max(max_found, inv['geode'])
-  if inv['geode'] + time_left < max_found:
-    return inv, robots
 
   result = []
   for t in reversed(inv.keys()):
@@ -175,7 +172,6 @@ def find_max_geodes(d, bp, time_left, inv, robots, target):
   inv, robots = result[-1]
   return inv, robots
 
-max_found = 0
 
 def main(test):
   mod = aocd.models.Puzzle(year=2022, day=19)
@@ -194,6 +190,7 @@ def main(test):
   print(bp)
 
   for target in reversed(bp[0].names):
+    print("------------------------------------")
     print(target, find_max_geodes(0, bp[0], 24, {'ore': 0, 'clay': 0, 'obsidian': 0, 'geode': 0},
                                  {'ore': 1, 'clay': 0, 'obsidian': 0, 'geode': 0}, target))
 
