@@ -90,8 +90,8 @@ class State:
   def find_max_nodes(self, time_left, target=None):
     global cache
     key = (time_left, target, str(self.inv), str(self.robots))
-    if key in cache:
-      return cache[key]
+    # if key in cache:
+    #   return cache[key]
     self.t = time_left
     if time_left < 1:
       cache[key] = self
@@ -109,7 +109,7 @@ class State:
           cache[key] = self
           return self
 
-    for r in self.names:
+    for r in reversed(self.names):
       tgt_st = deepcopy(self)
       max_nodes = tgt_st.find_max_nodes(tgt_st.t - 1, r)
       print(f'{tgt_st.t} {max_nodes} {r}')
@@ -139,7 +139,7 @@ def main(test):
   print(bp)
 
   st = State(bp[0])
-  print(st.find_max_nodes(24))
+  print(st.find_max_nodes(24), 'clay')
 
 
 if __name__ == '__main__':
