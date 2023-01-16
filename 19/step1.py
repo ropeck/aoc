@@ -41,17 +41,26 @@ class Blueprint:
     return f'<Blueprint {self.number} {self.bp}>'
 
 
+def shortrep(inv):
+  ret = []
+  for i,v in inv.items():
+    n = i[0]
+    if i == 'obsidian':
+      n = i[1]
+    ret.append(f'{n}:{v}')
+  return " ".join(ret)
+
+
 class State:
-  def __init__(self, blueprint):
-    self.t = 1
+  def __init__(self, blueprint, t, inv=None, robots=None):
     self.blueprint = blueprint
-    self.inv = {'ore': 0, 'clay': 0, 'obsidian': 0, 'geode': 0}
-    self.robots = {'ore': 1, 'clay': 0, 'obsidian': 0, 'geode': 0}
-    self.next_robot = None
-    self.history = []
+    self.inv = inv or {'ore': 0, 'clay': 0, 'obsidian': 0, 'geode': 0}
+    self.robots = robots or {'ore': 1, 'clay': 0, 'obsidian': 0, 'geode': 0}
+
+
 
   def __repr__(self):
-    return f'<State {self.t} i:{self.inv} r:{self.robots}'
+    return f'<State {self.t} i({shortrep(self.inv)}) r({shortrep(self.robots)})'
 
   @property
   def names(self):
@@ -84,7 +93,6 @@ class State:
       self.inv[n] -= v
     self.collect_robot_work()
     self.robots[r] += 1
-    self.history.append(r)
     return self
 
   def find_max_nodes(self, time_left, target=None):
@@ -98,12 +106,14 @@ class State:
       return self
     next_states = []
     if target:
+      for b in self.blueprint.bp[target].keys():
+        if not self.robots[b]:
+          return self
       while True:
         if self.can_build(target) and self.should_build(target):
           next_states = [self.build(target)]
           break
         self.collect_robot_work()
-        self.history.append(None)
         self.t -= 1
         if self.t < 1:
           cache[key] = self
@@ -111,7 +121,7 @@ class State:
 
     for r in reversed(self.names):
       tgt_st = deepcopy(self)
-      max_nodes = tgt_st.find_max_nodes(tgt_st.t - 1, r)
+      max_nodes = tgt_st.find_max_nodes(tgt_st.t, r)
       print(f'{tgt_st.t} {max_nodes} {r}')
       next_states.append(max_nodes)
     next_states.sort(key=lambda s: s.inv['geode'])
@@ -138,8 +148,8 @@ def main(test):
     bp.append(Blueprint(line))
   print(bp)
 
-  st = State(bp[0])
-  print(st.find_max_nodes(24), 'clay')
+  st = State(bp[0], 24)
+  print(st.find_max_nodes(24))
 
 
 if __name__ == '__main__':
