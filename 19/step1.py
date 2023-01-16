@@ -195,10 +195,49 @@ def find_max_geodes(d, bp, time_left, inv, robots, target, limit):
   return inv, robots
 
 
-def main(test):
-  global max_geodes
-  global cache
+def part1_max_geode(bp):
+  global cache, max_geodes
+  total = 0
+  for b in bp:
+    print("\n\n", b)
+    cache = {}
+    limit = {}
+    for target in b.names:
+      limit[target] = max(d.get(target, 0) for d in b.bp.values())
+    max_list = []
+    for target in reversed(b.names):
+      max_geodes = 0
+      inv, robots = find_max_geodes(0, b, 24, {'ore': 0, 'clay': 0, 'obsidian': 0, 'geode': 0},
+                                    {'ore': 1, 'clay': 0, 'obsidian': 0, 'geode': 0}, target, limit)
+      print(target, inv['geode'])
+      max_list.append(inv['geode'])
+    print("max for bp", b.number, "is", max(max_list))
+    total += b.number * max(max_list)
+  return total
 
+
+def part2_max_geode(bp):
+  global cache, max_geodes
+  total = 0
+  for b in bp[:3]:
+    print("\n\npart2", b)
+    cache = {}
+    limit = {}
+    for target in b.names:
+      limit[target] = max(d.get(target, 0) for d in b.bp.values())
+    max_list = []
+    for target in reversed(b.names):
+      max_geodes = 0
+      inv, robots = find_max_geodes(0, b, 32, {'ore': 0, 'clay': 0, 'obsidian': 0, 'geode': 0},
+                                    {'ore': 1, 'clay': 0, 'obsidian': 0, 'geode': 0}, target, limit)
+      print(target, inv['geode'])
+      max_list.append(inv['geode'])
+    print("max for bp", b.number, "is", max(max_list))
+    total += b.number * max(max_list)
+  return total
+
+
+def main(test):
   mod = aocd.models.Puzzle(year=2022, day=19)
   if not test:
     data = mod.input_data
@@ -217,24 +256,8 @@ def main(test):
     bp.append(Blueprint(line))
   print(bp)
 
-  total = 0
-  for b in bp:
-    print("\n\n",b)
-    cache = {}
-    limit = {}
-    for target in b.names:
-      limit[target] = max(d.get(target, 0) for d in b.bp.values())
-    max_list = []
-    for target in reversed(b.names):
-      max_geodes = 0
-      inv, robots = find_max_geodes(0, b, 24, {'ore': 0, 'clay': 0, 'obsidian': 0, 'geode': 0},
-                                    {'ore': 1, 'clay': 0, 'obsidian': 0, 'geode': 0}, target, limit)
-      print(target, inv['geode'])
-      max_list.append(inv['geode'])
-    print("max for bp", b.number, "is", max(max_list))
-    total += b.number * max(max_list)
-  print("blueprint sum", total)
-
+  # print("blueprint sum", part1_max_geode(bp))
+  print("part2 result", part2_max_geode(bp))
 
 if __name__ == '__main__':
   main(len(sys.argv) > 1)
