@@ -141,15 +141,18 @@ def find_max_geodes(d, bp, time_left, inv, robots, target, limit):
   # print(f'find_max {d} {time_left} {target} {inv} {robots}')
   inv = copy(inv)
   robots = copy(robots)
-  g = inv['geode']
-  possible = 0
+  if time_left <= 1:
+    return (inv, robots)
+  gr = robots['geode']
+  possible = inv['geode']
   for tt in range(time_left):
-    possible += g
-    g += 1
+    possible += gr
+    gr += 1
   if max_geodes > possible:
     # print(f'too small {max_geodes} > {possible}  {time_left}')
     return inv, robots
-  if target:
+  built = False
+  if target and target == 'geode' or robots[target] < limit[target]:
     while any([inv[i] < req for i, req in bp.bp[target].items()]):
       for i in inv.keys():
         inv[i] += robots[i]
@@ -159,16 +162,16 @@ def find_max_geodes(d, bp, time_left, inv, robots, target, limit):
     if time_left <= 1:
       return (inv, robots)
     # print("target", target)
-    if target == 'geode' or robots[target] < limit[target]:
       # if target == "geode":
-      # print(f'{time_left} build {target} {inv}')
-      for i, req in bp.bp[target].items():
-        inv[i] -= req
-      for i in inv.keys():
-        inv[i] += robots[i]
-      robots[target] += 1
-      if time_left <= 1:
-        return (inv, robots)
+    # print(f'{time_left} build {target} {inv}')
+    for i, req in bp.bp[target].items():
+      inv[i] -= req
+    built = True
+  for i in inv.keys():
+    inv[i] += robots[i]
+  if built:
+    robots[target] += 1
+
       # print(f'{time_left}       {target} {inv}')
     max_geodes = max(max_geodes, inv['geode'])
 
