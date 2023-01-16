@@ -147,7 +147,7 @@ def find_max_geodes(d, bp, time_left, inv, robots, target, limit):
     possible += g
     g += 1
   if max_geodes > possible:
-    print(f'too small {max_geodes} > {possible}  {time_left}')
+    # print(f'too small {max_geodes} > {possible}  {time_left}')
     return inv, robots
   if target:
     while any([inv[i] < req for i, req in bp.bp[target].items()]):
@@ -205,14 +205,16 @@ def main(test):
     limit = {}
     for target in b.names:
       limit[target] = max(d.get(target, 0) for d in b.bp.values())
+    max_list = []
     for target in reversed(b.names):
       print("------------------------------------")
       max_geodes = 0
-      max_list = find_max_geodes(0, b, 24, {'ore': 0, 'clay': 0, 'obsidian': 0, 'geode': 0},
-                                 {'ore': 1, 'clay': 0, 'obsidian': 0, 'geode': 0}, target, limit)
-      max_geodes = max(x['geode'] for x in max_list)
-      print(target, max_geodes)
-      total += b.number * max_geodes
+      inv, robots = find_max_geodes(0, b, 24, {'ore': 0, 'clay': 0, 'obsidian': 0, 'geode': 0},
+                                    {'ore': 1, 'clay': 0, 'obsidian': 0, 'geode': 0}, target, limit)
+      print(target, inv['geode'])
+      max_list.append(inv['geode'])
+    print("max for bp", b.number, max(max_list))
+    total += b.number * max(max_list)
   print("blueprint sum", total)
 
 
