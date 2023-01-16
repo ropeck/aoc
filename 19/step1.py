@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import re
 import sys
-from copy import deepcopy
+from copy import copy, deepcopy
 
 import aocd
 
@@ -135,8 +135,11 @@ class State:
     return next_states[-1]
 
 
-def find_max_geodes(bp, time_left, inv, robots, target):
-  # print(f'find_max {time_left} {target} {inv} {robots}')
+def find_max_geodes(d, bp, time_left, inv, robots, target):
+  global max_found
+  # print(f'find_max {d} {time_left} {target} {inv} {robots}')
+  inv = copy(inv)
+  robots = copy(robots)
   if target:
     while any([inv[i] < req for i, req in bp.bp[target].items()]):
       time_left -= 1
@@ -147,7 +150,7 @@ def find_max_geodes(bp, time_left, inv, robots, target):
     if time_left <= 0:
       return (inv, robots)
     if target == 'geode' or robots[target] < max(d.get(target, 0) for d in bp.bp.values()):
-      print(f'{time_left} build {target} {inv}')
+      # print(f'{time_left} build {target} {inv}')
       for i, req in bp.bp[target].items():
         inv[i] -= req
       for i in inv.keys():
@@ -156,18 +159,23 @@ def find_max_geodes(bp, time_left, inv, robots, target):
       time_left -= 1
       if time_left <= 0:
         return (inv, robots)
-      print(f'{time_left}       {target} {inv}')
+      # print(f'{time_left}       {target} {inv}')
+
+  max_found = max(max_found, inv['geode'])
+  if inv['geode'] + time_left < max_found:
+    return inv, robots
 
   result = []
   for t in reversed(inv.keys()):
     # print(f'find_max {time_left} {target} {t} {inv} {robots}')
-    geodes = find_max_geodes(bp, time_left - 1, inv, robots, t)
+    geodes = find_max_geodes(d+1, bp, time_left - 1, inv, robots, t)
     result.append(geodes)
   result.sort(key=lambda i: i[0]['geode'])
   # print(result)
   inv, robots = result[-1]
   return inv, robots
 
+max_found = 0
 
 def main(test):
   mod = aocd.models.Puzzle(year=2022, day=19)
@@ -186,7 +194,7 @@ def main(test):
   print(bp)
 
   for target in reversed(bp[0].names):
-    print(target, find_max_geodes(bp[0], 24, {'ore': 0, 'clay': 0, 'obsidian': 0, 'geode': 0},
+    print(target, find_max_geodes(0, bp[0], 24, {'ore': 0, 'clay': 0, 'obsidian': 0, 'geode': 0},
                                  {'ore': 1, 'clay': 0, 'obsidian': 0, 'geode': 0}, target))
 
 
