@@ -134,8 +134,10 @@ class State:
     cache[key] = next_states[-1]
     return next_states[-1]
 
+max_geodes = 0
 
 def find_max_geodes(d, bp, time_left, inv, robots, target):
+  global max_geodes
   # print(f'find_max {d} {time_left} {target} {inv} {robots}')
   inv = copy(inv)
   robots = copy(robots)
@@ -144,23 +146,23 @@ def find_max_geodes(d, bp, time_left, inv, robots, target):
       for i in inv.keys():
         inv[i] += robots[i]
       time_left -= 1
-      if time_left <= 0:
+      if time_left <= 1:
         break
-    if time_left <= 0:
+    if time_left <= 1:
       return (inv, robots)
     # print("target", target)
     if target == 'geode' or robots[target] < max(d.get(target, 0) for d in bp.bp.values()):
-      if target == "geode":
-        print(f'{time_left} build {target} {inv}')
+      # if target == "geode":
+        # print(f'{time_left} build {target} {inv}')
       for i, req in bp.bp[target].items():
         inv[i] -= req
       for i in inv.keys():
         inv[i] += robots[i]
       robots[target] += 1
-      time_left -= 1
-      if time_left <= 0:
+      if time_left <= 1:
         return (inv, robots)
       # print(f'{time_left}       {target} {inv}')
+    max_geodes = max(max_geodes, inv['geode'])
 
   result = []
   for t in reversed(inv.keys()):
