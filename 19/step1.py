@@ -1,9 +1,9 @@
 #!/usr/bin/python3
-import aocd
-from collections import deque
-from copy import deepcopy
 import re
 import sys
+from copy import deepcopy
+
+import aocd
 
 ORE = 0
 CLAY = 1
@@ -39,7 +39,10 @@ class Blueprint:
 
   def __repr__(self):
     return f'<Blueprint {self.number} {self.bp}>'
-
+  
+  @property
+  def names(self):
+    return list(self._name.keys())
 
 def shortrep(inv):
   ret = []
@@ -131,6 +134,44 @@ class State:
     cache[key] = next_states[-1]
     return next_states[-1]
 
+def can_build(bp, target, inv):
+  for i, req in bp.bp[target].items():
+    if inv[i] < req:
+      return False
+  return True
+
+
+def find_max_geodes(bp, time_left, inv, robots, target):
+  if target:
+    while not can_build(bp, target, inv):
+      time_left -= 1
+      if time_left <= 0:
+        break
+      for i in inv.keys():
+        inv[i] += robots[i]
+    if time_left <= 0:
+      return (inv, robots)
+    should_build = True
+    for d in bp.bp.values():
+      if robots[target] >= d.get(target, 0):
+        should_build = False
+    if should_build:
+      for i, req in bp.bp[target].items():
+        inv[i] -= req
+      for i in inv.keys():
+        inv[i] += robots[i]
+      robots[target] += 1
+      time_left -= 1
+
+  result = []
+  for t in inv.keys():
+    if time_left <= 0:
+      return (inv, robots)
+    result.append(find_max_geodes(bp, time_left - 1, inv, robots, t))
+  result.sort(key=lambda i: i[0]['geode'])
+  # print(result)
+  return result[-1]
+
 
 def main(test):
   mod = aocd.models.Puzzle(year=2022, day=19)
@@ -148,8 +189,9 @@ def main(test):
     bp.append(Blueprint(line))
   print(bp)
 
-  st = State(bp[0], 24)
-  print(st.find_max_nodes(24))
+  for target in bp[0].names:
+    print(target, find_max_geodes(bp[0], 24, {'ore': 0, 'clay': 0, 'obsidian': 0, 'geode': 0},
+                                 {'ore': 1, 'clay': 0, 'obsidian': 0, 'geode': 0}, target))
 
 
 if __name__ == '__main__':
