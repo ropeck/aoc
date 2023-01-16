@@ -23,7 +23,7 @@ class Blueprint:
     line = line.replace(".", "")
     p = line.split("Each ")
     m = re.match("Blueprint (\\d+): ", p[0])
-    self.number = m.group(1)
+    self.number = int(m.group(1))
     self.bp = {}
     for e in p[1:]:
       m = re.match("(.*) robot costs (.*)", e)
@@ -118,7 +118,7 @@ class State:
           break
         self.collect_robot_work()
         self.t -= 1
-        if self.t < 1:
+        if self.t <= 1:
           cache[key] = self
           return self
 
@@ -136,26 +136,32 @@ class State:
 
 max_geodes = 0
 
-def find_max_geodes(d, bp, time_left, inv, robots, target):
+def find_max_geodes(d, bp, time_left, inv, robots, target, limit):
   global max_geodes
   # print(f'find_max {d} {time_left} {target} {inv} {robots}')
   inv = copy(inv)
   robots = copy(robots)
-  if time_left * (1 + robots['geode']) + inv['geode'] < max_geodes:
+  g = inv['geode']
+  possible = 0
+  for tt in range(time_left):
+    possible += g
+    g += 1
+  if max_geodes > possible:
+    print(f'too small {max_geodes} > {possible}  {time_left}')
     return inv, robots
   if target:
     while any([inv[i] < req for i, req in bp.bp[target].items()]):
       for i in inv.keys():
         inv[i] += robots[i]
       time_left -= 1
-      if time_left <= 1:
+      if time_left < 1:
         break
     if time_left <= 1:
       return (inv, robots)
     # print("target", target)
-    if target == 'geode' or robots[target] < max(d.get(target, 0) for d in bp.bp.values()):
+    if target == 'geode' or robots[target] < limit[target]:
       # if target == "geode":
-        # print(f'{time_left} build {target} {inv}')
+      # print(f'{time_left} build {target} {inv}')
       for i, req in bp.bp[target].items():
         inv[i] -= req
       for i in inv.keys():
@@ -169,7 +175,7 @@ def find_max_geodes(d, bp, time_left, inv, robots, target):
   result = []
   for t in reversed(inv.keys()):
     # print(f'find_max {time_left} {target} {t} {inv} {robots}')
-    geodes = find_max_geodes(d+1, bp, time_left - 1, inv, robots, t)
+    geodes = find_max_geodes(d+1, bp, time_left - 1, inv, robots, t, limit)
     result.append(geodes)
   result.sort(key=lambda i: i[0]['geode'])
   # print(result)
@@ -193,10 +199,20 @@ def main(test):
     bp.append(Blueprint(line))
   print(bp)
 
-  for target in reversed(bp[0].names):
-    print("------------------------------------")
-    print(target, find_max_geodes(0, bp[0], 24, {'ore': 0, 'clay': 0, 'obsidian': 0, 'geode': 0},
-                                 {'ore': 1, 'clay': 0, 'obsidian': 0, 'geode': 0}, target))
+  total = 0
+  for b in bp:
+    print("\n\n",b)
+    limit = {}
+    for target in b.names:
+      limit[target] = max(d.get(target, 0) for d in b.bp.values())
+    for target in reversed(b.names):
+      print("------------------------------------")
+      max_list = find_max_geodes(0, b, 24, {'ore': 0, 'clay': 0, 'obsidian': 0, 'geode': 0},
+                                 {'ore': 1, 'clay': 0, 'obsidian': 0, 'geode': 0}, target, limit)
+      max_geodes = max(x['geode'] for x in max_list)
+      print(target, max_geodes)
+      total += b.number * max_geodes
+  print("blueprint sum", total)
 
 
 if __name__ == '__main__':
