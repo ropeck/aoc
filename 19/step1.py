@@ -207,6 +207,7 @@ def main(test):
       limit[target] = max(d.get(target, 0) for d in b.bp.values())
     for target in reversed(b.names):
       print("------------------------------------")
+      max_geodes = 0
       max_list = find_max_geodes(0, b, 24, {'ore': 0, 'clay': 0, 'obsidian': 0, 'geode': 0},
                                  {'ore': 1, 'clay': 0, 'obsidian': 0, 'geode': 0}, target, limit)
       max_geodes = max(x['geode'] for x in max_list)
