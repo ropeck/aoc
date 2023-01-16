@@ -151,11 +151,7 @@ def find_max_geodes(bp, time_left, inv, robots, target):
         inv[i] += robots[i]
     if time_left <= 0:
       return (inv, robots)
-    should_build = True
-    for d in bp.bp.values():
-      if robots[target] >= d.get(target, 0):
-        should_build = False
-    if should_build:
+    if robots[target] < max(d.get(target, 0) for d in bp.bp.values()):
       for i, req in bp.bp[target].items():
         inv[i] -= req
       for i in inv.keys():
