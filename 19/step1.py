@@ -135,13 +135,18 @@ class State:
     return next_states[-1]
 
 max_geodes = 0
-
+cache = {}
 def find_max_geodes(d, bp, time_left, inv, robots, target, limit):
   global max_geodes
+  global cache
   # print(f'find_max {d} {time_left} {target} {inv} {robots}')
-  inv = copy(inv)
-  robots = copy(robots)
-  if time_left <= 1:
+  key = (time_left, str(inv), str(robots), target)
+  if key in cache:
+    return cache[key]
+  inv = deepcopy(inv)
+  robots = deepcopy(robots)
+  if time_left < 1:
+    cache[key] = (inv, robots)
     return (inv, robots)
   gr = robots['geode']
   possible = inv['geode']
@@ -150,16 +155,19 @@ def find_max_geodes(d, bp, time_left, inv, robots, target, limit):
     gr += 1
   if max_geodes > possible:
     # print(f'too small {max_geodes} > {possible}  {time_left}')
+    cache[key] = (inv, robots)
     return inv, robots
   built = False
   if target and target == 'geode' or robots[target] < limit[target]:
     while any([inv[i] < req for i, req in bp.bp[target].items()]):
       for i in inv.keys():
         inv[i] += robots[i]
+      max_geodes = max(max_geodes, inv['geode'])
       time_left -= 1
       if time_left < 1:
         break
     if time_left <= 1:
+      cache[key] = (inv, robots)
       return (inv, robots)
     # print("target", target)
       # if target == "geode":
@@ -173,7 +181,7 @@ def find_max_geodes(d, bp, time_left, inv, robots, target, limit):
     robots[target] += 1
 
       # print(f'{time_left}       {target} {inv}')
-    max_geodes = max(max_geodes, inv['geode'])
+  max_geodes = max(max_geodes, inv['geode'])
 
   result = []
   for t in reversed(inv.keys()):
@@ -183,10 +191,14 @@ def find_max_geodes(d, bp, time_left, inv, robots, target, limit):
   result.sort(key=lambda i: i[0]['geode'])
   # print(result)
   inv, robots = result[-1]
+  cache[key] = (inv, robots)
   return inv, robots
 
 
 def main(test):
+  global max_geodes
+  global cache
+
   mod = aocd.models.Puzzle(year=2022, day=19)
   if not test:
     data = mod.input_data
@@ -208,12 +220,12 @@ def main(test):
   total = 0
   for b in bp:
     print("\n\n",b)
+    cache = {}
     limit = {}
     for target in b.names:
       limit[target] = max(d.get(target, 0) for d in b.bp.values())
     max_list = []
     for target in reversed(b.names):
-      print("------------------------------------")
       max_geodes = 0
       inv, robots = find_max_geodes(0, b, 24, {'ore': 0, 'clay': 0, 'obsidian': 0, 'geode': 0},
                                     {'ore': 1, 'clay': 0, 'obsidian': 0, 'geode': 0}, target, limit)
