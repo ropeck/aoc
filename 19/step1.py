@@ -141,6 +141,8 @@ def find_max_geodes(d, bp, time_left, inv, robots, target):
   # print(f'find_max {d} {time_left} {target} {inv} {robots}')
   inv = copy(inv)
   robots = copy(robots)
+  if time_left * (1 + robots['geode']) + inv['geode'] < max_geodes:
+    return inv, robots
   if target:
     while any([inv[i] < req for i, req in bp.bp[target].items()]):
       for i in inv.keys():
