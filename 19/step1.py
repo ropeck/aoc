@@ -134,16 +134,11 @@ class State:
     cache[key] = next_states[-1]
     return next_states[-1]
 
-def can_build(bp, target, inv):
-  for i, req in bp.bp[target].items():
-    if inv[i] < req:
-      return False
-  return True
-
 
 def find_max_geodes(bp, time_left, inv, robots, target):
+  # print(f'find_max {time_left} {target} {inv} {robots}')
   if target:
-    while not can_build(bp, target, inv):
+    while any([inv[i] < req for i, req in bp.bp[target].items()]):
       time_left -= 1
       if time_left <= 0:
         break
@@ -151,22 +146,27 @@ def find_max_geodes(bp, time_left, inv, robots, target):
         inv[i] += robots[i]
     if time_left <= 0:
       return (inv, robots)
-    if robots[target] < max(d.get(target, 0) for d in bp.bp.values()):
+    if target == 'geode' or robots[target] < max(d.get(target, 0) for d in bp.bp.values()):
+      print(f'{time_left} build {target} {inv}')
       for i, req in bp.bp[target].items():
         inv[i] -= req
       for i in inv.keys():
         inv[i] += robots[i]
       robots[target] += 1
       time_left -= 1
+      if time_left <= 0:
+        return (inv, robots)
+      print(f'{time_left}       {target} {inv}')
 
   result = []
-  for t in inv.keys():
-    if time_left <= 0:
-      return (inv, robots)
-    result.append(find_max_geodes(bp, time_left - 1, inv, robots, t))
+  for t in reversed(inv.keys()):
+    # print(f'find_max {time_left} {target} {t} {inv} {robots}')
+    geodes = find_max_geodes(bp, time_left - 1, inv, robots, t)
+    result.append(geodes)
   result.sort(key=lambda i: i[0]['geode'])
   # print(result)
-  return result[-1]
+  inv, robots = result[-1]
+  return inv, robots
 
 
 def main(test):
@@ -185,7 +185,7 @@ def main(test):
     bp.append(Blueprint(line))
   print(bp)
 
-  for target in bp[0].names:
+  for target in reversed(bp[0].names):
     print(target, find_max_geodes(bp[0], 24, {'ore': 0, 'clay': 0, 'obsidian': 0, 'geode': 0},
                                  {'ore': 1, 'clay': 0, 'obsidian': 0, 'geode': 0}, target))
 
