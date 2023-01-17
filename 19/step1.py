@@ -259,7 +259,7 @@ def main(test):
     bp.append(Blueprint(line))
   print(bp)
 
-  print("blueprint sum", part1_max_geode(bp))
+  # print("blueprint sum", part1_max_geode(bp))
   print("part2 result", part2_max_geode(bp))
 
 if __name__ == '__main__':
