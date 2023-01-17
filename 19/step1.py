@@ -150,6 +150,9 @@ def find_max_geodes(d, bp, time_left, inv, robots, target, limit):
     return (inv, robots)
   gr = robots['geode']
   possible = inv['geode']
+
+  #triangle number for time left
+  # tn = int(time_left * (time_left + 1) / 2)
   for tt in range(time_left):
     possible += gr
     gr += 1
@@ -218,7 +221,7 @@ def part1_max_geode(bp):
 
 def part2_max_geode(bp):
   global cache, max_geodes
-  total = 0
+  total = 1
   for b in bp[:3]:
     print("\n\npart2", b)
     cache = {}
@@ -233,7 +236,7 @@ def part2_max_geode(bp):
       print(target, inv['geode'])
       max_list.append(inv['geode'])
     print("max for bp", b.number, "is", max(max_list))
-    total += b.number * max(max_list)
+    total *= max(max_list)
   return total
 
 
@@ -256,7 +259,7 @@ def main(test):
     bp.append(Blueprint(line))
   print(bp)
 
-  # print("blueprint sum", part1_max_geode(bp))
+  print("blueprint sum", part1_max_geode(bp))
   print("part2 result", part2_max_geode(bp))
 
 if __name__ == '__main__':
