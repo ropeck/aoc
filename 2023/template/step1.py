@@ -8,7 +8,7 @@ def main(test):
   #   while True:
 
   
-  mod = aocd.models.Puzzle(year=2022, day= )
+  mod = aocd.models.Puzzle(year=2023, day= )
   if not test:
     data = mod.input_data
   else:
