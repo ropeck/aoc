@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import aocd
 import sys
 
 def main(test):
