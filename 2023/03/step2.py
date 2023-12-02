@@ -4,12 +4,7 @@ import sys
 
 def main(test):
   total = 0
-  # with open(path, "r") as fh:
-  #   line = fh.readline().strip()
-  #   while True:
-
-  
-  mod = aocd.models.Puzzle(year=2023, day= )
+  mod = aocd.models.Puzzle(year=2023, day=3)
   if not test:
     data = mod.input_data
   else:
