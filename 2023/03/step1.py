@@ -23,13 +23,13 @@ def main(test):
   for y in range(len(d)):
     line = d[y]
     num = False
-    for x in range(len(line)):
-      if line[x].isdigit() and not num:
+    for x in range(len(line)+1):
+      if get_d(d, x, y).isdigit() and not num:
         num_start = x
         num = True
         val = 0
       if num:
-        if line[x].isdigit():
+        if get_d(d, x, y).isdigit():
           val = val * 10 + int(line[x])
         else:
           num_end = x - 1
