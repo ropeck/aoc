@@ -10,7 +10,12 @@ def main(test):
   else:
     data = mod.example_data
     pass
-  
+
+
+  # print(total)
+  # if not test:
+  #     aocd.submit(total, part="a", day=3, year=2023)
+
 
 if __name__ == '__main__':
   main(len(sys.argv) > 1)
