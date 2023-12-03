@@ -18,7 +18,7 @@ def main(test):
     except IndexError:
       return '.'
     
-  found_num = set()
+  found_num = []
   d = data.splitlines()
   for y in range(len(d)):
     line = d[y]
@@ -43,7 +43,7 @@ def main(test):
                 print (f"found {ch} {dx},{dy}")
           if found:
             print(val, y, num_start, num_end)
-            found_num.add(val)
+            found_num.append(val)
           num = False
           
   print(found_num)
