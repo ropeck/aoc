@@ -37,6 +37,7 @@ def main(test):
 
   seeds = []
   maps = {}
+  dst_map = {}
 
   # get the seeds line
   while not seeds:
@@ -55,6 +56,15 @@ def main(test):
     m = re.match(r'(.*)-to-(.*) map:', line)
     if m:
       src, dst = m.groups()
+      dst_map[src] = dst
+      r = []
+      while line and data:
+        line = data.pop(0)
+        r.append([int(n) for n in line.split()])
+      maps[src] = r
+      if data:
+        line = data.pop(0)
+
     
 
   print(total)
