@@ -27,7 +27,7 @@ _DAY = 5
 # 18 25 70
 def main(test):
   total = 0
-  test = 1
+  # test = 1
   mod = aocd.models.Puzzle(year=2023, day=_DAY)
   if not test:
     data = mod.input_data.splitlines()
@@ -60,17 +60,42 @@ def main(test):
       r = []
       while line and data:
         line = data.pop(0)
-        r.append([int(n) for n in line.split()])
+        rr = [int(n) for n in line.split() if n]
+        if rr:
+          r.append(rr)
       maps[src] = r
       if data:
         line = data.pop(0)
+      else:
+        break
 
-    
+  print(seeds)
+  location = []
+  for s in seeds:
+    thing = 'seed'
+    n = s
+    print (thing, n)
+    while thing != 'location':
+      dst = dst_map[thing]
+      dst_n = range_map(n, maps[thing])
+      print (dst, dst_n)
+      thing = dst
+      n = dst_n
+    location.append(n)
+    print("--")
 
-  print(total)
+  print("location", location)
+  print("min loc", min(location))
+
   if not test:
-      aocd.submit(total, part="a", day=_DAY, year=2023)
+      aocd.submit(min(location), part="a", day=_DAY, year=2023)
 
+def range_map(n, rm_lines):
+  print("rm_lines", rm_lines)
+  for (dst, src, r) in rm_lines:
+    if n >= src and n < src+r:
+      return (n - src) + dst
+  return n
 
 if __name__ == '__main__':
   main(len(sys.argv) > 1)
