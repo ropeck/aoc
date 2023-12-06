@@ -34,13 +34,12 @@ def main(test):
   ans = 1
   for i in range(len(times)):
     win = [x for x in travel(times[i]) if x > dist[i]]
-    print(i, dist[i], win)
     winners.append(len(win))
     ans = ans * len(win)
   pass
-  print(winners, ans)
+  print(ans)
   if not test:
-      aocd.submit(ans, part="a", day=_DAY, year=2023)
+      aocd.submit(ans, part="b", day=_DAY, year=2023)
 
 if __name__ == '__main__':
   main(len(sys.argv) > 1)
