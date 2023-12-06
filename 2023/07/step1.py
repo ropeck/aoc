@@ -14,7 +14,7 @@ def main(test):
   else:
     data = mod.example_data.splitlines()
 
-   pass
+  pass
 
   if not test:
       aocd.submit(ans, part="a", day=_DAY, year=2023)
