@@ -10,8 +10,18 @@ CARD_ORDER = '23456789TJQKA'
 def card_score(n):
   return CARD_ORDER.index(n)
 
+def card_cmp(a,b):
+  sa = card_score(a[0])
+  sb = card_score(b[0])
+  if sa < sb:
+    return -1
+  if sa > sb:
+    return 1
+  return 0
+
 class Hand:
   def __init__(self, line):
+    self.str = line
     self.str = line
     self.cards = {}
     (card_str, bid_str) = line.split(" ")
@@ -23,8 +33,8 @@ class Hand:
                        key=lambda n: n[1]*100+card_score(n[0]),
                        reverse=True)
 
-  def pairs(self):
-    return self.hand[0][1]
+  def pairs(self, n=0):
+    return self.hand[n][1]
   
   def __lt__(self, other):
     return self.cmp(other) < 0
@@ -34,6 +44,7 @@ class Hand:
     return self.cmd(other) == 0
   def __repr__(self):
     return f"Hand({self.str})"
+  
   def cmp(self, other):
     sp = self.pairs()
     op = other.pairs()
@@ -41,23 +52,20 @@ class Hand:
       return -1
     if sp > op:
       return 1
-    ss = card_score(self.hand[0][0])
-    os = card_score(other.hand[0][0])
-    if ss < os:
-      return -1
-    if ss > os:
-      return 1
+    s = card_cmp(self.hand[0], other.hand[0])
+    if s:
+      return s
     # same pairs, same values
     if sp == 4:
-      ss = card_score(self.hand[1][0])
-      os = card_score(other.hard[1][0])
-      if ss < os:
+      return card_cmp(self.hand[1], other.hand[1])
+    if sp == 3:
+      sp = self.pairs(1)
+      op = other.pairs(1)
+      if sp < op:
         return -1
-      if ss > os:
+      if sp > op:
         return 1
-      # same second pair values?
-      return 0
-    
+      return card_cmp(self.hand[1], other.hand[1])
   # Every hand is exactly one type. From strongest to weakest, they are:
 
   # 7 Five of a kind, where all five cards have the same label: AAAAA
@@ -83,6 +91,7 @@ def main(test):
   hands = []
   for line in data:
     hands.append(Hand(line))
+  hands = sorted(hands, reverse=True)
   hands = sorted(hands, reverse=True)
 
   if not test:
