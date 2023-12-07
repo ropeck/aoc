@@ -12,6 +12,7 @@ def card_score(n):
 
 class Hand:
   def __init__(self, line):
+    self.str = line
     self.cards = {}
     (card_str, bid_str) = line.split(" ")
     self.bid = int(bid_str)
@@ -25,16 +26,37 @@ class Hand:
   def pairs(self):
     return self.hand[0][1]
   
-  def cmp_card(self, other):
+  def __lt__(self, other):
+    return self.cmp(other) < 0
+  def __gt__(self, other):
+    return self.cmp(other) > 0
+  def __eq__(self, other):
+    return self.cmd(other) == 0
+  def __repr__(self):
+    return f"Hand({self.str})"
+  def cmp(self, other):
     sp = self.pairs()
     op = other.pairs()
     if sp < op:
       return -1
     if sp > op:
       return 1
-    
-    c = self.hand[0] == other.hand[0]
-f    card, count = self.hand[0]
+    ss = card_score(self.hand[0][0])
+    os = card_score(other.hand[0][0])
+    if ss < os:
+      return -1
+    if ss > os:
+      return 1
+    # same pairs, same values
+    if sp == 4:
+      ss = card_score(self.hand[1][0])
+      os = card_score(other.hard[1][0])
+      if ss < os:
+        return -1
+      if ss > os:
+        return 1
+      # same second pair values?
+      return 0
     
   # Every hand is exactly one type. From strongest to weakest, they are:
 
@@ -61,7 +83,7 @@ def main(test):
   hands = []
   for line in data:
     hands.append(Hand(line))
-  hands = sorted(hands, key=cmp_to_key(Hand.cmp_card), reverse=True)
+  hands = sorted(hands, reverse=True)
 
   if not test:
       aocd.submit(ans, part="a", day=_DAY, year=2023)
