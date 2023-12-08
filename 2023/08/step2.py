@@ -26,21 +26,23 @@ def main(test):
   
   
   count = 0
-  cur = [x for x in map.keys() if x[2] == 'A']
-  while [x for x in cur if x[2] != 'Z']:
-    for n in range(len(cur)):
+  cur_list = [x for x in map.keys() if x[2] == 'A']
+  c = []
+  ans = 1
+  for cur in cur_list:
+    count = 0
+    while cur[2] != 'Z':
       if directions[count%len(directions)] == 'L':
-        cur[n] = map[cur[n]][0]
+        cur = map[cur][0]
       else:
-        cur[n] = map[cur[n]][1]
-    if count % 1000000 == 0:
-      print ("state", count, [x for x in cur if x[2] != 'Z'])
-      print("VGG", map['VGG'])
-      print(len(map))
-    count += 1
-
+        cur = map[cur][1]
+      count += 1
+    print("count", cur, count)
+    c.append(count)
+    ans = ans * count
+  print("answer", ans)
   if not test:
-      aocd.submit(count, part="b", day=_DAY, year=2023)
+      aocd.submit(ans, part="b", day=_DAY, year=2023)
 
 if __name__ == '__main__':
   main(len(sys.argv) > 1)
