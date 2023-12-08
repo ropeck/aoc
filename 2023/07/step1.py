@@ -5,7 +5,24 @@ import sys
 from containers import Counter
 
 _DAY = 7
+  # Every hand is exactly one type. From strongest to weakest, they are:
+
+  # 7 Five of a kind, where all five cards have the same label: AAAAA
+  # 6 Four of a kind, where four cards have the same label and one card has a different label: AA8AA
+  # 5 Full house, where three cards have the same label, and the remaining two cards share a different label: 23332
+  # 4 Three of a kind, where three cards have the same label, and the remaining two cards are each different from any other card in the hand: TTT98
+  # 3 Two pair, where two cards share one label, two other cards share a second label, and the remaining card has a third label: 23432
+  # 2 One pair, where two cards share one label, and the other three cards have a different label from the pair and each other: A23A4
+  # 1 High card, where all cards' labels are distinct: 23456
+
 CARD_ORDER = '23456789TJQKA'
+_FIVE_OF = 7
+_FOUR_OF = 6
+_FULL_HOUSE = 5
+_THREE_OF = 4
+_TWO_PAIR = 3
+_TWO_OF = 2
+_ONE_OF = 1
 
 def hand_score(hc)
   h = sorted(hc.items(), key=lambda i: i[1], reverse=True)
@@ -21,8 +38,6 @@ def hand_score(hc)
     return _TWO_PAIR
   if len(h) == 4:
     return _TWO_OF
-  if h[-1][1] - h[0][1] == 4:
-    return _STRAIGHT
   return _ONE_OF
 
 def card_cmp(a,b):
@@ -80,17 +95,6 @@ class Hand:
       if sp > op:
         return 1
       return card_cmp(self.hand[1], other.hand[1])
-  # Every hand is exactly one type. From strongest to weakest, they are:
-
-  # 7 Five of a kind, where all five cards have the same label: AAAAA
-  # 6 Four of a kind, where four cards have the same label and one card has a different label: AA8AA
-  # 5 Full house, where three cards have the same label, and the remaining two cards share a different label: 23332
-  # 4 Three of a kind, where three cards have the same label, and the remaining two cards are each different from any other card in the hand: TTT98
-  # 3 Two pair, where two cards share one label, two other cards share a second label, and the remaining card has a third label: 23432
-  # 2 One pair, where two cards share one label, and the other three cards have a different label from the pair and each other: A23A4   
-  # 1 High card, where all cards' labels are distinct: 23456
-
-
 
 def main(test):
   total = 0
