@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import aocd
+import numpy
 import re
 import sys
 
@@ -39,7 +40,8 @@ def main(test):
       count += 1
     print("count", cur, count)
     c.append(count)
-    ans = ans * count
+
+  ans = numpy.lcm.reduce(numpy.array(c))
   print("answer", ans)
   if not test:
       aocd.submit(ans, part="b", day=_DAY, year=2023)
