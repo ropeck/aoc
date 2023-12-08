@@ -2,13 +2,28 @@
 import aocd
 import re
 import sys
-from functools import cmp_to_key
+from containers import Counter
 
 _DAY = 7
 CARD_ORDER = '23456789TJQKA'
 
-def card_score(n):
-  return CARD_ORDER.index(n)
+def hand_score(hc)
+  h = sorted(hc.items(), key=lambda i: i[1], reverse=True)
+  if len(h) == 1:
+    return _FIVE_OF
+  if len(h) == 2:
+    if h[0][1] == 4:
+      return _FOUR_OF
+    return _FULL_HOUSE
+  if len(h) == 3:
+    if h[0][1] == 3:
+      return _THREE_OF
+    return _TWO_PAIR
+  if len(h) == 4:
+    return _TWO_OF
+  if h[-1][1] - h[0][1] == 4:
+    return _STRAIGHT
+  return _ONE_OF
 
 def card_cmp(a,b):
   sa = card_score(a[0])
@@ -21,7 +36,6 @@ def card_cmp(a,b):
 
 class Hand:
   def __init__(self, line):
-    self.str = line
     self.str = line
     self.cards = {}
     (card_str, bid_str) = line.split(" ")
