@@ -2,7 +2,7 @@
 import aocd
 import re
 import sys
-from containers import Counter
+from collections import Counter
 
 _DAY = 7
   # Every hand is exactly one type. From strongest to weakest, they are:
@@ -24,7 +24,7 @@ _TWO_PAIR = 3
 _TWO_OF = 2
 _ONE_OF = 1
 
-def hand_score(hc)
+def hand_score(hc):
   h = sorted(hc.items(), key=lambda i: i[1], reverse=True)
   if len(h) == 1:
     return _FIVE_OF
@@ -40,14 +40,23 @@ def hand_score(hc)
     return _TWO_OF
   return _ONE_OF
 
+
 def card_cmp(a,b):
-  sa = card_score(a[0])
-  sb = card_score(b[0])
-  if sa < sb:
+  ah = hand_score(a.hand)
+  bh = hand_score(b.hand)
+  if ah < bh:
     return -1
-  if sa > sb:
+  if ah > bh:
+    return 1
+
+  astr = a.sort_str()
+  bstr = b.sort_str()
+  if astr < bstr:
+    return -1
+  if astr > bstr:
     return 1
   return 0
+
 
 class Hand:
   def __init__(self, line):
@@ -55,16 +64,15 @@ class Hand:
     self.cards = {}
     (card_str, bid_str) = line.split(" ")
     self.bid = int(bid_str)
-    for c in card_str:
-      self.cards[c] = self.cards.get(c, 0) + 1
-    
-    self.hand = sorted(self.cards.items(),
-                       key=lambda n: n[1]*100+card_score(n[0]),
-                       reverse=True)
+    self.hand = Counter(card_str)
+    self.card_str = card_str
 
-  def pairs(self, n=0):
-    return self.hand[n][1]
-  
+  def sort_str(self):
+    str = self.card_str
+    for f, t in ('Ta', 'Jb', 'Qc', 'Kd', 'Ae'):
+      str = re.sub(f, t, str)
+    return str
+
   def __lt__(self, other):
     return self.cmp(other) < 0
   def __gt__(self, other):
@@ -73,47 +81,35 @@ class Hand:
     return self.cmd(other) == 0
   def __repr__(self):
     return f"Hand({self.str})"
-  
+
   def cmp(self, other):
-    sp = self.pairs()
-    op = other.pairs()
-    if sp < op:
-      return -1
-    if sp > op:
-      return 1
-    s = card_cmp(self.hand[0], other.hand[0])
-    if s:
-      return s
-    # same pairs, same values
-    if sp == 4:
-      return card_cmp(self.hand[1], other.hand[1])
-    if sp == 3:
-      sp = self.pairs(1)
-      op = other.pairs(1)
-      if sp < op:
-        return -1
-      if sp > op:
-        return 1
-      return card_cmp(self.hand[1], other.hand[1])
+    return card_cmp(self, other)
 
 def main(test):
   total = 0
-  test = 1
+  # test = 1
 
   mod = aocd.models.Puzzle(year=2023, day=_DAY)
   if not test:
     data = mod.input_data.splitlines()
   else:
-    data = mod.example_data.splitlines()
+    ex = mod.examples[0]
+    data = ex.input_data.splitlines()
 
   hands = []
   for line in data:
     hands.append(Hand(line))
-  hands = sorted(hands, reverse=True)
-  hands = sorted(hands, reverse=True)
+  hands = sorted(hands)
+
+  total = 0
+  for rank, h in enumerate(hands, 1):
+    print (rank, h, h.sort_str())
+    total += rank * h.bid
+
+  print("total", total)
 
   if not test:
-      aocd.submit(ans, part="a", day=_DAY, year=2023)
+      aocd.submit(total, part="a", day=_DAY, year=2023)
 
 if __name__ == '__main__':
   main(len(sys.argv) > 1)

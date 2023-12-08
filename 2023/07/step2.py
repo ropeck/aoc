@@ -12,7 +12,8 @@ def main(test):
   if not test:
     data = mod.input_data.splitlines()
   else:
-    data = mod.example_data.splitlines()
+    ex = mod.examples[0]
+    data = ex.input_data.splitlines()
 
   pass
 
