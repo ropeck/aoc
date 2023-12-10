@@ -11,13 +11,23 @@ dir = {
   'L': [(0,-1), (1,0)],
   'F': [(1,0), (0,1)],
   'J': [(0,-1), (-1,0)],
-  '7': [(-1,0), (0,-1)],
+  '7': [(-1,0), (0,1)],
   '|': [(0,-1), (0,1)],
 }
 
-    
 
 def main(test):
+
+  def connected(cur, prev):
+    x,y=cur
+    c = data[y][x]
+    for dx, dy in dir[c]:
+      con = (x+dx, y+dy)
+      if con != prev:
+        return con
+    raise ValueError('next not found')
+
+
   # test = 1
   mod = aocd.models.Puzzle(year=2023, day=_DAY)
   if not test:
@@ -53,9 +63,20 @@ def main(test):
     print("can not find the next step from {x, y}")
     sys.exit(1)
 
+  path = [prev, cur]
+  while True:
+    next = connected(cur, prev)
+    if next in path:
+      break
+    path.append(next)
+    prev = cur
+    cur = next
 
-  if not test and False:
-      aocd.submit(count, part="a", day=_DAY, year=2023)
+  mid = int(len(path)/2)
+  print("mid", mid)
+
+  if not test:
+      aocd.submit(mid, part="a", day=_DAY, year=2023)
 
 if __name__ == '__main__':
   main(len(sys.argv) > 1)
