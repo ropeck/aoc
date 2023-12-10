@@ -55,9 +55,9 @@ def main(test):
     cur = x-1, y
   elif data[y][x+1] in '-J7':
     cur = x+1, y
-  elif data[y-1][x] in '|7F':
+  elif data[y+1][x] in '|7F':
     cur = x, y-1
-  elif data[y+1][x] in '|LJ':
+  elif data[y-1][x] in '|LJ':
     cur = x, y+1
   if not cur:
     print("can not find the next step from {x, y}")
@@ -81,38 +81,34 @@ def main(test):
     path_d[p] = True
 
   def is_inside(cx,cy):
-    if data[cy][cx] != '.':
-      return False
     if (cx, cy) in path:
       return False
-    lh = 0
+    lh = 1
     for x in range(0,cx):
       if (x, cy) in path_d:
         lh += 1
-    rh = 0
-    for x in range(cx,len(line)+1):
+    rh = 1
+    for x in range(cx+1, len(line)):
       if (x, cy) in path_d:
         rh += 1
-    up = 0
-    for y in range(cy, len(data)+1):
+    up = 1
+    for y in range(cy+1, len(data)):
       if (cx, y) in path_d:
         up += 1
-    dn = 0
+    dn = 1
     for y in range(0, cy):
       if (cx, y) in path_d:
         dn += 1
-    return all([lh%2, rh%2, up%2, dn%2])    
+    return not all([lh%2, rh%2, up%2, dn%2])    
 
   for y, line in enumerate(data):
     l = list(line)
     for x in range(len(line)):
+      if (x,y) in path_d:
+        l[x]=' '
       if is_inside(x,y):
         inside += 1
         l[x]='*'
-      else:
-        l[x]=' '
-      if (x,y) in path_d:
-        l[x]='.'
     print(''.join(l))
         
   print("inside", inside)
