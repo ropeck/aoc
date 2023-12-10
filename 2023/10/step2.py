@@ -81,32 +81,40 @@ def main(test):
     path_d[p] = True
 
   def is_inside(cx,cy):
+    if data[cy][cx] != '.':
+      return False
     if (cx, cy) in path:
       return False
     lh = 0
-    for x in range(0,cx):
+    for x in range(0,cx-1):
       if (x, cy) in path_d:
         lh += 1
     rh = 0
-    for x in range(cx+1,len(line)):
+    for x in range(cx,len(line)+1):
       if (x, cy) in path_d:
         rh += 1
     up = 0
-    for y in range(cy+1, len(data)):
+    for y in range(cy, len(data)+1):
       if (cx, y) in path_d:
         up += 1
     dn = 0
     for y in range(0, cy-1):
       if (cx, y) in path_d:
         dn += 1
-    return not any([lh%2, rh%2, up%2, dn%2])    
+    return all([lh%2, rh%2, up%2, dn%2])    
 
   for y, line in enumerate(data):
-    print(y, line)
+    l = list(line)
     for x in range(len(line)):
       if is_inside(x,y):
         inside += 1
-
+        l[x]='*'
+      else:
+        l[x]=' '
+      if (x,y) in path_d:
+        l[x]='.'
+    # print(''.join(l))
+        
   print("inside", inside)
 
   if not test:
