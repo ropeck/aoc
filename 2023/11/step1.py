@@ -8,48 +8,56 @@ _DAY = 11
 
 def main(test):
 
-  test = 1
+  #test = 1
   mod = aocd.models.Puzzle(year=2023, day=_DAY)
   if not test:
     data = mod.input_data.splitlines()
   else:
     data = mod.example_data.splitlines()
 
-  # expand empty parts
-  # find empty columns, double them
+  d = []
   width = len(data[0])
   height = len(data)
-  newdata = [[] for i in range(height)]
-  nx = 0
+  for y, line in enumerate(data):
+    d.append(list(line))
+    if '#' not in line:
+      d.append(list(line))  # double empty rows
+
+  nd = [[] for y in range(len(d))]
   for x in range(width):
-    c = 0
-    nd = ""
-    for y in range(height):
-      newdata[nx].append(data[y][x])
-      if data[y][x] != '.':
-        c += 1
-      nx += 1
-    if not c:
-      for y in range(height):
-        newdata[nx].append('.')
-      nx += 1
-  data = [''.join(l) for l in newdata]
-  newdata = []
-  for y in range(height):
-    c = 0
-    for x in range(width):
-      if data[y][x] != '.':
-        c += 1
-    newdata.append(data[y])
-    if not c:
-      newdata.append(data[y])
-  data = newdata
+    c = [d[y][x] for y in range(len(d)) if d[y][x] is not '.']
+    for y in range(len(d)):
+      nd[y].append(d[y][x])
+      if not c:
+        nd[y].append('.')
 
+  print("d")
+  for l in d:
+    print(''.join(l))
 
+  print("nd")
+  for l in nd:
+    print(''.join(l))
+
+  g = []
+  for y in range(len(nd)):
+    for x in range(len(nd[0])):
+      if nd[y][x] != '.':
+        g.append((x,y))
+  print(g)
+
+  dist = []
+  c = 1
+  for n, (x,y) in enumerate(g):
+    for i, (x2, y2) in enumerate(g[n+1:]):
+      print(c, n, x, y, i, x2, y2)
+      dist.append(abs(x2-x)+abs(y2-y))
+      c += 1
+  print("dist", sum(dist))
 
 
   if not test:
-      aocd.submit(mid, part="a", day=_DAY, year=2023)
+      aocd.submit(sum(dist), part="a", day=_DAY, year=2023)
 
 if __name__ == '__main__':
   main(len(sys.argv) > 1)
