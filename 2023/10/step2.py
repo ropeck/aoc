@@ -48,17 +48,17 @@ def main(test):
 # ..........
 # """.splitlines()
   
-#   data = """.F----7F7F7F7F-7....
-# .|F--7||||||||FJ....
-# .||.FJ||||||||L7....
-# FJL7L7LJLJ||LJ.L-7..
-# L--J.L7...LJS7F-7L7.
-# ....F-J..F7FJ|L7L7L7
-# ....L7.F7||L7|.L7L7|
-# .....|FJLJ|FJ|F7|.LJ
-# ....FJL-7.||.||||...
-# ....L---J.LJ.LJLJ...
-# """.splitlines()
+  data = """.F----7F7F7F7F-7....
+.|F--7||||||||FJ....
+.||.FJ||||||||L7....
+FJL7L7LJLJ||LJ.L-7..
+L--J.L7...LJS7F-7L7.
+....F-J..F7FJ|L7L7L7
+....L7.F7||L7|.L7L7|
+.....|FJLJ|FJ|F7|.LJ
+....FJL-7.||.||||...
+....L---J.LJ.LJLJ...
+""".splitlines()
   
 #   data="""FF7FSF7F7F7F7F7F---7
 # L|LJ||||||||||||F--J
@@ -158,7 +158,8 @@ def main(test):
         intersect.append(x)
     dn = len(reduce_list(intersect))%2
 
-    return all([lh, rh, up, dn])   # odd number of intersects 
+    return lh == rh and up == dn
+    # return all([lh, rh, up, dn])   # odd number of intersects 
 
   group = []
   inside = 0
@@ -176,8 +177,8 @@ def main(test):
   print("inside", inside)
  
 
-  if not test:
-      aocd.submit(inside, part="b", day=_DAY, year=2023)
+  # if not test:
+  #     aocd.submit(inside, part="b", day=_DAY, year=2023)
 
 if __name__ == '__main__':
   main(len(sys.argv) > 1)
