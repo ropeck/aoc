@@ -16,6 +16,7 @@ dir = {
 }
 
 inside = 0
+group = []
 
 def main(test):
 
@@ -115,89 +116,65 @@ def main(test):
   for p in path:
     path_d[p] = True
 
+  def reduce_list(l):
+    newlist = []
+    start = 0
+    end = 0
+    for index,value in enumerate(l):
+        if index < len(l)-1:
+            if l[index+1]> value+1:
+                end = index +1
+                newlist.append(l[start:end])
+                start = end
+        else:
+                newlist.append(l[start: len(l)])
+    return newlist
+
   def is_inside(cx,cy):
     if (cx, cy) in path_d:
       return False
     lh = 0
+    intersect = []
     for x in range(0,cx):
-      # if (x, cy) in path_d and data[cy][x] == '|':
       if (x, cy) in path_d:
-        lh += 1
-    rh = 0
-    for x in range(cx+1, len(line)):
-      # if (x, cy) in path_d and data[cy][x] == '|':
+        intersect.append(x)
+    lh = len(reduce_list(intersect))%2
+
+    intersect = []
+    for x in range(cx+1,len(data[0])+1):
       if (x, cy) in path_d:
-        rh += 1
-    up = 0
-    for y in range(cy+1, len(data)):
-      # if (cx, y) in path_d and data[y][cx] == '-':
-      if (cx, y) in path_d:
-        up += 1
-    dn = 0
+        intersect.append(x)
+    rh = len(reduce_list(intersect))%2
+
+    intersect = []
     for y in range(0, cy):
-      # if (cx, y) in path_d and data[y][cx] == '-':
       if (cx, y) in path_d:
-        dn += 1
-    return all([lh%2, rh%2, up%2, dn%2])    
+        intersect.append(x)
+    up = len(reduce_list(intersect))%2
 
-  def fill_from_coord(x,y, seen=None):
-    if not seen:
-      seen = {}
-    global inside
-    if x < 0 or x > len(data[0])-1 or y < 0 or y > len(data)-1:
-      return seen
-    if (x,y) in path_d or (x,y) in seen:
-      return seen
-    seen[(x,y)] = 1
-    seen = fill_from_coord(x-1, y, seen)
-    seen = fill_from_coord(x+1, y, seen)
-    seen = fill_from_coord(x, y-1, seen)
-    seen = fill_from_coord(x, y+1, seen)
-    l = list(data[y])
-    l[x] = '*'
-    inside += 1
-    data[y] = ''.join(l)
-    return seen
+    intersect = []
+    for y in range(cy+1,len(data)+1):
+      if (cx, y) in path_d:
+        intersect.append(x)
+    dn = len(reduce_list(intersect))%2
 
-  def remove_from_coord(x,y, seen=None):
-    if x < 0 or x > len(data[0])-1 or y < 0 or y > len(data)-1:
-      return seen
-    if not seen:
-      seen = {}
-    global inside
-    if (x,y) in path_d or (x,y) in seen:
-      return seen
-    seen[(x,y)] = 1
-    seen = remove_from_coord(x-1, y, seen)
-    seen = remove_from_coord(x+1, y, seen)
-    seen = remove_from_coord(x, y-1, seen)
-    seen = remove_from_coord(x, y+1, seen)
-    l = list(data[y])
-    l[x] = ' '
-    inside -= 1
-    data[y] = ''.join(l)
-    return seen
-  
-  seen = {}
+    return all([lh, rh, up, dn])   # odd number of intersects 
+
+  group = []
+  inside = 0
   for y, line in enumerate(data):
     l = list(line)
     for x in range(len(line)):
-      seen = fill_from_coord(x,y, seen)
-        
-  print('\n'.join(data))
+      if is_inside(x,y):
+        inside += 1
+        group.append((x,y))
+        l[x] = '*'
+    data[y] = ''.join(l)
+  print("group", group)
+  group = []
+  print("\n".join(data))
   print("inside", inside)
-
-  # remove edges
-  seen = {}
-  for y, line in enumerate(data):
-    seen = remove_from_coord(0,y, seen)
-    seen = remove_from_coord(len(line)-1,y, seen)
-  for x in range(len(line)):
-    seen = remove_from_coord(x,0, seen)  
-    seen = remove_from_coord(x,len(data)-1, seen)
-
-  print('\n'.join(data))
-  print("inside", inside)
+ 
 
   if not test:
       aocd.submit(inside, part="b", day=_DAY, year=2023)
