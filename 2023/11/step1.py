@@ -31,26 +31,25 @@ def main(test):
       if not c:
         nd[y].append('.')
 
-  print("d")
-  for l in d:
-    print(''.join(l))
+  # print("d")
+  # for l in d:
+  #   print(''.join(l))
 
-  print("nd")
-  for l in nd:
-    print(''.join(l))
+  # print("nd")
+  # for l in nd:
+  #   print(''.join(l))
 
   g = []
   for y in range(len(nd)):
     for x in range(len(nd[0])):
       if nd[y][x] != '.':
         g.append((x,y))
-  print(g)
 
   dist = []
   c = 1
   for n, (x,y) in enumerate(g):
     for i, (x2, y2) in enumerate(g[n+1:]):
-      print(c, n, x, y, i, x2, y2)
+      # print(c, n, x, y, i, x2, y2)
       dist.append(abs(x2-x)+abs(y2-y))
       c += 1
   print("dist", sum(dist))
