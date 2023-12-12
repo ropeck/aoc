@@ -3,9 +3,11 @@ import aocd
 import re
 import sys
 import numpy
+from functools import lru_cache
 
 _DAY = 12
 
+@lru_cache
 def combinations(sp):
   # loop through all combinations of ? in the string as "." or "#"
   n = sp.count("?")
@@ -26,8 +28,6 @@ def combinations(sp):
       st = st + ch
     # print(sp, i, st, n)
     comb.append(st)
-
-
   return comb
 
 def main(test):
@@ -56,7 +56,7 @@ def main(test):
       if groups == exp:
         match.append((i, groups))
 
-    print(len(match), match)
+    #print(len(match), match)
     total += len(match)
 
   print("total", total)
