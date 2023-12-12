@@ -9,6 +9,7 @@ _DAY = 12
 def combinations(sp):
   # loop through all combinations of ? in the string as "." or "#"
   n = sp.count("?")
+  # print(sp)
   comb = []
   for i in range(2**n):
     nn = n
@@ -31,7 +32,7 @@ def combinations(sp):
 
 def main(test):
 
-  test = 1
+  # test = 1
   mod = aocd.models.Puzzle(year=2023, day=_DAY)
   if not test:
     data = mod.input_data.splitlines()
@@ -44,15 +45,23 @@ def main(test):
 ????.#...#... 4,1,1
 ????.######..#####. 1,6,5
 ?###???????? 3,2,1""".splitlines()
-
+  total = 0
   for line in data:
+    match = []
     sp, num = line.split(" ")
-    print(combinations(sp))
-    print("---------")
+    exp = [int(n) for n in num.split(",")]
+    combo = combinations(sp)
+    for i in combo:
+      groups = [len(n) for n in list(filter(None, i.split(".")))]
+      if groups == exp:
+        match.append((i, groups))
 
+    print(len(match), match)
+    total += len(match)
 
+  print("total", total)
   if not test:
-      aocd.submit(mid, part="a", day=_DAY, year=2023)
+      aocd.submit(total, part="a", day=_DAY, year=2023)
 
 if __name__ == '__main__':
   main(len(sys.argv) > 1)
