@@ -59,17 +59,17 @@ def main(test):
 # ..........
 # """.splitlines()
   
-  data = """.F----7F7F7F7F-7....
-.|F--7||||||||FJ....
-.||.FJ||||||||L7....
-FJL7L7LJLJ||LJ.L-7..
-L--J.L7...LJS7F-7L7.
-....F-J..F7FJ|L7L7L7
-....L7.F7||L7|.L7L7|
-.....|FJLJ|FJ|F7|.LJ
-....FJL-7.||.||||...
-....L---J.LJ.LJLJ...
-""".splitlines()
+#   data = """.F----7F7F7F7F-7....
+# .|F--7||||||||FJ....
+# .||.FJ||||||||L7....
+# FJL7L7LJLJ||LJ.L-7..
+# L--J.L7...LJS7F-7L7.
+# ....F-J..F7FJ|L7L7L7
+# ....L7.F7||L7|.L7L7|
+# .....|FJLJ|FJ|F7|.LJ
+# ....FJL-7.||.||||...
+# ....L---J.LJ.LJLJ...
+# """.splitlines()
   
 #   data="""FF7FSF7F7F7F7F7F---7
 # L|LJ||||||||||||F--J
@@ -127,69 +127,57 @@ L--J.L7...LJS7F-7L7.
   for p in path:
     path_d[p] = True
 
-  def reduce_list(l):
-    newlist = []
-    start = 0
-    end = 0
-    for index,value in enumerate(l):
-        if index < len(l)-1:
-            if l[index+1]> value+1:
-                end = index +1
-                newlist.append(l[start:end])
-                start = end
-        else:
-                newlist.append(l[start: len(l)])
-    return newlist
+  inside = {}
+
+  prev = None
+  for x, y in path:
+    nx = None
+    if data[y][x] == "-":
+      if x - prev[0] > 0:
+        nx = (x, y+1)
+      else:
+        nx = (x, y-1)
+    if data[y][x] == "|":
+      if y - prev[1] > 0:
+        nx = (x-1, y)
+      else:
+        nx = (x+1, y)
+    if nx and nx not in path_d and nx not in inside:
+      if (0 <= nx[0] < len(data[0]) and
+          0 <= nx[1] < len(data)):
+        inside[nx] = True
+    prev = (x, y)
 
   def is_inside(cx,cy):
-    if (cx, cy) in path_d:
-      return False
-    lh = 0
-    intersect = []
-    for x in range(0,cx):
-      if (x, cy) in path_d:
-        intersect.append(x)
-    lh = len(reduce_list(intersect))%2
-
-    intersect = []
-    for x in range(cx+1,len(data[0])+1):
-      if (x, cy) in path_d:
-        intersect.append(x)
-    rh = len(reduce_list(intersect))%2
-
-    intersect = []
-    for y in range(0, cy):
-      if (cx, y) in path_d:
-        intersect.append(x)
-    up = len(reduce_list(intersect))%2
-
-    intersect = []
-    for y in range(cy+1,len(data)+1):
-      if (cx, y) in path_d:
-        intersect.append(x)
-    dn = len(reduce_list(intersect))%2
-
-    return lh == rh and up == dn
-    # return all([lh, rh, up, dn])   # odd number of intersects 
-
-  group = []
-  inside = 0
-  for y, line in enumerate(data):
-    l = list(line)
-    for x in range(len(line)):
-      if is_inside(x,y):
-        inside += 1
-        group.append((x,y))
-        l[x] = '*'
-    data[y] = ''.join(l)
-  print("group", group)
-  group = []
-  print("\n".join(data))
+    return inside.get((cx, cy), False)
+  
+  # group = []
+  # for y, line in enumerate(data):
+  #   l = list(line)
+  #   for x in range(len(line)):
+  #     if is_inside(x,y):
+  #       group.append((x,y))
+  #       l[x] = '*'
+  #   data[y] = ''.join(l)
+  # print("group", group)
+  # group = []
+  # print("\n".join(data))
   print("inside", inside)
+  print("len", len(inside))
  
+  out_copy = data.copy()
+  out = []
+  for line in out_copy:
+    out.append(list(line))
+  for x,y in inside.keys():
+    out[y][x] = "+"
+  for line in out:
+    print(''.join(line))
 
-  # if not test:
-  #     aocd.submit(inside, part="b", day=_DAY, year=2023)
+  print("len", len(inside))
+
+  if not test:
+      aocd.submit(len(inside), part="b", day=_DAY, year=2023)
 
 if __name__ == '__main__':
   main(len(sys.argv) > 1)
