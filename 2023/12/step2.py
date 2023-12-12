@@ -47,9 +47,13 @@ def main(test):
 ?###???????? 3,2,1""".splitlines()
   total = 0
   for line in data:
+    print(line)
     match = []
     sp, num = line.split(" ")
+    sp = (sp+"?")*5
     exp = [int(n) for n in num.split(",")]
+    exp = exp * 5
+    print(exp, sp)
     combo = combinations(sp)
     for i in combo:
       groups = [len(n) for n in list(filter(None, i.split(".")))]
