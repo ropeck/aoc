@@ -32,7 +32,7 @@ def combinations(sp):
 
 def main(test):
 
-  test = 1
+  #test = 1
   mod = aocd.models.Puzzle(year=2023, day=_DAY)
   if not test:
     data = mod.input_data.splitlines()
