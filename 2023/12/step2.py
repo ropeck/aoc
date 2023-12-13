@@ -46,16 +46,14 @@ def combinations(st):
     return cmb
   else:
   # split into 5 parts
-    split = int((l+1)/5)
+    split = int((l+1)/5) - 1
     left = combinations(st[:split])
-    for i in range(5):
-      right = combinations(st[i*split:(i+1)*split])
-      left = [''.join(a) for a in product(left, right)]
-    return left
+    big = [''.join(a) for a in product(left, combinations(st[split]))]
+    return [''.join(a) for a in product(big, big, big, big, left)]
 
 def main(test):
 
-  #test = 1
+  # test = 1
   mod = aocd.models.Puzzle(year=2023, day=_DAY)
   if not test:
     data = mod.input_data.splitlines()
@@ -71,7 +69,7 @@ def main(test):
   total = 0
   for line in data:
     print(line)
-    match = []
+    match_len = 0
     sp, num = line.split(" ")
     sp = (sp+"?")*5
     exp = [int(n) for n in num.split(",")]
