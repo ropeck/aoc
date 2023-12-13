@@ -3,12 +3,12 @@ import aocd
 import re
 import sys
 import numpy
+import functools
 from functools import lru_cache
-
+from itertools import product
 _DAY = 12
 
-@lru_cache
-def combinations(sp):
+def combinations_orig(sp):
   # loop through all combinations of ? in the string as "." or "#"
   n = sp.count("?")
   # print(sp)
@@ -29,6 +29,20 @@ def combinations(sp):
     # print(sp, i, st, n)
     comb.append(st)
   return comb
+
+@lru_cache(maxsize=None)
+def combinations(st):
+  l = len(st)
+  if l == 1:
+    if st == "?":
+      return [".", "#"]
+    else:
+      return [st]
+  mid = int(l/2)
+  left = combinations(st[:mid])
+  right = combinations(st[mid:])
+  cmb = [''.join(a) for a in product(left, right)]
+  return cmb
 
 def main(test):
 
