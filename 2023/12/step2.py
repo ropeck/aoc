@@ -30,7 +30,7 @@ def combinations_orig(sp):
     comb.append(st)
   return comb
 
-@lru_cache(maxsize=None)
+@lru_cache(maxsize=1024)
 def combinations(st):
   l = len(st)
   if l == 1:
