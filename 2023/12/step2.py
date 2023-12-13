@@ -38,11 +38,20 @@ def combinations(st):
       return [".", "#"]
     else:
       return [st]
-  mid = int(l/2)
-  left = combinations(st[:mid])
-  right = combinations(st[mid:])
-  cmb = [''.join(a) for a in product(left, right)]
-  return cmb
+  if l < 10:  
+    mid = int(l/2)
+    left = combinations(st[:mid])
+    right = combinations(st[mid:])
+    cmb = [''.join(a) for a in product(left, right)]
+    return cmb
+  else:
+  # split into 5 parts
+    split = int((l+1)/5)
+    left = combinations(st[:split])
+    for i in range(5):
+      right = combinations(st[i*split:(i+1)*split])
+      left = [''.join(a) for a in product(left, right)]
+    return left
 
 def main(test):
 
@@ -72,10 +81,9 @@ def main(test):
     for i in combo:
       groups = [len(n) for n in list(filter(None, i.split(".")))]
       if groups == exp:
-        match.append((i, groups))
-
-    print(len(match), match)
-    total += len(match)
+        match_len += 1
+    print(match_len)
+    total += match_len
 
   print("total", total)
   if not test:
