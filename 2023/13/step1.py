@@ -21,8 +21,8 @@ def is_mirrored_row(n, d):
 def find_mirror_row(d):
   for n in range(len(d)):
     if is_mirrored_row(n, d):
-      return n+1
-  return 0
+      return n+2
+  return None
     
 def compare_col(a, b, d):
   for r in d:
@@ -47,12 +47,20 @@ def find_mirror_col(d):
   for n in range(len(d[0])):
     if is_mirrored_col(n, d):
       return n+1
-  return 0
+  return None
 
 
 
 def mirror_check(d):
-  m = (100*find_mirror_row(d) + find_mirror_col(d)) 
+  f = find_mirror_col(d)
+  if f:
+    m = f
+  else:
+    f = find_mirror_row(d)
+    if f:
+      m = f * 100
+    else:
+      print("nothing found")
   print(m)
   if m == 0:
     print ("\n".join(d))
