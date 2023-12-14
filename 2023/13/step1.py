@@ -20,7 +20,7 @@ def is_mirrored_row(n, d):
 def find_mirror_row(d):
   for n in range(len(d)):
     if is_mirrored_row(n, d):
-      return n+2
+      return n+1
   return None
     
 def compare_col(a, b, d):
@@ -85,8 +85,8 @@ def main(test):
   if line:
     total += mirror_check(d)
   print("total", total)
-  if not test:
-      aocd.submit(total, part="a", day=_DAY, year=2023)
+  # if not test:
+  #     aocd.submit(total, part="a", day=_DAY, year=2023)
 
 if __name__ == '__main__':
   main(len(sys.argv) > 1)
