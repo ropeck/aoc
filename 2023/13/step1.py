@@ -2,7 +2,6 @@
 import aocd
 import re
 import sys
-import numpy
 
 _DAY = 13
 
