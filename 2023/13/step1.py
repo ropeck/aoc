@@ -5,65 +5,77 @@ import sys
 
 _DAY = 13
 
-def is_mirrored_row(n, d):
-  u = n
-  l = n + 1
-  if l >= len(d) or u < 0:
+class Board:
+  def __init__(self):
+    self.board = []
+
+  def append(self, line):
+    self.board.append(line)
+      
+  def is_mirrored_row(self, n):
+    d = self.board
+    u = n
+    l = n + 1
+    if l >= len(d) or u < 0:
+      return False
+    while d[u] == d[l]:
+      if u == 0 or l == len(d) - 1:
+        return True
+      u -= 1
+      l += 1
     return False
-  while d[u] == d[l]:
-    if u == 0 or l == len(d) - 1:
-      return True
-    u -= 1
-    l += 1
-  return False
 
-def find_mirror_row(d):
-  for n in range(len(d)):
-    if is_mirrored_row(n, d):
-      return n+1
-  return None
-    
-def compare_col(a, b, d):
-  for r in d:
-    try:
-      if r[a] != r[b]:
-        return False
-    except IndexError:
-      return True
-  return True
+  def find_mirror_row(self):
+    d = self.board
+    for n in range(len(d)):
+      if self.is_mirrored_row(n):
+        return n+1
+    return None
+      
+  def compare_col(self, a, b):
+    d = self.board
+    for r in d:
+      try:
+        if r[a] != r[b]:
+          return False
+      except IndexError:
+        return True
+    return True
 
-def is_mirrored_col(n, d):
-  l = n
-  r = n + 1
-  while compare_col(l, r, d):
-    if l == 0 or r == len(d[0]) - 1:
-      return True
-    l -= 1
-    r += 1
-  return False
+  def is_mirrored_col(self, n):
+    d = self.board
+    l = n
+    r = n + 1
+    while self.compare_col(l, r):
+      if l == 0 or r == len(d[0]) - 1:
+        return True
+      l -= 1
+      r += 1
+    return False
 
-def find_mirror_col(d):
-  for n in range(len(d[0])):
-    if is_mirrored_col(n, d):
-      return n+1
-  return None
+  def find_mirror_col(self):
+    d = self.board
+    for n in range(len(d[0])-1):
+      if self.is_mirrored_col(n):
+        return n+1
+    return None
 
 
 
-def mirror_check(d):
-  f = find_mirror_col(d)
-  if f:
-    m = f
-  else:
-    f = find_mirror_row(d)
+  def mirror_check(self):
+    f = self.find_mirror_col()
     if f:
-      m = f * 100
+      m = f
     else:
-      print("nothing found")
-  print(m)
-  if m == 0:
-    print ("\n".join(d))
-  return m
+      f = self.find_mirror_row()
+      if f:
+        m = f * 100
+      else:
+        print("nothing found")
+    print(m)
+    if m == 0:
+      print ("\n".join(d))
+    return m
 
 def main(test):
 
@@ -74,19 +86,18 @@ def main(test):
   else:
     data = mod.example_data.splitlines()
 
-  d = []
+  b = Board()
   total = 0
-  for line in data:
+  for line in data + [""]:
     if not line:
-      total += mirror_check(d)
-      d = []
+      total += b.mirror_check()
+      b = Board()
     else:
-      d.append(line)
-  if line:
-    total += mirror_check(d)
+      b.append(line)
+
   print("total", total)
-  # if not test:
-  #     aocd.submit(total, part="a", day=_DAY, year=2023)
+  if not test:
+      aocd.submit(total, part="a", day=_DAY, year=2023)
 
 if __name__ == '__main__':
   main(len(sys.argv) > 1)
