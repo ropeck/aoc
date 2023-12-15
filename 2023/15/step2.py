@@ -16,7 +16,7 @@ def hash(str):
 
 def main(test):
 
-  test = 1
+  # test = 1
   mod = aocd.models.Puzzle(year=2023, day=_DAY)
   if not test:
     data = mod.input_data.splitlines()
@@ -24,16 +24,39 @@ def main(test):
     data = mod.example_data.splitlines()
 
   total = 0
+  box = [[] for i in range(256)]
   for w in data[0].split(","):
-    m = re.match(r"(..)(.)(.?)", w)
+    # print(w)
+    m = re.match(r"(.*)([-=])(.?)", w)
     if not m:
       raise ValueError("no match in line: " + w)
     (label, op, value) = m.groups()
-    
-    total += hash(w)
+    b = hash(label)
+    # print("hash",label, b)
+    if op == "=":
+      found = False
+      for i, v in enumerate(box[b]):
+        if v[0] == label:
+          box[b][i] = (label, value)
+          found = True
+      if not found:
+        box[b].append((label, value))
+    if op == "-":
+      for i, v in enumerate(box[b]):
+        if v[0] == label:
+          del box[b][i]
+
+  # print([x for x in box if x])
+  total = 0
+  for i, b in enumerate(box):
+    if not b:
+      continue
+    for n, s in enumerate(b):
+      v = (1+i) * (1+n) * int(s[1])
+      total += v
   print("total", total)
-  # if not test:
-  #     aocd.submit(total, part="b", day=_DAY, year=2023)
+  if not test:
+      aocd.submit(total, part="b", day=_DAY, year=2023)
 
 if __name__ == '__main__':
   main(len(sys.argv) > 1)
