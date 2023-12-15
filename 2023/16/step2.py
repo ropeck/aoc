@@ -3,7 +3,7 @@ import aocd
 import re
 import sys
 
-_DAY = 15
+_DAY = 16
 
 def main(test):
 
@@ -16,7 +16,7 @@ def main(test):
 
   print("total", total)
   # if not test:
-  #     aocd.submit(total, part="a", day=_DAY, year=2023)
+  #     aocd.submit(total, part="b", day=_DAY, year=2023)
 
 if __name__ == '__main__':
   main(len(sys.argv) > 1)

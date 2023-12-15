@@ -3,10 +3,8 @@ import aocd
 import re
 import sys
 
-_DAY = 14
+_DAY = 15
 
-=bytearray(
-        "OOOO.#.O..", "utf-8")
 def main(test):
 
   test = 1
