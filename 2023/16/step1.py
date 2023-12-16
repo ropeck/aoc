@@ -28,7 +28,7 @@ def main(test):
       beams.append((x, y, dx, dy))
     return beams
   
-  test = 1
+  # test = 1
   mod = aocd.models.Puzzle(year=2023, day=_DAY)
   if not test:
     data = mod.input_data.splitlines()
@@ -41,16 +41,16 @@ def main(test):
   seen = {}
 
   count = 0
-  while beams and count < 1000:
+  while beams:
     count += 1
     x, y, dx, dy = beams.pop(0)
     while in_bounds(x,y):
-      draw()
-      print("    ")
-      print(f"{(x,y)} {beams}")
-      # if seen.get((x,y), False):
-      #   break
-      seen[(x,y)] = True
+      # draw()
+      # print("    ")
+      # print(f"{(x,y)} {beams}")
+      if seen.get((x,y, dx, dy), False):
+        break
+      seen[(x,y,dx,dy)] = True
       active[y][x] = 1
       ch = data[y][x]
       if ch == '.':
@@ -90,8 +90,8 @@ def main(test):
   active = [[False for x in range(width)] for y in range(height)]
 
   print("total", total)
-  # if not test:
-  #     aocd.submit(total, part="a", day=_DAY, year=2023)
+  if not test:
+      aocd.submit(total, part="a", day=_DAY, year=2023)
 
 if __name__ == '__main__':
   main(len(sys.argv) > 1)
