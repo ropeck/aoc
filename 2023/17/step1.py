@@ -3,7 +3,7 @@ import aocd
 import re
 import sys
 
-_DAY = 16
+_DAY = 17
 
 class Beam:
   def __init__(self, x, y, dx, dy):
@@ -21,12 +21,6 @@ def main(test):
   else:
     data = mod.example_data.splitlines()
 
-  width = len(data[0])
-  height = len(data)
-  beams = [Beam(0,0)]
-  
-
-  active = [[False for x in range(width)] for y in range(height)]
 
   print("total", total)
   # if not test:
