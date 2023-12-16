@@ -30,7 +30,7 @@ def combinations_orig(sp):
     comb.append(st)
   return comb
 
-@lru_cache(maxsize=1024)
+@lru_cache(maxsize=None)
 def combinations(st):
   l = len(st)
   if l == 1:
@@ -38,22 +38,31 @@ def combinations(st):
       return [".", "#"]
     else:
       return [st]
-  if l < 10:  
+  else:
     mid = int(l/2)
     left = combinations(st[:mid])
     right = combinations(st[mid:])
     cmb = [''.join(a) for a in product(left, right)]
     return cmb
-  else:
-  # split into 5 parts
-    split = int((l+1)/5) - 1
-    left = combinations(st[:split])
-    big = [''.join(a) for a in product(left, combinations(st[split]))]
-    return [''.join(a) for a in product(big, big, big, big, left)]
+
+@lru_cache(maxsize=None)
+def count_combo(sp, exp, ends=False):
+  # print("count combo", sp, exp)
+  match_len = 0
+  exp = list(exp)
+  combo = combinations(sp)
+  m = []
+  for i in combo:
+    groups = [len(n) for n in list(filter(None, i.split(".")))]
+    if groups == exp and (not ends or i[0] != i[-1] or i[0] == "."):
+      match_len += 1
+      m.append(i)
+  # print(m)
+  return match_len
 
 def main(test):
 
-  # test = 1
+  test = 1
   mod = aocd.models.Puzzle(year=2023, day=_DAY)
   if not test:
     data = mod.input_data.splitlines()
@@ -68,21 +77,19 @@ def main(test):
 ?###???????? 3,2,1""".splitlines()
   total = 0
   for line in data:
-    print(line)
-    match_len = 0
+    # print(line)
     sp, num = line.split(" ")
-    sp = (sp+"?")*5
     exp = [int(n) for n in num.split(",")]
-    exp = exp * 5
-    print(exp, sp)
-    combo = combinations(sp)
-    for i in combo:
-      groups = [len(n) for n in list(filter(None, i.split(".")))]
-      if groups == exp:
-        match_len += 1
-    print(match_len)
-    total += match_len
-
+    # print(exp, sp)
+    a = count_combo(sp, tuple(exp))
+    b = count_combo("?"+sp, tuple(exp), ends=True)
+    c = count_combo(sp+"?", tuple(exp), ends=True)
+    if c > a:
+      count = (c ** 4) * a
+    else:
+      count = (b ** 4) * a
+    print("count", count)
+    total += count
   print("total", total)
   if not test:
       aocd.submit(total, part="b", day=_DAY, year=2023)
