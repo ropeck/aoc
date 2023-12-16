@@ -23,7 +23,7 @@ def main(test):
 
   width = len(data[0])
   height = len(data)
-  beams = [Beam(0,0)]
+  beams = [Beam(0,0,1,0)]
   
 
   active = [[False for x in range(width)] for y in range(height)]
