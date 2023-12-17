@@ -46,7 +46,7 @@ def combinations(st):
     return cmb
 
 @lru_cache(maxsize=None)
-def count_combo(sp, exp, ends=False):
+def count_combo(sp, exp):
   # print("count combo", sp, exp)
   match_len = 0
   exp = list(exp)
@@ -54,15 +54,15 @@ def count_combo(sp, exp, ends=False):
   m = []
   for i in combo:
     groups = [len(n) for n in list(filter(None, i.split(".")))]
-    if groups == exp and (not ends or i[0] != i[-1] or i[0] == "."):
+    if groups == exp:
       match_len += 1
       m.append(i)
   # print(m)
-  return match_len
+  return match_len, m
 
 def main(test):
 
-  test = 1
+  # test = 1
   mod = aocd.models.Puzzle(year=2023, day=_DAY)
   if not test:
     data = mod.input_data.splitlines()
@@ -81,9 +81,15 @@ def main(test):
     sp, num = line.split(" ")
     exp = [int(n) for n in num.split(",")]
     # print(exp, sp)
-    a = count_combo(sp, tuple(exp))
-    b = count_combo("?"+sp, tuple(exp), ends=True)
-    c = count_combo(sp+"?", tuple(exp), ends=True)
+    a, ac = count_combo(sp, tuple(exp))
+    b, bc = count_combo("?"+sp, tuple(exp))
+    if sp[-1] == "#":
+      bc = [n for n in bc if n[0] != "#"]
+      b = len(bc)
+    c, cc = count_combo(sp+"?", tuple(exp))
+    if sp[0] == "#":
+      cc = [n for n in cc if n[-1] != "#"]
+      c = len(cc)
     if c > a:
       count = (c ** 4) * a
     else:
