@@ -90,15 +90,17 @@ def main(test):
     if sp[0] == "#":
       cc = [n for n in cc if n[-1] != "#"]
       c = len(cc)
+
+      # figure how to combine them in pairs but match double the exp
     if c > a:
       count = (c ** 4) * a
     else:
       count = (b ** 4) * a
-    print("count", count)
+    print(count, sp, num)
     total += count
   print("total", total)
-  if not test:
-      aocd.submit(total, part="b", day=_DAY, year=2023)
+  # if not test:
+  #     aocd.submit(total, part="b", day=_DAY, year=2023)
 
 if __name__ == '__main__':
   main(len(sys.argv) > 1)
