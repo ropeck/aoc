@@ -20,6 +20,15 @@ def main(test):
     data = mod.input_data.splitlines()
   else:
     data = mod.example_data.splitlines()
+  
+  d = [[int(c) for c in list(row)] for row in data]
+  p = []
+  s = {}
+  x, y = 0, 0
+  w = len(d[0])
+  h = len(d)
+  
+  print(d)
 
 
   print("total", total)
