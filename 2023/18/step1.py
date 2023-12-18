@@ -45,31 +45,40 @@ class Lagoon:
           y += 1
         self.d[y][x] = "#"
         n -= 1
-  def draw(self):
-    for line in self.d:
+  def draw(self, data=None):
+    if not data:
+      data = self.d
+    for line in data:
       print("".join(line))
 
   def count(self):
-    total = 0
-    for yd in self.d:
-      t = 0
-      y = ''.join(yd)
-      inside = False
-      w = 0
-      prev = None
-      edge = False
-      for x, c in enumerate(yd):
-        if c == "#" and prev != "#" and (not edge or (x < len(yd)-1 and yd[x+1] != "#")):
-          if c == "#":
-            edge = True
-          inside = not inside
-          if not inside:
-            t += 1
-        if inside:
-          t += 1
-        prev = c
-      print(y, t)
-      total += t
+    # make a border around the data
+    frame = [["." for i in range(len(self.d[0])+2)]]
+    mid = [["."] + line + ["."] for line in self.d]
+    box = frame + mid + frame
+
+    # fill from the edge
+    x = 0
+    y = 0
+    q = [(x,y)]
+    s = {}
+    while q:
+      cur = q.pop(0)
+      x, y = cur
+      s[cur] = True
+      box[y][x] = "*"
+      for dx, dy in [(-1, 0), (0, -1), (1, 0), (0, 1)]:
+        nx = x + dx
+        ny = y + dy
+        if ((nx < 0 or nx > self.width + 2) or 
+            (ny < 0 or ny > self.height + 2)):
+            continue
+        if (nx, ny) in s:
+          continue
+        if box[ny][nx] != "#":
+          q.append((nx, ny))
+    # count the spaces not filled
+    total = (self.width + 3) * (self.height + 3) - len(s)
     return total
           
 
@@ -82,7 +91,7 @@ def main(test):
     data = mod.example_data.splitlines()
 
   lag = Lagoon(data)
-  lag.draw()
+  # lag.draw()
   total = lag.count()
   print("total", total)
   if not test:
