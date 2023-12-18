@@ -54,15 +54,18 @@ class Lagoon:
     for yd in self.d:
       t = 0
       y = ''.join(yd)
-      prev = None
       inside = False
+      w = 0
+      prev = None
+      edge = False
       for x, c in enumerate(yd):
+        if c == "#" and prev != "#" and (not edge or (x < len(yd)-1 and yd[x+1] != "#")):
+          if c == "#":
+            edge = True
+          inside = not inside
+          if not inside:
+            t += 1
         if inside:
-          t += 1
-        if inside and c == "#" and prev != "#":
-          inside = False
-        elif not inside and c == "#":
-          inside = True
           t += 1
         prev = c
       print(y, t)
