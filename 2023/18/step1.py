@@ -65,7 +65,7 @@ class Lagoon:
     while q:
       cur = q.pop(0)
       x, y = cur
-      print(cur, q)
+      # print(cur, q)
       s[cur] = True
       box[y][x] = "*"
       for dx, dy in [(-1, 0), (0, -1), (1, 0), (0, 1)]:
@@ -76,11 +76,12 @@ class Lagoon:
             continue
         if (nx, ny) in s:
           continue
-        if box[ny][nx] != "#" and (nx, ny) not in s:
+        if box[ny][nx] != "#" and (nx, ny) not in q:
           s[(nx, ny)] = True # this may be quicker
           q.append((nx, ny))
     # count the spaces not filled
     total = (self.width + 3) * (self.height + 3) - len(s)
+    self.draw(box)
     return total
 
 
@@ -96,8 +97,8 @@ def main(test):
   # lag.draw()
   total = lag.count()
   print("total", total)
-  if not test:
-      aocd.submit(total, part="a", day=_DAY, year=2023)
+  # if not test:
+  #     aocd.submit(total, part="a", day=_DAY, year=2023)
 
 if __name__ == '__main__':
   main(len(sys.argv) > 1)
