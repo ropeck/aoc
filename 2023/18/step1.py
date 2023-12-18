@@ -26,9 +26,9 @@ class Lagoon:
       self.width = max([self.width, x])
       self.height = max([self.height, y])
 
-    self.d = [["." for x in range(self.width+1)] 
+    self.d = [["." for x in range(self.width+1)]
               for y in range(self.height+1)]
-    
+
     x = 0
     y = 0
     for line in data:
@@ -56,7 +56,7 @@ class Lagoon:
     frame = [["." for i in range(len(self.d[0])+2)]]
     mid = [["."] + line + ["."] for line in self.d]
     box = frame + mid + frame
-
+    print (f"{len(box[0])}x{len(box)}")
     # fill from the edge
     x = 0
     y = 0
@@ -65,25 +65,27 @@ class Lagoon:
     while q:
       cur = q.pop(0)
       x, y = cur
+      print(cur, q)
       s[cur] = True
       box[y][x] = "*"
       for dx, dy in [(-1, 0), (0, -1), (1, 0), (0, 1)]:
         nx = x + dx
         ny = y + dy
-        if ((nx < 0 or nx > self.width + 2) or 
+        if ((nx < 0 or nx > self.width + 2) or
             (ny < 0 or ny > self.height + 2)):
             continue
         if (nx, ny) in s:
           continue
-        if box[ny][nx] != "#":
+        if box[ny][nx] != "#" and (nx, ny) not in s:
+          s[(nx, ny)] = True # this may be quicker
           q.append((nx, ny))
     # count the spaces not filled
     total = (self.width + 3) * (self.height + 3) - len(s)
     return total
-          
+
 
 def main(test):
-  # test = 1
+  test = 1
   mod = aocd.models.Puzzle(year=2023, day=_DAY)
   if not test:
     data = mod.input_data.splitlines()
