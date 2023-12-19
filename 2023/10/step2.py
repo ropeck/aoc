@@ -48,16 +48,16 @@ def main(test):
   else:
     data = mod.example_data.splitlines()
 
-#   data = """..........
-# .S------7.
-# .|F----7|.
-# .||OOOO||.
-# .||OOOO||.
-# .|L-7F-J|.
-# .|II||II|.
-# .L--JL--J.
-# ..........
-# """.splitlines()
+  data = """..........
+.S------7.
+.|F----7|.
+.||OOOO||.
+.||OOOO||.
+.|L-7F-J|.
+.|II||II|.
+.L--JL--J.
+..........
+""".splitlines()
   
 #   data = """.F----7F7F7F7F-7....
 # .|F--7||||||||FJ....
@@ -124,57 +124,59 @@ def main(test):
   print("mid", mid)
 
   path_d = {}
-  for p in path:
-    path_d[p] = True
+  for x,y in path:
+    x += 1
+    y += 1
+    path_d[x,y] = True
 
-  inside = {}
+  # add border and flood fill to remove outside area
+  frame = [" "*(len(data[0])+2)]
+  mid = [" " + line + " " for line in data]
+  box = frame + mid + frame
 
-  prev = None
-  for x, y in path:
-    nx = None
-    if data[y][x] == "-":
-      if x - prev[0] > 0:
-        nx = (x, y+1)
-      else:
-        nx = (x, y-1)
-    if data[y][x] == "|":
-      if y - prev[1] > 0:
-        nx = (x-1, y)
-      else:
-        nx = (x+1, y)
-    if nx and nx not in path_d and nx not in inside:
-      if (0 <= nx[0] < len(data[0]) and
-          0 <= nx[1] < len(data)):
-        inside[nx] = True
-    prev = (x, y)
+  # flood fill from zero corner
+  q = [(0,0)]
+  outside = {}
+  seen = {}
+  while q:
+    x, y = cur = q.pop(0)
+    seen[cur] = True
+    ch = box[y][x]
+    b = box.copy()
+    line = list(box[y])
+    line[x] = "@"
+    box[y] = ''.join(line)
+    for line in box:
+      print(''.join(line))
+    print("")
+    box = b
+    if (x, y) not in path_d:
+      outside[x, y] = True
+      line = list(box[y])
+      line[x] = "*"
+      box[y] = ''.join(line)
+    for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+      nx = x + dx
+      ny = y + dy
+      if nx == 5 and ny == 7:
+        print("hey")
+      if nx < 0 or ny < 0 or nx >= len(box[0]) or ny >= len(box):
+        continue
+      if (nx, ny) in outside:
+        continue
+      if (nx, ny) in q or (nx, ny) in seen:
+        continue
 
-  def is_inside(cx,cy):
-    return inside.get((cx, cy), False)
-  
-  # group = []
-  # for y, line in enumerate(data):
-  #   l = list(line)
-  #   for x in range(len(line)):
-  #     if is_inside(x,y):
-  #       group.append((x,y))
-  #       l[x] = '*'
-  #   data[y] = ''.join(l)
-  # print("group", group)
-  # group = []
-  # print("\n".join(data))
-  print("inside", inside)
-  print("len", len(inside))
- 
-  out_copy = data.copy()
-  out = []
-  for line in out_copy:
-    out.append(list(line))
-  for x,y in inside.keys():
-    out[y][x] = "+"
-  for line in out:
+      nc = box[ny][nx]
+      if ((nx, ny) not in path_d or nc not in "-|" or
+          (dx and nc == "-") or (dy and nc == "|")):
+        q.append((nx,ny))
+
+  pass
+
+  # draw data
+  for line in box:
     print(''.join(line))
-
-  print("len", len(inside))
 
   if not test:
       aocd.submit(len(inside), part="b", day=_DAY, year=2023)
