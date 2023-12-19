@@ -143,13 +143,15 @@ def main(test):
     seen[cur] = True
     ch = box[y][x]
     b = box.copy()
-    line = list(box[y])
+    line = list(b[y])
     line[x] = "@"
-    box[y] = ''.join(line)
+    b[y] = ''.join(line)
     for line in box:
       print(''.join(line))
     print("")
     box = b
+    if (x, y) in path_d and ch in "-|":
+      continue
     if (x, y) not in path_d:
       outside[x, y] = True
       line = list(box[y])
@@ -166,10 +168,14 @@ def main(test):
         continue
       if (nx, ny) in q or (nx, ny) in seen:
         continue
-
+      if (nx, ny) not in path_d:
+        q.append((nx, ny))
+        continue
       nc = box[ny][nx]
-      if ((nx, ny) not in path_d or nc not in "-|" or
-          (dx and nc == "-") or (dy and nc == "|")):
+      # if ((nx, ny) not in path_d or nc not in "-|" or
+      #     (dx and nc == "-") or (dy and nc == "|")):
+      if  ((ch in dir.keys() and ch not in "-|") or
+           (ch == "-" and dx) or (ch == "|" and dy)):
         q.append((nx,ny))
 
   pass
