@@ -29,7 +29,18 @@ def main(test):
       name = name[1:]
     else:
       op = name
-    node[name] = (op, outputs)
+    node[name] = (op, 0, outputs)
+  initial = node.copy()
+  del initial['broadcast']
+
+  q = [('broadcast', 0)]
+  while q:
+    n, v = q.pop(0)
+    for nx in node[n][1]:
+      op, val, out = node[nx]
+      
+
+
 
   print("total", total)
   if not test:
