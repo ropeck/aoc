@@ -44,7 +44,7 @@ def main(test):
       ny = y + dy
       if nx < 0 or nx >= width or ny < 0 or ny >= height:
         continue
-      if data[ny][nx] != ".":
+      if data[ny][nx] not in "S.":
         continue
       if c and (nx, ny, c - 1) not in q:
         q.append((nx, ny, c - 1))
@@ -56,7 +56,7 @@ def main(test):
 
 
   if not test:
-    aocd.submit(len(p) + 1, part="a", day=_DAY, year=2023)
+    aocd.submit(len(p), part="a", day=_DAY, year=2023)
 
 if __name__ == '__main__':
   main(len(sys.argv) > 1)
