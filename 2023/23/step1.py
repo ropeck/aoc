@@ -3,7 +3,7 @@ import aocd
 import re
 import sys
 
-_DAY = 21
+_DAY = 23
 
 def draw(data):
   print("----")

@@ -3,7 +3,7 @@ import aocd
 import re
 import sys
 
-_DAY = 17
+_DAY = 24
 
 def main(test):
 
