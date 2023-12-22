@@ -24,8 +24,22 @@ class Brick:
     return [d[n] for d in self.d]
   
   def val_overlap(self, other, n):
-    return (min(self.val(n)) >= max(other.val(n)) and
-            max(self.val(n)) <= min(other.val(n)))
+    return (min(self.val(n)) <= max(other.val(n)) and
+            max(self.val(n)) >= min(other.val(n)))
+  
+    #   self   other
+    #   [3, 5] [4, 7] yes
+    #   [3, 5] [5, 7] yes
+    #   [3, 5] [6, 8] no
+  
+  
+  def overlap(self, other):
+    if str(self) == str(other):
+      return False
+    for n in range(3):
+      if self.val_overlap(other, n):
+        return True
+    return False
     
   def key(self):
     return self.min_z()
@@ -44,6 +58,10 @@ class Brick:
       return False
     self.move_z(-1)
     return True
+  
+  def xy(self):
+    x,y,z = self.d[0]
+    return (x, y)
 
 def main(test):
   test = 1
@@ -57,10 +75,17 @@ def main(test):
   d = sorted(d, key=lambda x: x.key())
 
   for br in d:
-    print(br)
-    while br.drop():
-      print(br)
-    print("---")
+    o = False
+    if br.xy() == (1,1):
+      print (br)
+    while br.drop() and not o:
+      for b in d:
+        if b.overlap(br):
+          br.move_z(1)  # move it back up
+          o = True
+          break
+  
+  print(d)
 
   if not test:
     aocd.submit(len(p), part="a", day=_DAY, year=2023)
