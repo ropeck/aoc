@@ -6,7 +6,6 @@ import sys
 _DAY = 24
 
 def main(test):
-
   test = 1
   mod = aocd.models.Puzzle(year=2023, day=_DAY)
   if not test:
@@ -14,9 +13,14 @@ def main(test):
   else:
     data = mod.example_data.splitlines()
 
-  print("total", total)
-  # if not test:
-  #     aocd.submit(total, part="b", day=_DAY, year=2023)
+  height = len(data)
+  width = len(data[0])
+
+
+  import pdb; pdb.set_trace()
+  
+  if not test:
+    aocd.submit(len(p), part="b", day=_DAY, year=2023)
 
 if __name__ == '__main__':
   main(len(sys.argv) > 1)
