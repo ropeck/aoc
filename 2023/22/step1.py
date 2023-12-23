@@ -93,23 +93,21 @@ def main(test):
     dd = deepcopy(d)
     del dd[n]
     dropped = False
-    print("n", n, dd)
     for i in range(len(dd)):
       br = dd[i]
-      o = False
-      while not o and br.drop():
-        for b in dd:
-          if br.overlap(b):
-            br.move_z(1)  # move it back up
-            o = True
-            break
-        dropped = True
+      ov = False
+      if not br.drop():
+        ov = True
+        continue
+      for b in dd:
+        if br.overlap(b):
+          br.move_z(1)
+          ov = True
+          break
+      if ov:
         break
-      dd[i] = br
-      if dropped:
-        break
-    if not dropped:
-      p.append(d[n])
+    if not ov:
+      p.append(n)
 
   print("dropped", len(p), p)
   if not test:
