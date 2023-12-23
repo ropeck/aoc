@@ -16,8 +16,27 @@ def main(test):
   height = len(data)
   width = len(data[0])
 
+  q = [((1,0), [])]
+  while q:
+    (x, y), p = q.pop()
+    p.append((x,y))
+    if y == height-1:
+      print("end", len(p), p)
+      for ns, np in q:
+        print(ns, "\n", np)
+      continue  # next q
+    
+    for dx, dy in [(-1, 0), (0,-1), (1, 0), (0, 1)]:
+      nx = x + dx
+      ny = y + dy
+      if nx < 0 or ny < 0 or nx > width-1 or ny > height-1:
+        continue
+      if data[ny][nx] != "#":
+        if (dx,dy) == {"<": (1,0), ">": (-1,0), "^": (0,1), "v": (0, -1)}.get(data[ny][nx], (0,0)):
+          continue
+        if (nx, ny) not in p:
+          q.append(((nx, ny), p))
 
-  
   if not test:
     aocd.submit(len(p), part="a", day=_DAY, year=2023)
 
