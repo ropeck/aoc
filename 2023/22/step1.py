@@ -35,11 +35,11 @@ class Brick:
   
   def overlap(self, other):
     if str(self) == str(other):
-      return False
+      return False 
     for n in range(3):
-      if self.val_overlap(other, n):
-        return True
-    return False
+      if not self.val_overlap(other, n):
+        return False
+    return True
     
   def key(self):
     return self.min_z()
