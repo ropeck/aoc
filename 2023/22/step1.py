@@ -2,6 +2,7 @@
 import aocd
 import re
 import sys
+from copy import deepcopy
 
 _DAY = 22
 
@@ -18,7 +19,7 @@ class Brick:
 
   def __repr__(self):
     s = " - ".join([str(i) for i in self.d])
-    return f"<{s}>"
+    return re.sub(" ", "", f"<{s}>")
 
   def val(self, n):
     return [d[n] for d in self.d]
@@ -74,19 +75,43 @@ def main(test):
   d = [Brick(line) for line in data]
   d = sorted(d, key=lambda x: x.key())
 
-  for br in d:
+  for i in range(len(d)):
+    br = d[i]
     o = False
-    if br.xy() == (1,1):
-      print (br)
-    while br.drop() and not o:
+    while not o and br.drop():
       for b in d:
-        if b.overlap(br):
+        if br.overlap(b):
           br.move_z(1)  # move it back up
           o = True
           break
+    d[i] = br
   
   print(d)
 
+  p = []   # list of bricks that can be removed
+  for n in range(len(d)):
+    dd = deepcopy(d)
+    del dd[n]
+    dropped = False
+    print("n", n, dd)
+    for i in range(len(dd)):
+      br = dd[i]
+      o = False
+      while not o and br.drop():
+        for b in dd:
+          if br.overlap(b):
+            br.move_z(1)  # move it back up
+            o = True
+            break
+        dropped = True
+        break
+      dd[i] = br
+      if dropped:
+        break
+    if not dropped:
+      p.append(d[n])
+
+  print("dropped", len(p), p)
   if not test:
     aocd.submit(len(p), part="a", day=_DAY, year=2023)
 
