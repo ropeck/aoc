@@ -44,9 +44,9 @@ def main(test):
   MIN = 7
   MAX = 27
 
-  # MIN = 200000000000000
-  # MAX = 400000000000000
-  # test = 0
+  MIN = 200000000000000
+  MAX = 400000000000000
+  test = 0
 
   mod = aocd.models.Puzzle(year=2023, day=_DAY)
   if not test:
@@ -63,7 +63,7 @@ def main(test):
   for i, s in enumerate(lines):
     for o in lines[i+1:]:
       x = s.intersect(o)
-      if x and x[0] > MIN and x[0] < MAX:
+      if x and x[0] > MIN and x[0] < MAX and x[1] > MIN and x[1] < MAX:
         print(s, o, s.intersect(o))
         total += 1
   print("total", total)
