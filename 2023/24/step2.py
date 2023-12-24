@@ -47,6 +47,11 @@ class Line:
     n = [self.pos[i] + t * self.delta[i] for i in range(2)]
     return tuple(n)
 
+  def xyz(self, t):
+    r = list(self.xy(t))
+    r.append(self.z(t))
+    return tuple(r)
+  
 def main(test):
   test = 1
   MIN = 7
@@ -68,13 +73,31 @@ def main(test):
   lines = [Line(str) for str in data if str]
   
   t = 1
+  n = 0
+  initpos = None
+  initdelta = None
+
   lines = sorted(lines, key=lambda l: l.z(t))
-  first = deepcopy(lines[0])
-  print(t, [(l.xy(t), l.z(t)) for l in lines[:6]])
+  first = lines[0]
+
   for t in range(2,10):
     lines = sorted(lines, key=lambda l: l.z(t))
-    print(t, [(l.xy(t), l.z(t)) for l in lines[:6]])
-    
+    print(t, [l.xyz(t) for l in lines[:6]])
+    if not initpos:
+      p = lines[n]
+      dx = p.pos[0] - first.pos[0]
+      dy = p.pos[1] - first.pos[1]
+      dz = p.pos[2] - first.pos[2]
+
+      initpos = (first.pos[0] - dx, first.pos[1] - dy, first.pos[2] - dz)
+      initdelta = (dx*(t-1), dy*(t-1), dz*(t-1))
+    else:
+      nx, ny, nz = [initpos[i]+initdelta[i]*t for i in range(3)]
+      if lines[n].xyz(t) == (nx, ny, nz):
+        n += 1
+        print("match", n, lines[n].xyz())
+      else:
+        initpos = None
 
 
   if not test and False:
