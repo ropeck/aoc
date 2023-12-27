@@ -6,6 +6,8 @@ import numpy
 
 _DAY = 10
 
+SMILE = "\U0001F603"  # 😃
+
 dir = {
   '-': [(-1,0), (1,0)],
   'L': [(0,-1), (1,0)],
@@ -129,60 +131,80 @@ def main(test):
     y += 1
     path_d[x,y] = True
 
-  # add border and flood fill to remove outside area
-  frame = [" "*(len(data[0])+2)]
-  mid = [" " + line + " " for line in data]
-  box = frame + mid + frame
+  box = data
+  # # add border and flood fill to remove outside area
+  # frame = [" "*(len(data[0])+2)]
+  # mid = [" " + line + " " for line in data]
+  # box = frame + mid + frame
 
-  # flood fill from zero corner
-  q = [(0,0)]
-  outside = {}
-  seen = {}
-  while q:
-    x, y = cur = q.pop(0)
-    seen[cur] = True
-    ch = box[y][x]
-    b = box.copy()
-    line = list(b[y])
-    line[x] = "@"
-    b[y] = ''.join(line)
-    for line in box:
+  # # flood fill from zero corner
+  # q = [(0,0)]
+  # outside = {}
+  # seen = {}
+  # while q:
+  #   x, y = cur = q.pop(0)
+  #   seen[cur] = True
+  #   ch = box[y][x]
+  #   b = box.copy()
+  #   line = list(b[y])
+  #   line[x] = "@"
+  #   b[y] = ''.join(line)
+  #   for line in box:
+  #     print(''.join(line))
+  #   print("")
+  #   box = b
+  #   if (x, y) in path_d:
+  #     continue
+  #   if (x, y) not in path_d:
+  #     outside[x, y] = True
+  #     line = list(box[y])
+  #     line[x] = "*"
+  #     box[y] = ''.join(line)
+  #   for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+  #     nx = x + dx
+  #     ny = y + dy
+  #     if nx < 0 or ny < 0 or nx >= len(box[0]) or ny >= len(box):
+  #       continue
+  #     if (nx, ny) in outside:
+  #       continue
+  #     if (nx, ny) in q or (nx, ny) in seen:
+  #       continue
+  #     if (nx, ny) not in path_d:
+  #       q.append((nx, ny))
+  #       continue
+  #     nc = box[ny][nx]
+  #     # if ((nx, ny) not in path_d or nc not in "-|" or
+  #     #     (dx and nc == "-") or (dy and nc == "|")):
+  #     if  (ch in dir.keys() and ch not in "-|JL"):
+  #       q.append((nx,ny))
+
+  def draw(box, mx=None, my=None, mark=SMILE):
+    # draw data
+    for y, line in enumerate(box):
+      if y == my:
+        r = list(line)
+        r[mx] = mark
+        line = ''.join(r)
       print(''.join(line))
-    print("")
-    box = b
-    if (x, y) in path_d and ch in "-|":
-      continue
-    if (x, y) not in path_d:
-      outside[x, y] = True
-      line = list(box[y])
-      line[x] = "*"
-      box[y] = ''.join(line)
-    for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-      nx = x + dx
-      ny = y + dy
-      if nx == 5 and ny == 7:
-        print("hey")
-      if nx < 0 or ny < 0 or nx >= len(box[0]) or ny >= len(box):
-        continue
-      if (nx, ny) in outside:
-        continue
-      if (nx, ny) in q or (nx, ny) in seen:
-        continue
-      if (nx, ny) not in path_d:
-        q.append((nx, ny))
-        continue
-      nc = box[ny][nx]
-      # if ((nx, ny) not in path_d or nc not in "-|" or
-      #     (dx and nc == "-") or (dy and nc == "|")):
-      if  ((ch in dir.keys() and ch not in "-|") or
-           (ch == "-" and dx) or (ch == "|" and dy)):
-        q.append((nx,ny))
 
+  # -- check each location, counting the number of square in the path ignoring the odd corners
+  # if it's odd then it's inside the line, even and it's outside
+
+  for y, row in enumerate(box):
+    for x, ch in enumerate(row):
+      print(x,y)
+      draw(box, x,y)
+      count = 0
+      for xx in range(0,x):
+        if (xx, y) in path and row[xx] in "|L7":
+          count += 1
+      if count % 2 and (x, y) not in path:
+        r = list(box[y])
+        r[x] = "*"
+        box[y] = ''.join(r)
   pass
 
-  # draw data
-  for line in box:
-    print(''.join(line))
+  draw(box)
 
   if not test:
       aocd.submit(len(inside), part="b", day=_DAY, year=2023)
